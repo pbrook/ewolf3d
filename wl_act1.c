@@ -250,7 +250,7 @@ Every time a door opens or closes the areabyplayer matrix gets recalculated.
 doorobj_t	doorobjlist[MAXDOORS],*lastdoorobj;
 myint			doornum;
 
-unsigned	doorposition[MAXDOORS];	// leading edge of door 0=closed
+umyshort	doorposition[MAXDOORS];	// leading edge of door 0=closed
 					// 0xffff = fully open
 byte		areaconnect[NUMAREAS][NUMAREAS];
 
@@ -697,9 +697,9 @@ void MoveDoors()
 =============================================================================
 */
 
-unsigned pwallstate;
-unsigned pwallpos; // amount a pushable wall has been moved (0-63)
-unsigned pwallx, pwally;
+umyshort pwallstate;
+umyshort pwallpos; // amount a pushable wall has been moved (0-63)
+umyshort pwallx, pwally;
 myint pwalldir;
 
 /*

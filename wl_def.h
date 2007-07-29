@@ -944,15 +944,15 @@ void	Thrust (myint angle, long speed);
 extern	doorobj_t	doorobjlist[MAXDOORS],*lastdoorobj;
 extern	myint			doornum;
 
-extern	unsigned	doorposition[MAXDOORS],pwallstate;
+extern	umyshort	doorposition[MAXDOORS],pwallstate;
 
 extern	byte		areaconnect[NUMAREAS][NUMAREAS];
 
 extern	boolean		areabyplayer[NUMAREAS];
 
-extern unsigned	pwallstate;
-extern unsigned	pwallpos;			// amount a pushable wall has been moved (0-63)
-extern unsigned	pwallx,pwally;
+extern umyshort	pwallstate;
+extern umyshort	pwallpos;			// amount a pushable wall has been moved (0-63)
+extern umyshort	pwallx,pwally;
 extern myint			pwalldir;
 
 
