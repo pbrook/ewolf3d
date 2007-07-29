@@ -33,8 +33,8 @@ char extension[5];
 #define afilename "audiot."
 #define pfilename "vswap."
 
-static long *grstarts;	/* array of offsets in vgagraph */
-static long *audiostarts; /* array of offsets in audiot */
+static int32_t *grstarts;	/* array of offsets in vgagraph */
+static int32_t *audiostarts; /* array of offsets in audiot */
 
 static huffnode grhuffman[256];
 

@@ -56,7 +56,7 @@ typedef uint16_t	word;
 typedef uint32_t	longword;
 typedef uint32_t	dword;
 
-typedef long fixed;
+typedef int32_t fixed;
 
 typedef void * memptr;
 
