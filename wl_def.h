@@ -581,7 +581,8 @@ typedef struct objstruct
 	myshort		hitpoints;
 	int32_t		speed;
 
-	byte		temp1,temp2;
+	byte		temp1;
+	signed char temp2;
 	byte next;
 	byte prev;
 } objtype;
