@@ -739,11 +739,11 @@ void InitActorList()
 	for (i = 0; i < MAXACTORS; i++)
 	{
 		//objlist[i].id = i;
-		objlist[i].prev = &objlist[i+1];
-		objlist[i].next = NULL;
+		objlist[i].prev = i+1;
+		objlist[i].next = INVALID_OBJID;
 	}
 
-	objlist[MAXACTORS-1].prev = NULL;
+	objlist[MAXACTORS-1].prev = INVALID_OBJID;
 
 	objfreelist = &objlist[0];
 	lastobj = NULL;
@@ -773,13 +773,18 @@ void GetNewActor()
 		Quit("GetNewActor: No free spots in objlist!");
 	
 	new = objfreelist;
-	objfreelist = new->prev;
+	objfreelist = obj_prev(new);
 	
 	memset(new, 0, sizeof(*new));
 	
 	if (lastobj)
-		lastobj->next = new;
-	new->prev = lastobj;	// new->next is already NULL from memset
+	  {
+		lastobj->next = obj_id(new);
+		new->prev = obj_id(lastobj);
+	  }
+	else
+	  new->prev = INVALID_OBJID;
+	new->next = INVALID_OBJID;
 
 	new->active = ac_no;
 	lastobj = new;
@@ -809,19 +814,23 @@ static void RemoveObj(objtype *gone)
 // fix the next object's back link
 //
 	if (gone == lastobj)
-		lastobj = gone->prev;
+		lastobj = obj_prev(gone);
 	else
-		gone->next->prev = gone->prev;
+		obj_next(gone)->prev = gone->prev;
 
 //
 // fix the previous object's forward link
 //
-	gone->prev->next = gone->next;
+	if (gone->prev != INVALID_OBJID)
+	    obj_prev(gone)->next = gone->next;
 
 //
 // add it back in to the free list
 //
-	gone->prev = objfreelist;
+	if (objfreelist)
+	  gone->prev = obj_id(objfreelist);
+	else
+	  gone->prev = INVALID_OBJID;
 	objfreelist = gone;
 
 }
@@ -1215,7 +1224,7 @@ void PlayLoop()
 		MoveDoors();
 		MovePWalls();
 
-		for (obj = player; obj; obj = obj->next)
+		for (obj = player; obj; obj = obj_next(obj))
 			DoActor(obj);
 		
 		UpdatePaletteShifts();

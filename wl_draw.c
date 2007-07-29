@@ -44,6 +44,7 @@ void SimpleScaleShape(myint xcenter, myint shapenum, unsigned height);
 
 static const double radtoint = (double)FINEANGLES/2.0/PI;
 
+// FIXME: Use fixed display size and precalculate angles.
 void CalcProjection(long focal)
 {
 	myint     i;
@@ -302,7 +303,7 @@ static void DrawScaleds()
 //
 // place active objects
 //
-	for (obj = player->next; obj; obj = obj->next)
+	for (obj = obj_next(player); obj; obj = obj_next(obj))
 	{
 		if (!(visptr->shapenum = gamestates[obj->state].shapenum))
 			continue;  // no shape

@@ -1050,7 +1050,7 @@ void KnifeAttack (objtype *ob)
 // actually fire
 	dist = 0x7fffffff;
 	closest = NULL;
-	for (check=ob->next ; check ; check=check->next)
+	for (check=obj_next(ob) ; check ; check=obj_next(check))
 		if ( (check->flags & FL_SHOOTABLE)
 		&& (check->flags & FL_VISABLE)
 		&& abs (check->viewx-centerx) < shootdelta
@@ -1110,7 +1110,7 @@ void GunAttack(objtype *ob)
 	{
 		oldclosest = closest;
 
-		for (check=ob->next ; check ; check=check->next)
+		for (check=obj_next(ob) ; check ; check=obj_next(check))
 			if ( (check->flags & FL_SHOOTABLE)
 			&& (check->flags & FL_VISABLE)
 			&& abs (check->viewx-centerx) < shootdelta

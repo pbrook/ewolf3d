@@ -82,7 +82,7 @@ extern myint vwidth, vheight; /* size of screen */
 // sprite constants
 //
 
-enum {
+enum PACKED {
 		SPR_DEMO,
 		SPR_DEATHCAM,
 //
@@ -402,14 +402,14 @@ enum {
 =============================================================================
 */
 
-typedef enum {
+typedef enum PACKED {
 	di_north,
 	di_east,
 	di_south,
 	di_west
 } controldir_t;
 
-typedef enum {
+typedef enum PACKED {
 	dr_normal,
 	dr_lock1,
 	dr_lock2,
@@ -418,13 +418,13 @@ typedef enum {
 	dr_elevator
 } door_t;
 
-typedef enum {
+typedef enum PACKED {
 	ac_badobject = -1,
 	ac_no,
 	ac_yes
 } activetype;
 
-typedef enum {
+typedef enum PACKED {
 	nothing,
 	playerobj,
 	inertobj,
@@ -457,7 +457,7 @@ typedef enum {
 	sparkobj
 } classtype;
 
-typedef enum {
+typedef enum PACKED {
 	dressing,
 	block,
 	bo_gibs,
@@ -481,7 +481,7 @@ typedef enum {
 	bo_spear
 } stat_t;
 
-typedef enum {
+typedef enum PACKED {
 	east,
 	northeast,
 	north,
@@ -494,7 +494,7 @@ typedef enum {
 } dirtype;
 
 #define NUMENEMIES		22
-typedef enum {
+typedef enum PACKED {
 	en_guard,
 	en_officer,
 	en_ss,
@@ -529,7 +529,7 @@ typedef struct statstruct
 {
 	byte	tilex,tiley;
 	byte	*visspot;
-	myint	shapenum;		/* if shapenum == -1 the obj has been removed */
+	myshort	shapenum;		/* if shapenum == -1 the obj has been removed */
 	byte	flags;
 	byte	itemnumber;
 } statobj_t;
@@ -545,8 +545,8 @@ typedef struct doorstruct
 	byte	tilex,tiley;
 	boolean	vertical;
 	byte	lock;
-	enum	{dr_open,dr_closed,dr_opening,dr_closing} action;
-	myint	ticcount;
+	enum PACKED {dr_open,dr_closed,dr_opening,dr_closing} action;
+	myshort	ticcount;
 } doorobj_t;
 
 //--------------------
@@ -577,14 +577,13 @@ typedef struct objstruct
 	unsigned myshort	viewheight;
 	fixed		transx, transy;		/* in global coord */
 
-	myint 		angle;
-	myint		hitpoints;
+	myshort 		angle;
+	myshort		hitpoints;
 	int32_t		speed;
 
 	byte		temp1,temp2;
-	// FIXME: make next an index
-	struct		objstruct *next,*prev;
-	//byte prev;
+	byte next;
+	byte prev;
 } objtype;
 
 typedef struct statestruct
@@ -599,7 +598,7 @@ typedef struct statestruct
 } statetype/* PACKME */;
 
 #define NUMBUTTONS	8
-enum {
+enum PACKED {
 	bt_nobutton=-1,
 	bt_attack=0,
 	bt_strafe,
@@ -613,7 +612,7 @@ enum {
 
 
 #define NUMWEAPONS	4
-typedef enum {
+typedef enum PACKED {
 	wp_knife,
 	wp_pistol,
 	wp_machinegun,
@@ -621,7 +620,7 @@ typedef enum {
 } weapontype;
 
 
-enum {
+enum PACKED {
 	gd_baby,
 	gd_easy,
 	gd_medium,
@@ -656,7 +655,7 @@ typedef	struct
 } gametype;
 
 
-typedef	enum {
+typedef	enum PACKED {
 	ex_stillplaying,
 	ex_completed,
 	ex_died,
@@ -761,7 +760,10 @@ extern	exit_t		playstate;
 
 extern	boolean		madenoise;
 
-#define obj_id(ob) (ob - objlist)
+#define INVALID_OBJID 0xff
+#define obj_id(ob) ((ob) - objlist)
+#define obj_prev(ob) (((ob)->prev == INVALID_OBJID) ? NULL : &objlist[ob->prev])
+#define obj_next(ob) (((ob)->next == INVALID_OBJID) ? NULL : &objlist[ob->next])
 
 extern	objtype 	objlist[MAXACTORS],*new,*obj,*player,*lastobj,
 					*objfreelist,*killerobj;

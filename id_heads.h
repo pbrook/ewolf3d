@@ -19,6 +19,8 @@ typedef bool boolean;
 typedef unsigned char boolean;
 #endif
 
+#define PACKED __attribute__((packed))
+
 #include "version.h"
 
 /* ------------------------------------------------------------------------ */

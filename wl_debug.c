@@ -31,7 +31,7 @@ void CountObjects()
 	US_Print ("\nDoors         :");
 	US_PrintUnsigned (doornum);
 
-	for (obj=player->next;obj;obj=obj->next)
+	for (obj=obj_next(player);obj;obj=obj_next(obj))
 	{
 		if (obj->active)
 			active++;

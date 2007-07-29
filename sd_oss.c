@@ -14,8 +14,6 @@
                      
 #include "fmopl.h"
 
-#define PACKED __attribute__((packed))
-
 typedef	struct {
 	longword length;
 	word priority;

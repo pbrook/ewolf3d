@@ -429,7 +429,7 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 		for (i = 0; i < 37; i++)
 			WriteInt8(fd, areabyplayer[i]);
 	
-		for (ob = player; ob; ob = ob->next) {
+		for (ob = player; ob; ob = obj_next(ob)) {
 			DiskFlopAnim(dx, dy);
 			
 			//WriteInt32(fd, ob->id);
