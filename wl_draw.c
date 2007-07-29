@@ -8,6 +8,10 @@
 
 #define ACTORSIZE	0x4000
 
+#ifndef DRAWCEIL
+ /* #define DRAWCEIL */
+#endif
+ 
 static unsigned wallheight[MAXVIEWWIDTH];
 
 /* refresh variables */
@@ -430,6 +434,7 @@ static void WallRefresh()
 	AsmRefresh();
 }
 
+#ifdef DRAWCEIL
 /* ======================================================================== */
 
 #define	MAXVIEWHEIGHT	(MAXVIEWWIDTH/2)
@@ -590,6 +595,7 @@ void DrawPlanes()
 	for (; lastheight < height; lastheight++)
 		DrawSpans(spanstart[lastheight], x-1, lastheight);
 }
+#endif
 
 /* ======================================================================== */
 
@@ -636,10 +642,6 @@ static void ClearScreen()
 ========================
 */
 
-#ifndef DRAWCEIL
- /* #define DRAWCEIL */
-#endif
- 
 void ThreeDRefresh()
 {
 /* clear out the traced array */

@@ -11,7 +11,7 @@ CFLAGS = -g -Wall -fno-common
 OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_text.o wl_main.o \
-	wl_debug.o vi_comm.o sd_comm.o
+	wl_debug.o vi_comm.o sd_comm.o tables.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
@@ -56,8 +56,14 @@ xwolf3d: $(XOBJS)
 sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
 
+tables.o: tables.c
+
+tables.c: build_tables.c
+	gcc build_tables.c -o build_tables -lm
+	./build_tables > tables.c
+
 clean:
-	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il
+	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c
 
 distclean: clean
 	rm -rf *~ DEADJOE

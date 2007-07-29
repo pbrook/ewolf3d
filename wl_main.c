@@ -33,12 +33,12 @@ long lasttimecount;
 fixed viewsin, viewcos;
 fixed viewx, viewy;		/* the focal point */
 myint pixelangle[MAXVIEWWIDTH];
-long finetangent[FINEANGLES/4];
+//int32_t finetangent[FINEANGLES/4];
 myint horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
 
 char configname[13] = "config.";
 
-fixed sintable[ANGLES+ANGLES/4+1], *costable = sintable+(ANGLES/4);
+//fixed sintable[ANGLES+ANGLES/4+1], *costable = sintable+(ANGLES/4);
 
 myint _argc;
 char **_argv;
@@ -852,6 +852,7 @@ static const double radtoint = (double)FINEANGLES/2.0/PI;
 
 void BuildTables()
 {
+#if 0
 	myint i;
 	double tang, angle, anglestep;
 	fixed value;
@@ -887,6 +888,7 @@ void BuildTables()
 		
 		angle += anglestep;
 	}
+#endif
 }
 
 /*
