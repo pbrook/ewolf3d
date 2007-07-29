@@ -3,7 +3,7 @@
 typedef struct
 {
 	/* 0-255 is a character, > is a pointer to a node */
-	int bit0, bit1;
+	myint bit0, bit1;
 } huffnode;
 
 /*
@@ -16,7 +16,7 @@ typedef struct
 
 static word RLEWtag;
 
-int mapon;
+myint mapon;
 
 word	*mapsegs[MAPPLANES];
 maptype	*mapheaderseg[NUMMAPS];
@@ -38,9 +38,9 @@ static int32_t *audiostarts; /* array of offsets in audiot */
 
 static huffnode grhuffman[256];
 
-static int grhandle = -1;	/* handle to VGAGRAPH */
-static int maphandle = -1;	/* handle to GAMEMAPS */
-static int audiohandle = -1;	/* handle to AUDIOT */
+static myint grhandle = -1;	/* handle to VGAGRAPH */
+static myint maphandle = -1;	/* handle to GAMEMAPS */
+static myint audiohandle = -1;	/* handle to AUDIOT */
 
 /*
 =============================================================================
@@ -73,7 +73,7 @@ static void CA_CannotOpen(const char *string)
 boolean CA_WriteFile(const char *filename, const void *ptr, long length)
 {
 	ssize_t l;
-	int handle;
+	myint handle;
 
 	handle = OpenWrite(filename);
 
@@ -109,7 +109,7 @@ boolean CA_WriteFile(const char *filename, const void *ptr, long length)
 
 boolean CA_LoadFile(const char *filename, memptr *ptr)
 {
-	int handle;
+	myint handle;
 	ssize_t l;
 	long size;
 
@@ -202,7 +202,7 @@ void CAL_HuffExpand(const byte *source, byte *dest, long length,
 
 void CAL_CarmackExpand(const byte *source, word *dest, word length)
 {
-	unsigned int offset;
+	unsigned myint offset;
 	word *copyptr, *outptr;	
 	byte chhigh, chlow;
 	const byte *inptr;
@@ -307,9 +307,9 @@ void CA_RLEWexpand(const word *source, word *dest, long length, word rlewtag)
 static void CAL_SetupGrFile()
 {
 	char fname[13];
-	int handle;
+	myint handle;
 	byte *grtemp;
-	int i;
+	myint i;
 
 /* load vgadict.ext (huffman dictionary for graphics files) */
 	strcpy(fname, gdictname);
@@ -378,8 +378,8 @@ static void CAL_SetupGrFile()
 
 static void CAL_SetupMapFile()
 {
-	int i;
-	int handle;
+	myint i;
+	myint handle;
 	long pos;
 	char fname[13];
 	
@@ -448,10 +448,10 @@ static void CAL_SetupMapFile()
 
 static void CAL_SetupAudioFile()
 {
-	int handle;
+	myint handle;
 	long length;
 	char fname[13];
-	int i;
+	myint i;
 	
 	strcpy(fname, aheadname);
 	strcat(fname, extension);
@@ -527,9 +527,9 @@ void CA_Shutdown()
 ======================
 */
 
-void CA_CacheAudioChunk(int chunk)
+void CA_CacheAudioChunk(myint chunk)
 {
-	int pos, length;
+	myint pos, length;
 
 	if (audiosegs[chunk])
 		return;	
@@ -544,7 +544,7 @@ void CA_CacheAudioChunk(int chunk)
 	ReadBytes(audiohandle, audiosegs[chunk], length);
 }
 
-void CA_UnCacheAudioChunk(int chunk)
+void CA_UnCacheAudioChunk(myint chunk)
 {
 	if (audiosegs[chunk] == 0) {
 		fprintf(stderr, "Trying to free null audio chunk %d!\n", chunk);
@@ -565,7 +565,7 @@ void CA_UnCacheAudioChunk(int chunk)
 
 void CA_LoadAllSounds()
 {
-	int start, i;
+	myint start, i;
 
 	for (start = STARTADLIBSOUNDS, i = 0; i < NUMSOUNDS; i++, start++)
 		CA_CacheAudioChunk(start);
@@ -583,12 +583,12 @@ void CA_LoadAllSounds()
 ======================
 */
 
-static void CAL_ExpandGrChunk(int chunk, const byte *source)
+static void CAL_ExpandGrChunk(myint chunk, const byte *source)
 {
-	int tilecount = 0, i;
+	myint tilecount = 0, i;
 	long expanded;
 	
-	int width = 0, height = 0;
+	myint width = 0, height = 0;
 	
 	if (chunk >= STARTTILE8 && chunk < STARTEXTERNS)
 	{
@@ -630,7 +630,7 @@ static void CAL_ExpandGrChunk(int chunk, const byte *source)
 ======================
 */
 
-void CA_CacheGrChunk(int chunk)
+void CA_CacheGrChunk(myint chunk)
 {
 	long pos, compressed;
 	byte *source;
@@ -657,7 +657,7 @@ void CA_CacheGrChunk(int chunk)
 	MM_FreePtr((memptr)&source);
 }
 
-void CA_UnCacheGrChunk(int chunk)
+void CA_UnCacheGrChunk(myint chunk)
 {
 	if (grsegs[chunk] == 0) {
 		fprintf(stderr, "Trying to free null pointer %d!\n", chunk);
@@ -679,10 +679,10 @@ void CA_UnCacheGrChunk(int chunk)
 ======================
 */
 
-void CA_CacheMap(int mapnum)
+void CA_CacheMap(myint mapnum)
 {
 	long pos,compressed;
-	int plane;
+	myint plane;
 	byte *source;
 	memptr buffer2seg;
 	long expanded;
@@ -743,7 +743,7 @@ void MM_FreePtr(memptr *baseptr)
 	free(*baseptr);
 }
 
-void MM_SetPurge(memptr *baseptr, int purge)
+void MM_SetPurge(memptr *baseptr, myint purge)
 {
 }
 
@@ -757,8 +757,8 @@ void MM_SortMem()
 
 static boolean PMStarted;
 
-static int PageFile = -1;
-int ChunksInFile, PMSpriteStart, PMSoundStart;
+static myint PageFile = -1;
+myint ChunksInFile, PMSpriteStart, PMSoundStart;
 
 PageListStruct *PMPages;
 
@@ -776,7 +776,7 @@ static void PML_ReadFromFile(byte *buf, long offset, word length)
 
 static void PML_OpenPageFile()
 {
-	int i;
+	myint i;
 	PageListStruct *page;
 	char fname[13];
 	
@@ -815,7 +815,7 @@ static void PML_ClosePageFile()
 		CloseRead(PageFile);
 		
 	if (PMPages) {
-		int i;
+		myint i;
 		
 		for (i = 0; i < ChunksInFile; i++) {
 			PageListStruct *page;
@@ -831,7 +831,7 @@ static void PML_ClosePageFile()
 	}
 }
 
-memptr PM_GetPage(int pagenum)
+memptr PM_GetPage(myint pagenum)
 {
 	PageListStruct *page;
 	
@@ -846,7 +846,7 @@ memptr PM_GetPage(int pagenum)
 	return page->addr;
 }
 
-void PM_FreePage(int pagenum)
+void PM_FreePage(myint pagenum)
 {
 	PageListStruct *page;
 	

@@ -14,7 +14,9 @@
 #ifdef __cplusplus
 typedef bool boolean;
 #else
-typedef enum { false, true } boolean;
+#define true 1
+#define false 0
+typedef unsigned char boolean;
 #endif
 
 #include "version.h"
@@ -60,6 +62,10 @@ typedef int32_t fixed;
 
 typedef void * memptr;
 
+#define myint int
+#define myshort short
+typedef unsigned short umyshort;
+
 #include "misc.h"
 
 #include "vi_comm.h"
@@ -71,7 +77,7 @@ typedef void * memptr;
 
 extern const byte gamepal[];
 
-int MS_CheckParm(const char *string);
+myint MS_CheckParm(const char *string);
 void Quit(const char *error);
 
 #define TickBase	70	/* 70Hz per tick */
@@ -82,7 +88,7 @@ void Quit(const char *error);
 #define	MAXTICS		10
 #define DEMOTICS	4
 
-extern int tics;
+extern myint tics;
 
 #define mapwidth	64
 #define mapheight	64

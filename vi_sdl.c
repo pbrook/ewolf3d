@@ -3,14 +3,14 @@
 #include "SDL.h"
 
 static SDL_Surface *surface;
-static unsigned int sdl_palettemode;
+static unsigned myint sdl_palettemode;
 
 byte *gfxbuf = NULL;
 
-extern void keyboard_handler(int code, int press);
+extern void keyboard_handler(myint code, myint press);
 extern boolean InternalKeyboard[NumCodes];
 
-int main (int argc, char *argv[])
+myint main (myint argc, char *argv[])
 {
 	return WolfMain(argc, argv);
 }
@@ -51,7 +51,7 @@ void Quit(const char *error)
 	exit(EXIT_SUCCESS);
 }
 
-void VL_WaitVBL(int vbls)
+void VL_WaitVBL(myint vbls)
 {
 	unsigned long last = get_TimeCount() + vbls;
 	while (last > get_TimeCount()) ;
@@ -75,7 +75,7 @@ void VW_UpdateScreen()
 void VL_Startup()
 {
 	const SDL_VideoInfo *vinfo;
-	int flags;
+	myint flags;
 	
 	vwidth = 320;
 	vheight = 200;
@@ -139,7 +139,7 @@ void VL_Shutdown()
 void VL_SetPalette(const byte *palette)
 {
 	SDL_Color colors[256];
-	int i;
+	myint i;
 	
 	VL_WaitVBL(1);
 	
@@ -162,7 +162,7 @@ void VL_SetPalette(const byte *palette)
 
 void VL_GetPalette(byte *palette)
 {
-	int i;
+	myint i;
 	for (i=0;i<256;i++)
 	{
 		palette[i*3+0] = surface->format->palette->colors[i].r >> 2;
@@ -171,7 +171,7 @@ void VL_GetPalette(byte *palette)
 	}
 }
 
-static int XKeysymToScancode(unsigned int keysym)
+static myint XKeysymToScancode(unsigned myint keysym)
 {
 	switch (keysym) {
 		case SDLK_KP_ENTER:
@@ -384,9 +384,9 @@ void INL_Update()
 	/* ctrl-z for iconify window? */
 }
 
-void IN_GetMouseDelta(int *dx, int *dy)
+void IN_GetMouseDelta(myint *dx, myint *dy)
 {
-	int x, y;
+	myint x, y;
 	
 	SDL_GetRelativeMouseState(&x, &y);
 	
@@ -450,7 +450,7 @@ void IN_GetJoyAbs(word joy,word *xp,word *yp)
 //		joystick (from +/-127)
 //
 ///////////////////////////////////////////////////////////////////////////
-void INL_GetJoyDelta(word joy,int *dx,int *dy)
+void INL_GetJoyDelta(word joy,myint *dx,myint *dy)
 {
 	*dx = 0;
 	*dy = 0;

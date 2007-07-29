@@ -27,8 +27,8 @@ long		thrustspeed;
 
 unsigned	plux, pluy;	// player coordinates scaled to unsigned
 
-int		anglefrac;
-int		gotgatgun;
+myint		anglefrac;
+myint		gotgatgun;
 
 objtype		*LastAttacker;
 
@@ -53,8 +53,8 @@ static const struct atkinf
 };
 
 void DrawWeapon();
-void GiveWeapon(int weapon);
-void GiveAmmo(int ammo);
+void GiveWeapon(myint weapon);
+void GiveAmmo(myint ammo);
 
 /*
 =============================================================================
@@ -76,7 +76,7 @@ void GiveAmmo(int ammo);
 
 void CheckWeaponChange()
 {
-	int i;
+	myint i;
 
 	if (!gamestate.ammo)		// must use knife with no ammo
 		return;
@@ -108,8 +108,8 @@ void CheckWeaponChange()
 
 void ControlMovement(objtype *ob)
 {
-	int		angle;
-	int		angleunits;
+	myint		angle;
+	myint		angleunits;
 
 	thrustspeed = 0;
 //
@@ -231,7 +231,7 @@ void DrawFace()
 ===============
 */
 
-int facecount;
+myint facecount;
 
 void UpdateFace()
 {
@@ -261,9 +261,9 @@ void UpdateFace()
 ===============
 */
 
-void LatchNumber(int x, int y, int width, long number)
+void LatchNumber(myint x, myint y, myint width, long number)
 {
-	int length, c;
+	myint length, c;
 
 	ltoa(number,str,10);
 
@@ -309,7 +309,7 @@ void DrawHealth()
 ===============
 */
 
-void TakeDamage(int points, objtype *attacker)
+void TakeDamage(myint points, objtype *attacker)
 {
 	LastAttacker = attacker;
 
@@ -357,7 +357,7 @@ void TakeDamage(int points, objtype *attacker)
 ===============
 */
 
-void HealSelf(int points)
+void HealSelf(myint points)
 {
 	gamestate.health += points;
 	if (gamestate.health>100)
@@ -501,7 +501,7 @@ void DrawKeys()
 ==================
 */
 
-void GiveWeapon(int weapon)
+void GiveWeapon(myint weapon)
 {
 	GiveAmmo(6);
 
@@ -535,7 +535,7 @@ void DrawAmmo()
 ===============
 */
 
-void GiveAmmo(int ammo)
+void GiveAmmo(myint ammo)
 {
 	if (!gamestate.ammo)				// knife was out
 	{
@@ -561,7 +561,7 @@ void GiveAmmo(int ammo)
 ==================
 */
 
-void GiveKey(int key)
+void GiveKey(myint key)
 {
 	gamestate.keys |= (1<<key);
 	DrawKeys();
@@ -717,7 +717,7 @@ void GetBonus (statobj_t *check)
 
 boolean TryMove(objtype *ob)
 {
-	int		xl,yl,xh,yh,x,y;
+	myint		xl,yl,xh,yh,x,y;
 	objtype		*check;
 	long		deltax,deltay;
 
@@ -840,7 +840,7 @@ void VictoryTile()
 ===================
 */
 
-void Thrust(int angle, long speed)
+void Thrust(myint angle, long speed)
 {
 	long xmove,ymove;
 	unsigned offset;
@@ -920,7 +920,7 @@ void Cmd_Fire()
 
 void Cmd_Use()
 {
-	int checkx, checky, doornum, dir;
+	myint checkx, checky, doornum, dir;
 	boolean elevatorok;
 
 //
@@ -1008,7 +1008,7 @@ void Cmd_Use()
 ===============
 */
 
-void SpawnPlayer (int tilex, int tiley, int dir)
+void SpawnPlayer (myint tilex, myint tiley, myint dir)
 {
 	player->obclass = playerobj;
 	player->active = ac_yes;
@@ -1079,8 +1079,8 @@ void KnifeAttack (objtype *ob)
 void GunAttack(objtype *ob)
 {
 	objtype *check, *closest, *oldclosest;
-	int		damage;
-	int		dx,dy,dist;
+	myint		damage;
+	myint		dx,dy,dist;
 	long	viewdist;
 
 	switch (gamestate.weapon)

@@ -40,7 +40,7 @@ unsigned long get_TimeCount(void)
 	return tc;
 }
 
-long filelength(int handle)
+long filelength(myint handle)
 {
 	struct stat buf;
 	
@@ -64,7 +64,7 @@ char *strlwr(char *s)
 	return s;
 }
 	
-char *itoa(int value, char *string, int radix)
+char *itoa(myint value, char *string, myint radix)
 {
 	(void) radix;
 	
@@ -73,7 +73,7 @@ char *itoa(int value, char *string, int radix)
 	return string;
 }
 
-char *ltoa(long value, char *string, int radix)
+char *ltoa(long value, char *string, myint radix)
 {
 	(void) radix;
 	
@@ -82,7 +82,7 @@ char *ltoa(long value, char *string, int radix)
 	return string;
 }
 
-char *ultoa(unsigned long value, char *string, int radix)
+char *ultoa(unsigned long value, char *string, myint radix)
 {
 	(void) radix;
 	
@@ -169,9 +169,9 @@ static void put_dos2ansi(byte attrib)
 		printf ("%c[%d;25;%dm%c[%dm", 27, intens, fore, 27, back);
 }
 
-void DisplayTextSplash(const byte *text, int l)
+void DisplayTextSplash(const byte *text, myint l)
 {
-	int i, x;
+	myint i, x;
 	
 	//printf("%02X %02X %02X %02X\n", text[0], text[1], text[2], text[3]);
 	text += 4;
@@ -216,87 +216,87 @@ uint32_t SwapInt32L(uint32_t i)
 
 /* ** */
 
-int OpenWrite(const char *fn)
+myint OpenWrite(const char *fn)
 {
-	int fp;
+	myint fp;
 	
 	fp = open(fn, O_CREAT|O_WRONLY|O_TRUNC|O_BINARY, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
 	return fp;
 }
 
-int OpenWriteAppend(const char *fn)
+myint OpenWriteAppend(const char *fn)
 {
-	int fp;
+	myint fp;
 	
 	fp = open(fn, O_CREAT|O_WRONLY|O_BINARY, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
 	return fp;
 }
 
-void CloseWrite(int fp)
+void CloseWrite(myint fp)
 {
 	close(fp);
 }
 
-int WriteSeek(int fp, int offset, int whence)
+myint WriteSeek(myint fp, myint offset, myint whence)
 {
 	return lseek(fp, offset, whence);
 }
 
-int WritePos(int fp)
+myint WritePos(myint fp)
 {
 	return lseek(fp, 0, SEEK_CUR);
 }
 
-int WriteInt8(int fp, int8_t d)
+myint WriteInt8(myint fp, int8_t d)
 {
 	return write(fp, &d, 1);
 }
 
-int WriteInt16(int fp, int16_t d)
+myint WriteInt16(myint fp, int16_t d)
 {
 	int16_t b = SwapInt16L(d);
 	
 	return write(fp, &b, 2) / 2;
 }
 
-int WriteInt32(int fp, int32_t d)
+myint WriteInt32(myint fp, int32_t d)
 {
 	int32_t b = SwapInt32L(d);
 	
 	return write(fp, &b, 4) / 4;
 }
 
-int WriteBytes(int fp, const byte *d, int len)
+myint WriteBytes(myint fp, const byte *d, myint len)
 {
 	return write(fp, d, len);
 }
 
 
-int OpenRead(const char *fn)
+myint OpenRead(const char *fn)
 {
-	int fp;
+	myint fp;
 	
 	fp = open(fn, O_RDONLY | O_BINARY);
 	
 	return fp;
 }
 
-void CloseRead(int fp)
+void CloseRead(myint fp)
 {
 	close(fp);
 }
 
-int ReadSeek(int fp, int offset, int whence)
+myint ReadSeek(myint fp, myint offset, myint whence)
 {
 	return lseek(fp, offset, whence);
 }
 
-int ReadLength(int fp)
+myint ReadLength(myint fp)
 {
 	return filelength(fp);
 }
 
-int8_t ReadInt8(int fp)
+int8_t ReadInt8(myint fp)
 {
 	byte d[1];
 	
@@ -305,7 +305,7 @@ int8_t ReadInt8(int fp)
 	return d[0];
 }
 
-int16_t ReadInt16(int fp)
+int16_t ReadInt16(myint fp)
 {
 	byte d[2];
 	
@@ -314,7 +314,7 @@ int16_t ReadInt16(int fp)
 	return (d[0]) | (d[1] << 8);
 }
 
-int32_t ReadInt32(int fp)
+int32_t ReadInt32(myint fp)
 {
 	byte d[4];
 	
@@ -323,7 +323,7 @@ int32_t ReadInt32(int fp)
 	return (d[0]) | (d[1] << 8) | (d[2] << 16) | (d[3] << 24);
 }
 
-int ReadBytes(int fp, byte *d, int len)
+myint ReadBytes(myint fp, byte *d, myint len)
 {
 	return read(fp, d, len);
 }

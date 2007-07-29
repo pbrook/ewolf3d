@@ -46,13 +46,13 @@ TEXT FORMATTING COMMANDS
 =============================================================================
 */
 
-static int pagenum, numpages;
+static myint pagenum, numpages;
 
 static unsigned leftmargin[TEXTROWS], rightmargin[TEXTROWS];
 static const char *text;
 static unsigned rowon;
 
-static int picx, picy, picnum, picdelay;
+static myint picx, picy, picnum, picdelay;
 static boolean layoutdone;
 
 /* ======================================================================== */
@@ -80,7 +80,7 @@ void RipToEOL()
 =====================
 */
 
-int ParseNumber()
+myint ParseNumber()
 {
 	char ch;
 	char num[80], *numptr;
@@ -181,8 +181,8 @@ void TimedPicCommand()
 
 void HandleCommand()
 {
-	int	i,margin,top,bottom;
-	int	picwidth,picheight,picmid;
+	myint	i,margin,top,bottom;
+	myint	picwidth,picheight,picmid;
 
 	switch (toupper(*++text))
 	{
@@ -348,7 +348,7 @@ void HandleCtrls()
 void HandleWord()
 {
 	char words[WORDLIMIT];
-	int wordindex;
+	myint wordindex;
 	word wwidth, wheight, newpos;
 
 	//
@@ -404,7 +404,7 @@ void HandleWord()
 
 void PageLayout(boolean shownumber)
 {
-	int		i,oldfontcolor;
+	myint		i,oldfontcolor;
 	char	ch;
 
 	oldfontcolor = fontcolor;
@@ -658,7 +658,7 @@ void ShowArticle(const char *article)
 */
 void HelpScreens()
 {
-	int artnum;
+	myint artnum;
 	const char *text;
 
 	artnum = helpextern;
@@ -679,7 +679,7 @@ void HelpScreens()
 //
 void EndText()
 {
-	int artnum;
+	myint artnum;
 	const char *text;
 
 	ClearMemory();

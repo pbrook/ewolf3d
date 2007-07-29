@@ -70,7 +70,7 @@ static	const Direction	DirTable[] =		// Quick lookup for total direction
 
 static boolean btnstate[8];
 
-void keyboard_handler(int code, int press)
+void keyboard_handler(myint code, myint press)
 {
 	byte k, c = 0;
 
@@ -260,11 +260,11 @@ void IN_ClearKeysDown(void)
 //		player and fills in the control info struct
 //
 ///////////////////////////////////////////////////////////////////////////
-void IN_ReadControl(int player,ControlInfo *info)
+void IN_ReadControl(myint player,ControlInfo *info)
 {
 			boolean		realdelta = false;
 			word		buttons;
-			int			dx,dy;
+			myint			dx,dy;
 			Motion		mx,my;
 			ControlType	type;
 			KeyboardDef	*def;

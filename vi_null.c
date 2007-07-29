@@ -42,7 +42,7 @@ void Quit(const char *error)
 	exit(EXIT_SUCCESS);
 }
 
-void VL_WaitVBL(int vbls)
+void VL_WaitVBL(myint vbls)
 {
 }
 
@@ -113,7 +113,7 @@ void INL_Update()
 {
 }
 
-void IN_GetMouseDelta(int *dx, int *dy)
+void IN_GetMouseDelta(myint *dx, myint *dy)
 {
 	*dx = 0;
 	*dy = 0;
@@ -154,7 +154,7 @@ void IN_GetJoyAbs(word joy,word *xp,word *yp)
 //		joystick (from +/-127)
 //
 ///////////////////////////////////////////////////////////////////////////
-void INL_GetJoyDelta(word joy,int *dx,int *dy)
+void INL_GetJoyDelta(word joy,myint *dx,myint *dy)
 {
 	*dx = 0;
 	*dy = 0;
@@ -181,7 +181,7 @@ void IN_SetupJoy(word joy,word minx,word maxx,word miny,word maxy)
 {
 }
 
-int main(int argc, char *argv[])
+myint main(myint argc, char *argv[])
 {
 	vwidth = 320;
 	vheight = 200;

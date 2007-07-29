@@ -30,7 +30,7 @@ void logerror(const char *text, ...);
 #ifdef OPL_OUTPUT_LOG
 static FILE *opl_dbg_fp = NULL;
 static FM_OPL *opl_dbg_opl[16];
-static int opl_dbg_maxchip,opl_dbg_chip;
+static myint opl_dbg_maxchip,opl_dbg_chip;
 #endif
 
 /* -------------------- preliminary define section --------------------- */
@@ -91,7 +91,7 @@ static int opl_dbg_maxchip,opl_dbg_chip;
 #define ENV_MOD_AR  0x02
 
 /* -------------------- tables --------------------- */
-static const int slot_array[32]=
+static const myint slot_array[32]=
 {
 	 0, 2, 4, 1, 3, 5,-1,-1,
 	 6, 8,10, 7, 9,11,-1,-1,
@@ -189,7 +189,7 @@ static INT32 RATE_0[16]=
 /* -------------------- static state --------------------- */
 
 /* lock level of common table */
-static int num_lock = 0;
+static myint num_lock = 0;
 
 /* work table */
 static void *cur_chip = NULL;	/* current chip point */
@@ -219,7 +219,7 @@ static INT32 feedback2;		/* connect for SLOT 2 */
 
 /* --------------------- subroutines  --------------------- */
 
-INLINE int Limit( int val, int max, int min ) {
+INLINE myint Limit( myint val, myint max, myint min ) {
 	if ( val > max )
 		val = max;
 	else if ( val < min )
@@ -303,7 +303,7 @@ static void set_algorythm( OPL_CH *CH)
 /* ---------- frequency counter for operater update ---------- */
 INLINE void CALC_FCSLOT(OPL_CH *CH,OPL_SLOT *SLOT)
 {
-	int ksr;
+	myint ksr;
 
 	/* frequency step counter */
 	SLOT->Incr = CH->fc * SLOT->mul;
@@ -321,7 +321,7 @@ INLINE void CALC_FCSLOT(OPL_CH *CH,OPL_SLOT *SLOT)
 }
 
 /* set multi,am,vib,EG-TYP,KSR,mul */
-INLINE void set_mul(FM_OPL *OPL,int slot,int v)
+INLINE void set_mul(FM_OPL *OPL,myint slot,myint v)
 {
 	OPL_CH   *CH   = &OPL->P_CH[slot/2];
 	OPL_SLOT *SLOT = &CH->SLOT[slot&1];
@@ -335,11 +335,11 @@ INLINE void set_mul(FM_OPL *OPL,int slot,int v)
 }
 
 /* set ksl & tl */
-INLINE void set_ksl_tl(FM_OPL *OPL,int slot,int v)
+INLINE void set_ksl_tl(FM_OPL *OPL,myint slot,myint v)
 {
 	OPL_CH   *CH   = &OPL->P_CH[slot/2];
 	OPL_SLOT *SLOT = &CH->SLOT[slot&1];
-	int ksl = v>>6; /* 0 / 1.5 / 3 / 6 db/OCT */
+	myint ksl = v>>6; /* 0 / 1.5 / 3 / 6 db/OCT */
 
 	SLOT->ksl = ksl ? 3-ksl : 31;
 	SLOT->TL  = (v&0x3f)*(0.75/EG_STEP); /* 0.75db step */
@@ -351,12 +351,12 @@ INLINE void set_ksl_tl(FM_OPL *OPL,int slot,int v)
 }
 
 /* set attack rate & decay rate  */
-INLINE void set_ar_dr(FM_OPL *OPL,int slot,int v)
+INLINE void set_ar_dr(FM_OPL *OPL,myint slot,myint v)
 {
 	OPL_CH   *CH   = &OPL->P_CH[slot/2];
 	OPL_SLOT *SLOT = &CH->SLOT[slot&1];
-	int ar = v>>4;
-	int dr = v&0x0f;
+	myint ar = v>>4;
+	myint dr = v&0x0f;
 
 	SLOT->AR = ar ? &OPL->AR_TABLE[ar<<2] : RATE_0;
 	SLOT->evsa = SLOT->AR[SLOT->ksr];
@@ -368,12 +368,12 @@ INLINE void set_ar_dr(FM_OPL *OPL,int slot,int v)
 }
 
 /* set sustain level & release rate */
-INLINE void set_sl_rr(FM_OPL *OPL,int slot,int v)
+INLINE void set_sl_rr(FM_OPL *OPL,myint slot,myint v)
 {
 	OPL_CH   *CH   = &OPL->P_CH[slot/2];
 	OPL_SLOT *SLOT = &CH->SLOT[slot&1];
-	int sl = v>>4;
-	int rr = v & 0x0f;
+	myint sl = v>>4;
+	myint rr = v & 0x0f;
 
 	SLOT->SL = SL_TABLE[sl];
 	if( SLOT->evm == ENV_MOD_DR ) SLOT->eve = SLOT->SL;
@@ -402,7 +402,7 @@ INLINE void OPL_CALC_CH( OPL_CH *CH )
 		/* connection */
 		if(CH->FB)
 		{
-			int feedback1 = (CH->op1_out[0]+CH->op1_out[1])>>CH->FB;
+			myint feedback1 = (CH->op1_out[0]+CH->op1_out[1])>>CH->FB;
 			CH->op1_out[1] = CH->op1_out[0];
 			*CH->connect1 += CH->op1_out[0] = OP_OUT(SLOT,env_out,feedback1);
 		}
@@ -433,11 +433,11 @@ INLINE void OPL_CALC_CH( OPL_CH *CH )
 INLINE void OPL_CALC_RH( OPL_CH *CH )
 {
 	UINT32 env_tam,env_sd,env_top,env_hh;
-	int whitenoise = (rand()&1)*(WHITE_NOISE_db/EG_STEP);
+	myint whitenoise = (rand()&1)*(WHITE_NOISE_db/EG_STEP);
 	INT32 tone8;
 
 	OPL_SLOT *SLOT;
-	int env_out;
+	myint env_out;
 
 	/* BD : same as FM serial mode and output level is large */
 	feedback2 = 0;
@@ -452,7 +452,7 @@ INLINE void OPL_CALC_RH( OPL_CH *CH )
 		/* connectoion */
 		if(CH[6].FB)
 		{
-			int feedback1 = (CH[6].op1_out[0]+CH[6].op1_out[1])>>CH[6].FB;
+			myint feedback1 = (CH[6].op1_out[0]+CH[6].op1_out[1])>>CH[6].FB;
 			CH[6].op1_out[1] = CH[6].op1_out[0];
 			feedback2 = CH[6].op1_out[0] = OP_OUT(SLOT,env_out,feedback1);
 		}
@@ -514,9 +514,9 @@ INLINE void OPL_CALC_RH( OPL_CH *CH )
 }
 
 /* ----------- initialize time tabls ----------- */
-static void init_timetables( FM_OPL *OPL , int ARRATE , int DRRATE )
+static void init_timetables( FM_OPL *OPL , myint ARRATE , myint DRRATE )
 {
-	int i;
+	myint i;
 	double rate;
 
 	/* make attack rate & decay rate tables */
@@ -544,11 +544,11 @@ static void init_timetables( FM_OPL *OPL , int ARRATE , int DRRATE )
 }
 
 /* ---------- generic table initialize ---------- */
-static int OPLOpenTable( void )
+static myint OPLOpenTable( void )
 {
-	int s,t;
+	myint s,t;
 	double rate;
-	int i,j;
+	myint i,j;
 	double pom;
 
 	/* allocate dynamic tables */
@@ -575,7 +575,7 @@ static int OPLOpenTable( void )
 	/* make total level table */
 	for (t = 0;t < EG_ENT-1 ;t++){
 		rate = ((1<<TL_BITS)-1)/pow(10,EG_STEP*t/20);	/* dB -> voltage */
-		TL_TABLE[       t] =  (int)rate;
+		TL_TABLE[       t] =  (myint)rate;
 		TL_TABLE[TL_MAX+t] = -TL_TABLE[t];
 /*		LOG(LOG_INF,("TotalLevel(%3d) = %x\n",t,TL_TABLE[t]));*/
 	}
@@ -611,7 +611,7 @@ static int OPLOpenTable( void )
 		/* ATTACK curve */
 		pom = pow( ((double)(EG_ENT-1-i)/EG_ENT) , 8 ) * EG_ENT;
 		/* if( pom >= EG_ENT ) pom = EG_ENT-1; */
-		ENV_CURVE[i] = (int)pom;
+		ENV_CURVE[i] = (myint)pom;
 		/* DECAY ,RELEASE curve */
 		ENV_CURVE[(EG_DST>>ENV_BITS)+i]= i;
 	}
@@ -648,7 +648,7 @@ static void OPLCloseTable()
 /* ---------- opl initialize ---------- */
 static void OPL_initalize(FM_OPL *OPL)
 {
-	int fn;
+	myint fn;
 
 	/* frequency base */
 	OPL->freqbase = (OPL->rate) ? ((double)OPL->clock / OPL->rate) / 72  : 0;
@@ -666,11 +666,11 @@ static void OPL_initalize(FM_OPL *OPL)
 }
 
 /* ---------- write to OPL registers ---------- */
-void OPLWrite(FM_OPL *OPL, int r, int v)
+void OPLWrite(FM_OPL *OPL, myint r, myint v)
 {
 	OPL_CH *CH;
-	int slot;
-	int block_fnum;
+	myint slot;
+	myint block_fnum;
 
 	switch(r&0xe0)
 	{
@@ -683,7 +683,7 @@ void OPLWrite(FM_OPL *OPL, int r, int v)
 			if(!OPL->wavesel)
 			{
 				/* preset compatible mode */
-				int c;
+				myint c;
 				for(c=0;c<OPL->max_ch;c++)
 				{
 					OPL->P_CH[c].SLOT[SLOT1].wavetable = &SIN_TABLE[0];
@@ -788,7 +788,7 @@ void OPLWrite(FM_OPL *OPL, int r, int v)
 		}
 		else
 		{	/* b0-b8 */
-			int keyon = (v>>5)&1;
+			myint keyon = (v>>5)&1;
 			block_fnum = ((v&0x1f)<<8) | (CH->block_fnum&0xff);
 			if(CH->keyon != keyon)
 			{
@@ -808,8 +808,8 @@ void OPLWrite(FM_OPL *OPL, int r, int v)
 		/* update */
 		if(CH->block_fnum != block_fnum)
 		{
-			int blockRv = 7-(block_fnum>>10);
-			int fnum   = block_fnum&0x3ff;
+			myint blockRv = 7-(block_fnum>>10);
+			myint fnum   = block_fnum&0x3ff;
 			CH->block_fnum = block_fnum;
 
 			CH->ksl_base = KSL_TABLE[block_fnum>>6];
@@ -825,7 +825,7 @@ void OPLWrite(FM_OPL *OPL, int r, int v)
 		if( (r&0x0f) > 8) return;
 		CH = &OPL->P_CH[r&0x0f];
 		{
-		int feedback = (v>>1)&7;
+		myint feedback = (v>>1)&7;
 		CH->FB   = feedback ? (8+1) - feedback : 0;
 		CH->CON = v&1;
 		set_algorythm(CH);
@@ -845,7 +845,7 @@ void OPLWrite(FM_OPL *OPL, int r, int v)
 }
 
 /* lock/unlock for common table */
-static int OPL_LockTable(void)
+static myint OPL_LockTable(void)
 {
 	num_lock++;
 	if(num_lock>1) return 0;
@@ -870,10 +870,10 @@ static void OPL_UnLockTable(void)
 }
 
 /* ---------- update chip ----------- */
-void YM3812UpdateOne(FM_OPL *OPL, INT16 *buffer, int length)
+void YM3812UpdateOne(FM_OPL *OPL, INT16 *buffer, myint length)
 {
-    int i;
-	int data;
+    myint i;
+	myint data;
 	OPLSAMPLE *buf = buffer;
 	UINT32 amsCnt  = OPL->amsCnt;
 	UINT32 vibCnt  = OPL->vibCnt;
@@ -931,8 +931,8 @@ void YM3812UpdateOne(FM_OPL *OPL, INT16 *buffer, int length)
 /* ---------- reset chip ---------- */
 void OPLResetChip(FM_OPL *OPL)
 {
-	int c,s;
-	int i;
+	myint c,s;
+	myint i;
 
 	/* reset chip */
 	OPL->mode   = 0;	/* normal mode */
@@ -960,12 +960,12 @@ void OPLResetChip(FM_OPL *OPL)
 }
 
 /* ----------  Create a virtual YM3812 ----------       */
-FM_OPL *OPLCreate(int type, int clock, int rate)
+FM_OPL *OPLCreate(myint type, myint clock, myint rate)
 {
 	char *ptr;
 	FM_OPL *OPL;
-	int state_size;
-	int max_ch = 9; /* normaly 9 channels */
+	myint state_size;
+	myint max_ch = 9; /* normaly 9 channels */
 
 	if( OPL_LockTable() ==-1) return NULL;
 	/* allocate OPL state space */

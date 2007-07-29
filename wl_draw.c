@@ -11,14 +11,14 @@
 static unsigned wallheight[MAXVIEWWIDTH];
 
 /* refresh variables */
-fixed viewx, viewy;		/* the focal point */
+extern fixed viewx, viewy;		/* the focal point */
 
-static int viewangle;
+static myint viewangle;
 
 static unsigned tilehit;
 
-static int xtile, ytile;
-static int xtilestep, ytilestep;
+static myint xtile, ytile;
+static myint xtilestep, ytilestep;
 static long xintercept, yintercept;
 
 static unsigned postx;
@@ -29,8 +29,8 @@ static long heightnumerator;
 
 static void AsmRefresh();
 
-void ScaleShape(int xcenter, int shapenum, unsigned height);
-void SimpleScaleShape(int xcenter, int shapenum, unsigned height);
+void ScaleShape(myint xcenter, myint shapenum, unsigned height);
+void SimpleScaleShape(myint xcenter, myint shapenum, unsigned height);
  
 /* ======================================================================== */
 
@@ -46,10 +46,10 @@ static const double radtoint = (double)FINEANGLES/2.0/PI;
 
 void CalcProjection(long focal)
 {
-	int     i;
+	myint     i;
 	long    intang;
 	double angle, tang, facedist;
-	int     halfview;
+	myint     halfview;
 
 	focallength = focal;
 	facedist = focal+MINDIST;
@@ -160,7 +160,7 @@ static void TransformActor(objtype *ob)
 ========================
 */
 
-static boolean TransformTile(int tx, int ty, int *dispx, int *dispheight)
+static boolean TransformTile(myint tx, myint ty, myint *dispx, myint *dispheight)
 {
 	fixed gx,gy,gxt,gyt,nx,ny;
 
@@ -216,11 +216,11 @@ static boolean TransformTile(int tx, int ty, int *dispx, int *dispheight)
 =====================
 */
 
-static const int dirangle[9] = {0,ANGLES/8,2*ANGLES/8,3*ANGLES/8,4*ANGLES/8, 5*ANGLES/8,6*ANGLES/8,7*ANGLES/8,ANGLES};
+static const myint dirangle[9] = {0,ANGLES/8,2*ANGLES/8,3*ANGLES/8,4*ANGLES/8, 5*ANGLES/8,6*ANGLES/8,7*ANGLES/8,ANGLES};
 
-static int CalcRotate(objtype *ob)
+static myint CalcRotate(objtype *ob)
 {
-	int	angle,viewangle;
+	myint	angle,viewangle;
 
 	/* this isn't exactly correct, as it should vary by a trig value, */
 	/* but it is close enough with only eight rotations */
@@ -258,16 +258,16 @@ static int CalcRotate(objtype *ob)
 #define MAXVISABLE      64
 
 typedef struct {
-	int viewx;
-	int viewheight;
-	int shapenum;
+	myint viewx;
+	myint viewheight;
+	myint shapenum;
 } visobj_t;
 
 static visobj_t vislist[MAXVISABLE], *visptr, *visstep, *farthest;
 
 static void DrawScaleds()
 {
-	int 		i,least,numvisable,height;
+	myint 		i,least,numvisable,height;
 	byte		*tilespot,*visspot;
 	unsigned	spotloc;
 
@@ -386,12 +386,12 @@ static void DrawScaleds()
 ==============
 */
 
-static const int weaponscale[NUMWEAPONS] = {SPR_KNIFEREADY,SPR_PISTOLREADY
+static const myint weaponscale[NUMWEAPONS] = {SPR_KNIFEREADY,SPR_PISTOLREADY
 	,SPR_MACHINEGUNREADY,SPR_CHAINREADY};
 
 static void DrawPlayerWeapon()
 {
-	int shapenum;
+	myint shapenum;
 
 #ifndef SPEAR
 	if (gamestate.victoryflag)
@@ -436,28 +436,28 @@ static void WallRefresh()
 
 #define	MAXVIEWHEIGHT	(MAXVIEWWIDTH/2)
 
-static int spanstart[MAXVIEWHEIGHT/2];
+static myint spanstart[MAXVIEWHEIGHT/2];
 
 static fixed basedist[MAXVIEWHEIGHT/2];
 
 static byte planepics[8192];	/* 4k of ceiling, 4k of floor */
 
-static int halfheight = 0;
+static myint halfheight = 0;
 
 static byte *planeylookup[MAXVIEWHEIGHT/2];
 static unsigned	mirrorofs[MAXVIEWHEIGHT/2];
 
-static int mr_rowofs;
-static int mr_count;
-static unsigned short int mr_xstep;
-static unsigned short int mr_ystep;
-static unsigned short int mr_xfrac;
-static unsigned short int mr_yfrac;
+static myint mr_rowofs;
+static myint mr_count;
+static unsigned short mr_xstep;
+static unsigned short mr_ystep;
+static unsigned short mr_xfrac;
+static unsigned short mr_yfrac;
 static byte *mr_dest;
 
 static void MapRow()
 {
-	unsigned int ebx, edx, esi;
+	unsigned myint ebx, edx, esi;
 	
 	edx = (mr_ystep << 16) | (mr_xstep);
 	esi = (mr_yfrac << 16) | (mr_xfrac);
@@ -484,10 +484,10 @@ static void MapRow()
 ==============
 */
 
-static void DrawSpans(int x1, int x2, int height)
+static void DrawSpans(myint x1, myint x2, myint height)
 {
 	fixed length;
-	int prestep;
+	myint prestep;
 	fixed startxfrac, startyfrac; 
 	byte *toprow;
 
@@ -525,7 +525,7 @@ static void DrawSpans(int x1, int x2, int height)
 
 static void SetPlaneViewSize()
 {
-	int x, y;
+	myint x, y;
 	byte *dest, *src;
 
 	halfheight = viewheight >> 1;
@@ -564,8 +564,8 @@ static void SetPlaneViewSize()
 
 void DrawPlanes()
 {
-	int height, lastheight;
-	int x;
+	myint height, lastheight;
+	myint x;
 
 	if ((viewheight>>1) != halfheight)
 		SetPlaneViewSize();	/* screen size has changed */
@@ -595,7 +595,7 @@ void DrawPlanes()
 
 /* ======================================================================== */
 
-static const unsigned int Ceiling[]=
+static const unsigned myint Ceiling[]=
 {
 #ifndef SPEAR
  0x1d1d,0x1d1d,0x1d1d,0x1d1d,0x1d1d,0x1d1d,0x1d1d,0x1d1d,0x1d1d,0xbfbf,
@@ -621,8 +621,8 @@ static const unsigned int Ceiling[]=
 
 static void ClearScreen()
 {
-	unsigned int ceiling = Ceiling[gamestate.episode*10+mapon] & 0xFF;
-	unsigned int floor = 0x19;
+	unsigned myint ceiling = Ceiling[gamestate.episode*10+mapon] & 0xFF;
+	unsigned myint floor = 0x19;
 
 	VL_Bar(xoffset, yoffset, viewwidth, viewheight / 2, ceiling);
 	VL_Bar(xoffset, yoffset + viewheight / 2, viewwidth, viewheight / 2, floor);
@@ -667,7 +667,7 @@ void ThreeDRefresh()
 
 /* ======================================================================== */
 
-static void ScaledDraw(byte *gfx, int count, byte *vid, unsigned int frac, unsigned int delta)
+static void ScaledDraw(byte *gfx, myint count, byte *vid, unsigned myint frac, unsigned myint delta)
 {
 	while (count--) {
 		*vid = gfx[frac >> 16];
@@ -676,7 +676,7 @@ static void ScaledDraw(byte *gfx, int count, byte *vid, unsigned int frac, unsig
 	}
 }
 
-static void ScaledDrawTrans(byte *gfx, int count, byte *vid, unsigned int frac, unsigned int delta)
+static void ScaledDrawTrans(byte *gfx, myint count, byte *vid, unsigned myint frac, unsigned myint delta)
 {
 	while (count--) {
 		if (gfx[frac >> 16] != 255)
@@ -686,9 +686,9 @@ static void ScaledDrawTrans(byte *gfx, int count, byte *vid, unsigned int frac, 
 	}
 }
 
-static void ScaleLine(unsigned int height, byte *source, int x)
+static void ScaleLine(unsigned myint height, byte *source, myint x)
 {
-	unsigned int y, frac, delta;
+	unsigned myint y, frac, delta;
 	
 	if (height) {
 		frac = (64 << 16) / height;
@@ -711,9 +711,9 @@ static void ScaleLine(unsigned int height, byte *source, int x)
 	}
 }
 
-static void ScaleLineTrans(unsigned int height, byte *source, int x)
+static void ScaleLineTrans(unsigned myint height, byte *source, myint x)
 {
-	unsigned int y, frac, delta;
+	unsigned myint y, frac, delta;
 	
 	if (height) {
 		frac = (64 << 16) / height;
@@ -738,16 +738,16 @@ static void ScaleLineTrans(unsigned int height, byte *source, int x)
 
 static byte *spritegfx[SPR_TOTAL];
 
-static void DeCompileSprite(int shapenum)
+static void DeCompileSprite(myint shapenum)
 {
 	byte *ptr;
 	byte *buf;
 	byte *cmdptr;
 	byte *pixels;
-	int yoff;
-	int y, y0, y1;
-	int x, left, right;
-	int cmd;
+	myint yoff;
+	myint y, y0, y1;
+	myint x, left, right;
+	myint cmd;
 	
 	MM_GetPtr((void *)&buf, 64 * 64);
 	
@@ -789,11 +789,11 @@ static void DeCompileSprite(int shapenum)
 	spritegfx[shapenum] = buf;
 }
 
-void ScaleShape(int xcenter, int shapenum, unsigned height)
+void ScaleShape(myint xcenter, myint shapenum, unsigned height)
 {
-	unsigned int scaler = (64 << 16) / (height >> 2);
-	unsigned int x;
-	int p;
+	unsigned myint scaler = (64 << 16) / (height >> 2);
+	unsigned myint x;
+	myint p;
 
 	if (spritegfx[shapenum] == NULL)
 		DeCompileSprite(shapenum);
@@ -815,11 +815,11 @@ void ScaleShape(int xcenter, int shapenum, unsigned height)
 	}	
 }
 
-void SimpleScaleShape(int xcenter, int shapenum, unsigned height)
+void SimpleScaleShape(myint xcenter, myint shapenum, unsigned height)
 {
-	unsigned int scaler = (64 << 16) / height;
-	unsigned int x;
-	int p;
+	unsigned myint scaler = (64 << 16) / height;
+	unsigned myint x;
+	myint p;
 	
 	if (spritegfx[shapenum] == NULL)
 		DeCompileSprite(shapenum);
@@ -851,7 +851,7 @@ void SimpleScaleShape(int xcenter, int shapenum, unsigned height)
 ====================
 */
 
-static int CalcHeight()
+static myint CalcHeight()
 {
 	fixed gxt,gyt,nx,gx,gy;
 
@@ -872,9 +872,9 @@ static int CalcHeight()
 	return heightnumerator/(nx>>8);
 }
 
-static void ScalePost(byte *wall, int texture)
+static void ScalePost(byte *wall, myint texture)
 {
-	int height;
+	myint height;
 	byte *source;
 
 	height = (wallheight[postx] & 0xFFF8) >> 2;
@@ -943,7 +943,7 @@ static void HitVertDoor()
 
 static void HitVertWall()
 {
-	int wallpic;
+	myint wallpic;
 	unsigned texture;
 	byte *wall;
 
@@ -971,7 +971,7 @@ static void HitVertWall()
 
 static void HitHorizWall()
 {
-	int wallpic;
+	myint wallpic;
 	unsigned texture;
 	byte *wall;
 
@@ -999,7 +999,7 @@ static void HitHorizWall()
 
 static void HitHorizPWall()
 {
-	int wallpic;
+	myint wallpic;
 	unsigned texture, offset;
 	byte *wall;
 	
@@ -1023,7 +1023,7 @@ static void HitHorizPWall()
 
 static void HitVertPWall()
 {
-	int wallpic;
+	myint wallpic;
 	unsigned texture, offset;
 	byte *wall;
 	
@@ -1049,7 +1049,7 @@ static void HitVertPWall()
 #define DEG270	2700
 #define DEG360	3600
 
-static int samex(int intercept, int tile)
+static myint samex(myint intercept, myint tile)
 {
 	if (xtilestep > 0) {
 		if ((intercept>>TILESHIFT) >= tile)
@@ -1064,7 +1064,7 @@ static int samex(int intercept, int tile)
 	}
 }
 
-static int samey(int intercept, int tile)
+static myint samey(myint intercept, myint tile)
 {
 	if (ytilestep > 0) {
 		if ((intercept>>TILESHIFT) >= tile)
@@ -1083,11 +1083,11 @@ static void AsmRefresh()
 {
 	unsigned xpartialup, xpartialdown, ypartialup, ypartialdown;
 	unsigned xpartial, ypartial;
-	int doorhit;
-	int angle;    /* ray angle through postx */
-	int midangle;
-	int focaltx, focalty;
-	int xstep, ystep;
+	myint doorhit;
+	myint angle;    /* ray angle through postx */
+	myint midangle;
+	myint focaltx, focalty;
+	myint xstep, ystep;
 	
 	midangle = viewangle*(FINEANGLES/ANGLES);
 	xpartialdown = (viewx&(TILEGLOBAL-1));
@@ -1254,14 +1254,14 @@ passhoriz:
 
 /* ======================================================================== */
 
-void FizzleFade(boolean abortable, int frames, int color)
+void FizzleFade(boolean abortable, myint frames, myint color)
 {
-	int pixperframe;
+	myint pixperframe;
 	unsigned x, y, p, frame;
-	int multiplier;
-	int width, height;
+	myint multiplier;
+	myint width, height;
 	long rndval;
-	int retr;
+	myint retr;
 		
 	rndval = 1;
 	pixperframe = 64000/frames;

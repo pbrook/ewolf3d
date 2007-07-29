@@ -8,13 +8,13 @@ extern byte *gfxbuf;
 void VL_Startup();
 void VL_Shutdown();
 
-void VL_WaitVBL(int vbls);
+void VL_WaitVBL(myint vbls);
 void VW_UpdateScreen();
 
 void VL_SetPalette(const byte *palette);
 void VL_GetPalette(byte *palette);
 
-void VL_MemToScreen(const byte *source, int width, int height, int x, int y);
+void VL_MemToScreen(const byte *source, myint width, myint height, myint x, myint y);
 
 /* ======================================================================== */
 
@@ -132,7 +132,7 @@ typedef	enum {
 
 typedef	struct {
 	boolean button0, button1, button2, button3;
-	int x, y;
+	myint x, y;
 	Motion xaxis, yaxis;
 	Direction dir;
 } ControlInfo;
@@ -155,7 +155,7 @@ extern	ControlType	Controls[MaxPlayers];
 extern void INL_Update();
 
 extern void IN_Startup(), IN_Shutdown(), IN_ClearKeysDown(),
-		IN_ReadControl(int,ControlInfo *),
+		IN_ReadControl(myint,ControlInfo *),
 		IN_GetJoyAbs(word joy,word *xp,word *yp),
 		IN_SetupJoy(word joy,word minx,word maxx,word miny,word maxy),
 		IN_Ack();
@@ -167,8 +167,8 @@ byte IN_MouseButtons();
 byte IN_JoyButtons();
 word INL_GetJoyButtons(word joy);
 
-void IN_GetMouseDelta(int *dx, int *dy);
-void INL_GetJoyDelta(word joy,int *dx,int *dy);
+void IN_GetMouseDelta(myint *dx, myint *dy);
+void INL_GetJoyDelta(word joy,myint *dx,myint *dy);
 
 void IN_StartAck();
 boolean IN_CheckAck();

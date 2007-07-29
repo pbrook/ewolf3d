@@ -18,7 +18,7 @@ byte *gfxbuf = NULL;
 byte *disbuf = NULL;
 
 Display *dpy;
-int screen;
+myint screen;
 Window root, win;
 XVisualInfo *vi;
 GC gc;
@@ -29,23 +29,23 @@ Atom wmDeleteWindow;
 XShmSegmentInfo shminfo;
 XColor clr[256];
 
-int indexmode;
-int shmmode;
+myint indexmode;
+myint shmmode;
 
 static byte cpal[768];
 static word spal[768];
 static dword ipal[768];
 
-static int ByteOrder; /* 0 = LSBFirst, 1 = MSBFirst */
-static int NeedSwap;
+static myint ByteOrder; /* 0 = LSBFirst, 1 = MSBFirst */
+static myint NeedSwap;
 
-int MyDepth;
+myint MyDepth;
 
 void GetVisual()
 {
 	XVisualInfo vitemp;
 		
-	int i, numVisuals;
+	myint i, numVisuals;
 		
 	vitemp.screen = screen;
 	vitemp.depth = 8;
@@ -128,7 +128,7 @@ void GetVisual()
 	Quit("No usable visual found!");		
 }
 
-int GetBPP()
+myint GetBPP()
 {
 	switch(img->depth) {
 		case 4:
@@ -173,7 +173,7 @@ void VL_Startup()
 	char data[8] = { 0x01 };
 	
 	char *disp;
-	int attrmask;
+	myint attrmask;
 	
 	disp = getenv("DISPLAY");
 	
@@ -318,7 +318,7 @@ void VL_Shutdown()
 	}
 }
 
-void VL_WaitVBL(int vbls)
+void VL_WaitVBL(myint vbls)
 {
 	/* hack - but it works for me */
 	long last = get_TimeCount() + vbls;
@@ -331,7 +331,7 @@ void VW_UpdateScreen()
 	word *ptrs;
 	byte *ptrb;
 	
-	int i;
+	myint i;
 
 	if (indexmode == 0) {
 		switch(MyDepth) {
@@ -372,8 +372,8 @@ void VW_UpdateScreen()
 		XPutImage(dpy, win, gc, img, 0, 0, 0, 0, 320, 200);
 }
 
-void keyboard_handler(int code, int press);
-static int XKeysymToScancode(KeySym keysym);
+void keyboard_handler(myint code, myint press);
+static myint XKeysymToScancode(KeySym keysym);
 
 static void HandleXEvents()
 {
@@ -421,7 +421,7 @@ static void HandleXEvents()
 
 void VL_SetPalette(const byte *palette)
 {
-	int i;
+	myint i;
 
 	VL_WaitVBL(1);
 	
@@ -470,7 +470,7 @@ void VL_SetPalette(const byte *palette)
 
 void VL_GetPalette(byte *palette)
 {	
-	int i;
+	myint i;
 	
 	if (indexmode) {
 		for (i = 0; i < 256; i++) {
@@ -483,7 +483,7 @@ void VL_GetPalette(byte *palette)
 	}
 }
 
-int main(int argc, char *argv[])
+myint main(myint argc, char *argv[])
 {
 	vwidth = 320;
 	vheight = 200;
@@ -499,12 +499,12 @@ int main(int argc, char *argv[])
 ==========================
 */
 
-void DisplayTextSplash(const byte *text, int l);
+void DisplayTextSplash(const byte *text, myint l);
 
 void Quit(const char *error)
 {
 	memptr screen = NULL;
-	int l = 0;
+	myint l = 0;
 	
 	if (!error || !*error) {
 		CA_CacheGrChunk(ORDERSCREEN);
@@ -530,7 +530,7 @@ void Quit(const char *error)
 	exit(EXIT_SUCCESS);
 }
 
-static int XKeysymToScancode(KeySym keysym)
+static myint XKeysymToScancode(KeySym keysym)
 {
 	switch (keysym) {
 		case XK_1:
@@ -632,7 +632,7 @@ byte IN_MouseButtons()
 	return 0;
 }
 
-void IN_GetMouseDelta(int *dx, int *dy)
+void IN_GetMouseDelta(myint *dx, myint *dy)
 {
 }
 
@@ -666,7 +666,7 @@ void IN_GetJoyAbs(word joy,word *xp,word *yp)
 //		joystick (from +/-127)
 //
 ///////////////////////////////////////////////////////////////////////////
-void INL_GetJoyDelta(word joy,int *dx,int *dy)
+void INL_GetJoyDelta(word joy,myint *dx,myint *dy)
 {
 	*dx = 0;
 	*dy = 0;

@@ -42,7 +42,7 @@ void FirstSighting (objtype *ob);
 ===================
 */
 
-void SpawnNewObj(unsigned tilex, unsigned tiley, int state) /* stateenum */
+void SpawnNewObj(unsigned tilex, unsigned tiley, myint state) /* stateenum */
 {
 	GetNewActor();
 	
@@ -58,7 +58,7 @@ void SpawnNewObj(unsigned tilex, unsigned tiley, int state) /* stateenum */
 	new->y = ((long)tiley<<TILESHIFT)+TILEGLOBAL/2;
 	new->dir = nodir;
 
-	actorat[tilex][tiley] = new->id | 0x8000;
+	actorat[tilex][tiley] = obj_id(new) | 0x8000;
 	new->areanumber =
 		*(mapsegs[0] + farmapylookup[new->tiley]+new->tilex) - AREATILE;
 }
@@ -73,7 +73,7 @@ void SpawnNewObj(unsigned tilex, unsigned tiley, int state) /* stateenum */
 ===================
 */
 
-void NewState(objtype *ob, int state) /* stateenum */
+void NewState(objtype *ob, myint state) /* stateenum */
 {
 	ob->state = state;
 	ob->ticcount = gamestates[state].tictime;
@@ -141,7 +141,7 @@ void NewState(objtype *ob, int state) /* stateenum */
 
 boolean TryWalk(objtype *ob)
 {
-	int doornum;
+	myint doornum;
 	unsigned temp;
 
 	doornum = -1;
@@ -320,7 +320,7 @@ boolean TryWalk(objtype *ob)
 
 void SelectDodgeDir(objtype *ob)
 {
-	int 		deltax,deltay,i;
+	myint 		deltax,deltay,i;
 	unsigned	absdx,absdy;
 	dirtype 	dirtry[5];
 	dirtype 	turnaround,tdir;
@@ -435,7 +435,7 @@ void SelectDodgeDir(objtype *ob)
 
 void SelectChaseDir(objtype *ob)
 {
-	int deltax,deltay;
+	myint deltax,deltay;
 	dirtype d[3];
 	dirtype tdir, olddir, turnaround;
 
@@ -544,7 +544,7 @@ void SelectChaseDir(objtype *ob)
 
 void SelectRunDir (objtype *ob)
 {
-	int deltax, deltay;
+	myint deltax, deltay;
 	dirtype d[3];
 	dirtype tdir;
 
@@ -733,7 +733,7 @@ moveok:
 
 void KillActor (objtype *ob)
 {
-	int	tilex,tiley;
+	myint	tilex,tiley;
 
 	tilex = ob->tilex = ob->x >> TILESHIFT;		// drop item on center
 	tiley = ob->tiley = ob->y >> TILESHIFT;
@@ -958,12 +958,12 @@ void DamageActor (objtype *ob, unsigned damage)
 
 boolean CheckLine (objtype *ob)
 {
-	int	x1,y1,xt1,yt1,x2,y2,xt2,yt2;
-	int	x,y;
-	int	xdist,ydist,xstep,ystep;
-	int	partial,delta;
+	myint	x1,y1,xt1,yt1,x2,y2,xt2,yt2;
+	myint	x,y;
+	myint	xdist,ydist,xstep,ystep;
+	myint	partial,delta;
 	long	ltemp;
-	int	xfrac,yfrac,deltafrac;
+	myint	xfrac,yfrac,deltafrac;
 	word	value,intercept;
 
 	x1 = ob->x >> UNSIGNEDSHIFT;		// 1/256 tile precision

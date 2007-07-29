@@ -17,7 +17,7 @@ boolean		spearflag;
 
 /* ELEVATOR BACK MAPS - REMEMBER (-1)!! */
 #ifndef SPEAR
-static const int ElevatorBackTo[]={ 1, 1, 7, 3, 5, 3};
+static const myint ElevatorBackTo[]={ 1, 1, 7, 3, 5, 3};
 #endif
 
 //===========================================================================
@@ -48,7 +48,7 @@ void ClearMemory()
 void ScanInfoPlane()
 {
 	unsigned x,y;
-	int tile;
+	myint tile;
 	word *start;
 
 	start = mapsegs[1];
@@ -451,7 +451,7 @@ void ScanInfoPlane()
 
 void SetupGameLevel()
 {
-	int x,y;
+	myint x,y;
 	word *map,tile;
 
 	if (!loadedgame) {
@@ -574,7 +574,7 @@ void SetupGameLevel()
 
 void DrawPlayBorderSides()
 {
-	int xl, yl;
+	myint xl, yl;
 
 	xl = 160-viewwidthwin/2;
 	yl = (200-STATUSLINES-viewheightwin)/2;
@@ -600,7 +600,7 @@ void DrawPlayBorderSides()
 
 void DrawPlayBorder()
 {
-	int xl, yl;
+	myint xl, yl;
 
 	VW_Bar(0,0,320,200-STATUSLINES+1,127);
 		
@@ -665,7 +665,7 @@ void DrawPlayScreen()
 
 #define MAXDEMOSIZE	8192
 
-void StartDemoRecord(int levelnumber)
+void StartDemoRecord(myint levelnumber)
 {
 	MM_GetPtr(&demobuffer, MAXDEMOSIZE);
 	MM_SetLock(&demobuffer,true);
@@ -731,7 +731,7 @@ void FinishDemoRecord()
 
 void RecordDemo()
 {
-	int level,esc;
+	myint level,esc;
 
 	CenterWindow(26,3);
 	PrintY += 6;
@@ -793,14 +793,14 @@ void RecordDemo()
 ==================
 */
 
-void PlayDemo(int demonumber)
+void PlayDemo(myint demonumber)
 {
-	int length;
+	myint length;
 
 #ifndef SPEARDEMO
-	int dems[4]={T_DEMO0,T_DEMO1,T_DEMO2,T_DEMO3};
+	myint dems[4]={T_DEMO0,T_DEMO1,T_DEMO2,T_DEMO3};
 #else
-	int dems[1]={T_DEMO0};
+	myint dems[1]={T_DEMO0};
 #endif
 
 	CA_CacheGrChunk(dems[demonumber]);
@@ -841,9 +841,9 @@ void PlayDemo(int demonumber)
 	ClearMemory();
 }
 
-int PlayDemoFromFile(const char *demoname)
+myint PlayDemoFromFile(const char *demoname)
 {
-	int length;
+	myint length;
 
 	CA_LoadFile(demoname, &demobuffer);
 	if (demobuffer == NULL) {
@@ -903,7 +903,7 @@ void Died()
 {
 	float	fangle;
 	long	dx,dy;
-	int	iangle,curangle,clockwise,counter,change;
+	myint	iangle,curangle,clockwise,counter,change;
 
 	gamestate.weapon = -1;			// take away weapon
 	SD_PlaySound(PLAYERDEATHSND);

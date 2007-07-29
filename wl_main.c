@@ -16,31 +16,31 @@
 
 char str[80], str2[20];
 
-int viewwidth, viewheight;
-int viewwidthwin, viewheightwin; /* for borders */
-int xoffset, yoffset;
-int vwidth, vheight; /* size of screen */
-int viewsize;
+myint viewwidth, viewheight;
+myint viewwidthwin, viewheightwin; /* for borders */
+myint xoffset, yoffset;
+myint vwidth, vheight; /* size of screen */
+myint viewsize;
 
-int centerx;
-int shootdelta;			/* pixels away from centerx a target can be */
+myint centerx;
+myint shootdelta;			/* pixels away from centerx a target can be */
 
 boolean startgame,loadedgame;
-int mouseadjustment;
+myint mouseadjustment;
 
 long frameon;
 long lasttimecount;
 fixed viewsin, viewcos;
 fixed viewx, viewy;		/* the focal point */
-int pixelangle[MAXVIEWWIDTH];
+myint pixelangle[MAXVIEWWIDTH];
 long finetangent[FINEANGLES/4];
-int horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
+myint horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
 
 char configname[13] = "config.";
 
 fixed sintable[ANGLES+ANGLES/4+1], *costable = sintable+(ANGLES/4);
 
-int _argc;
+myint _argc;
 char **_argv;
 
 /*
@@ -78,8 +78,8 @@ fixed FixedByFrac(fixed a, fixed b)
 
 void CalcTics()
 {
-	int newtime;
-	int ticcount;
+	myint newtime;
+	myint ticcount;
 	
 	if (demoplayback || demorecord)
 		ticcount = DEMOTICS - 1; /* [70/4] 17.5 Hz */
@@ -101,7 +101,7 @@ void CalcTics()
 
 /* ======================================================================== */
 
-static void DiskFlopAnim(int x, int y)
+static void DiskFlopAnim(myint x, myint y)
 {
 	static char which = 0;
 	
@@ -114,12 +114,12 @@ static void DiskFlopAnim(int x, int y)
 	which ^= 1;
 }
 
-static int32_t CalcFileChecksum(int fd, int len)
+static int32_t CalcFileChecksum(myint fd, myint len)
 {
 	int8_t buf[4096];
 	
 	int32_t cs;
-	int i, j;
+	myint i, j;
 	int8_t c1;
 	
 	cs = 0;
@@ -145,10 +145,10 @@ static int32_t CalcFileChecksum(int fd, int len)
 	return cs;
 }
 
-int WriteConfig()
+myint WriteConfig()
 {
-	int i;
-	int fd;
+	myint i;
+	myint fd;
 	int32_t cs;
 	
 	fd = OpenWrite(configname);
@@ -239,12 +239,12 @@ static void SetDefaults()
 	SD_SetDigiDevice(sds_SoundBlaster);
 }
 
-int ReadConfig()
+myint ReadConfig()
 {
-	int fd, configokay;
+	myint fd, configokay;
 	char buf[8];
 	int32_t version, v;
-	int i;
+	myint i;
 	
 	configokay = 0;
 	
@@ -346,10 +346,10 @@ configend:
 	return 0;
 }
 
-int SaveTheGame(const char *fn, const char *tag, int dx, int dy)
+myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 {
 	objtype *ob;
-	int fd, i, x, y;
+	myint fd, i, x, y;
 	int32_t cs;
 	
 	fd = OpenWrite(fn);
@@ -432,7 +432,7 @@ int SaveTheGame(const char *fn, const char *tag, int dx, int dy)
 		for (ob = player; ob; ob = ob->next) {
 			DiskFlopAnim(dx, dy);
 			
-			WriteInt32(fd, ob->id);
+			//WriteInt32(fd, ob->id);
 			WriteInt32(fd, ob->active);
 			WriteInt32(fd, ob->ticcount);
 			WriteInt32(fd, ob->obclass);
@@ -454,7 +454,7 @@ int SaveTheGame(const char *fn, const char *tag, int dx, int dy)
 			WriteInt32(fd, ob->speed);
 			WriteInt32(fd, ob->temp1);
 			WriteInt32(fd, ob->temp2);
-			WriteInt32(fd, ob->temp3);
+			//WriteInt32(fd, ob->temp3);
 		}	
 		
 		WriteInt32(fd, 0xFFFFFFFF); /* end of actor list */
@@ -523,10 +523,10 @@ int SaveTheGame(const char *fn, const char *tag, int dx, int dy)
 	return 0;
 }
 
-int ReadSaveTag(const char *fn, const char *tag)
+myint ReadSaveTag(const char *fn, const char *tag)
 {
 	char buf[8];
-	int fd;
+	myint fd;
 	int32_t v;
 	
 	fd = OpenRead(fn);
@@ -571,10 +571,10 @@ rstfail:
 	return -1;
 }
 
-int LoadTheGame(const char *fn, int dx, int dy)
+myint LoadTheGame(const char *fn, myint dx, myint dy)
 {
 	char buf[8];
-	int fd, i, x, y, id;
+	myint fd, i, x, y, id;
 	int32_t v;
 	
 	fd = OpenRead(fn);
@@ -704,13 +704,13 @@ int LoadTheGame(const char *fn, int dx, int dy)
 	player->speed		= ReadInt32(fd);
 	player->temp1		= ReadInt32(fd);
 	player->temp2		= ReadInt32(fd);
-	player->temp3		= ReadInt32(fd);
+	//player->temp3		= ReadInt32(fd);
 	
 	/* update the id */
 	for (x = 0; x < 64; x++)
 		for (y = 0; y < 64; y++)
 			if (actorat[x][y] == (id | 0x8000))
-				actorat[x][y] = player->id | 0x8000;
+				actorat[x][y] = obj_id(player) | 0x8000;
 
 	while (1) {
 		DiskFlopAnim(dx, dy);
@@ -743,12 +743,12 @@ int LoadTheGame(const char *fn, int dx, int dy)
 		new->speed		= ReadInt32(fd);
 		new->temp1		= ReadInt32(fd);
 		new->temp2		= ReadInt32(fd);
-		new->temp3		= ReadInt32(fd);
+		//new->temp3		= ReadInt32(fd);
 		
 		for (x = 0; x < 64; x++)
 			for (y = 0; y < 64; y++)
 				if (actorat[x][y] == (id | 0x8000))
-					actorat[x][y] = new->id | 0x8000;
+					actorat[x][y] = obj_id(new) | 0x8000;
 	}
 	
 	DiskFlopAnim(dx, dy);
@@ -820,9 +820,9 @@ loadfail:
 =================
 */
 
-int MS_CheckParm(const char *check)
+myint MS_CheckParm(const char *check)
 {
-	int i;
+	myint i;
 	char *parm;
 
 	for (i = 1; i < _argc; i++) {
@@ -852,7 +852,7 @@ static const double radtoint = (double)FINEANGLES/2.0/PI;
 
 void BuildTables()
 {
-	int i;
+	myint i;
 	double tang, angle, anglestep;
 	fixed value;
 
@@ -901,7 +901,7 @@ void BuildTables()
 
 void SetupWalls()
 {
-	int i;
+	myint i;
 
 	for (i=1;i<MAXWALLTILES;i++)
 	{
@@ -910,9 +910,9 @@ void SetupWalls()
 	}
 }
 
-void ShowViewSize(int width)
+void ShowViewSize(myint width)
 {
-	int oldwidth,oldheight;
+	myint oldwidth,oldheight;
 
 	oldwidth = viewwidthwin;
 	oldheight = viewheightwin;
@@ -925,7 +925,7 @@ void ShowViewSize(int width)
 	viewwidthwin = oldwidth;
 }
 
-void NewViewSize(int width)
+void NewViewSize(myint width)
 {
 	if (width > 20)
 		width = 20;
@@ -1005,7 +1005,7 @@ CP_itemtype MusicMenu[]=
 };
 #endif
 
-static const int songs[] =
+static const myint songs[] =
 {
 #ifndef SPEAR
 	GETTHEM_MUS,
@@ -1043,7 +1043,7 @@ static const int songs[] =
 		
 void DoJukebox()
 {
-	int which,lastsong=-1;
+	myint which,lastsong=-1;
 	unsigned start;
 
 	IN_ClearKeysDown();
@@ -1149,7 +1149,7 @@ void ShutdownId()
 =====================
 */
 
-void NewGame(int difficulty, int episode)
+void NewGame(myint difficulty, myint episode)
 {
 	memset(&gamestate, 0, sizeof(gamestate));
 	
@@ -1177,7 +1177,7 @@ void NewGame(int difficulty, int episode)
 
 void InitGame()
 {
-	int i;
+	myint i;
 
 	MM_Startup(); 
 	PM_Startup();
@@ -1236,9 +1236,9 @@ void InitGame()
 
 void DemoLoop()
 {
-	static int LastDemo;
+	static myint LastDemo;
 	
-	int i;
+	myint i;
 //
 // main game cycle
 //
@@ -1362,7 +1362,7 @@ void DemoLoop()
 ==========================
 */
 
-int WolfMain(int argc, char *argv[])
+myint WolfMain(myint argc, char *argv[])
 {
 	_argc = argc;
 	_argv = argv;

@@ -49,56 +49,56 @@ SDSMode DigiMode;
 static volatile boolean sqActive;
 
 static fixed globalsoundx, globalsoundy;
-static int leftchannel, rightchannel;
+static myint leftchannel, rightchannel;
 
 static volatile boolean SoundPositioned;
 
 static word *DigiList;
 
 static volatile boolean SD_Started;
-static volatile int audiofd = -1;
+static volatile myint audiofd = -1;
 
-static volatile int NextSound;
-static volatile int SoundPlaying;
-static volatile int SoundPlayPos;
-static volatile int SoundPlayLen;
-static volatile int SoundPage;
-static volatile int SoundLen;
-static volatile int L;
-static volatile int R;
+static volatile myint NextSound;
+static volatile myint SoundPlaying;
+static volatile myint SoundPlayPos;
+static volatile myint SoundPlayLen;
+static volatile myint SoundPage;
+static volatile myint SoundLen;
+static volatile myint L;
+static volatile myint R;
 static byte *SoundData;
 
 static FM_OPL *OPL;
 
 static MusicGroup *Music;
-static volatile int NewMusic;
+static volatile myint NewMusic;
 
-static volatile int NewAdlib;
-static volatile int AdlibPlaying;
+static volatile myint NewAdlib;
+static volatile myint AdlibPlaying;
 
 static pthread_t hSoundThread;
 
-static int CurDigi;
-static int CurAdlib;
+static myint CurDigi;
+static myint CurAdlib;
 
 static boolean SPHack;
 
-static short int sndbuf[512];
-static short int musbuf[256];
+static myint myint sndbuf[512];
+static myint myint musbuf[256];
 
 static void *SoundThread(void *data)
 {
-	int i, snd;
-	short int samp;
-	int MusicLength;
-	int MusicCount;
+	myint i, snd;
+	myint myint samp;
+	myint MusicLength;
+	myint MusicCount;
 	word *MusicData;
 	word dat;
 	
 	AdLibSound *AdlibSnd;
 	byte AdlibBlock;
 	byte *AdlibData;
-	int AdlibLength;
+	myint AdlibLength;
 	Instrument *inst;
 	
 	MusicLength = 0;
@@ -211,7 +211,7 @@ static void *SoundThread(void *data)
 					if (SoundPositioned) {
 						samp = (SoundData[(SoundPlayPos >> 16)] << 8)^0x8000;
 						snd = samp*(16-L)/32+musbuf[i/2];
-						//snd = (((signed short)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))*(16-L)>>5)+musbuf[i/2];
+						//snd = (((signed myint)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))*(16-L)>>5)+musbuf[i/2];
 						if (snd > 32767)
 							snd = 32767;
 						if (snd < -32768)
@@ -219,20 +219,20 @@ static void *SoundThread(void *data)
 						sndbuf[i+0] = snd;
 						samp = (SoundData[(SoundPlayPos >> 16)] << 8)^0x8000;
 						snd = samp*(16-R)/32+musbuf[i/2];
-						//snd = (((signed short)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))*(16-R)>>5)+musbuf[i/2];
+						//snd = (((signed myint)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))*(16-R)>>5)+musbuf[i/2];
 						if (snd > 32767)
 							snd = 32767;
 						if (snd < -32768)
 							snd = -32768;
 						sndbuf[i+1] = snd;
 					} else {
-						snd = (((signed short)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))>>2)+musbuf[i/2];
+						snd = (((signed myint)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))>>2)+musbuf[i/2];
 						if (snd > 32767)
 							snd = 32767;
 						if (snd < -32768)
 							snd = -32768;
 						sndbuf[i+0] = snd;
-						snd = (((signed short)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))>>2)+musbuf[i/2];
+						snd = (((signed myint)((SoundData[(SoundPlayPos >> 16)] << 8)^0x8000))>>2)+musbuf[i/2];
 						if (snd > 32767)
 							snd = 32767;
 						if (snd < -32768)
@@ -268,7 +268,7 @@ static void Blah()
 {
         memptr  list;
         word    *p, pg;
-        int     i;
+        myint     i;
 
         MM_GetPtr(&list,PMPageSize);
         p = PM_GetPage(ChunksInFile - 1);
@@ -289,7 +289,7 @@ static void Blah()
 void SD_Startup()
 {
 	audio_buf_info info;
-	int want, set;
+	myint want, set;
 	
 	if (SD_Started)
 		return;
@@ -507,7 +507,7 @@ static const byte lefttable[ATABLEMAX][ATABLEMAX * 2] = {
 static void SetSoundLoc(fixed gx, fixed gy)
 {
 	fixed xt, yt;
-	int x, y;
+	myint x, y;
 
 // translate point to view centered coordinates
 //
@@ -552,7 +552,7 @@ static void SetSoundLoc(fixed gx, fixed gy)
 ==========================
 */
 
-void PlaySoundLocGlobal(word s, int id, fixed gx, fixed gy)
+void PlaySoundLocGlobal(word s, myint id, fixed gx, fixed gy)
 {
 	SetSoundLoc(gx, gy);
 	
@@ -566,7 +566,7 @@ void PlaySoundLocGlobal(word s, int id, fixed gx, fixed gy)
 	}
 }
 
-void UpdateSoundLoc(fixed x, fixed y, int angle)
+void UpdateSoundLoc(fixed x, fixed y, myint angle)
 {
 	if (SoundPositioned)
 	{
@@ -601,7 +601,7 @@ void SD_MusicOff()
 //	SD_StartMusic() - starts playing the music pointed to
 //
 ///////////////////////////////////////////////////////////////////////////
-void SD_StartMusic(int music)
+void SD_StartMusic(myint music)
 {
 	music += STARTMUSIC;
 	

@@ -1,16 +1,16 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 
-extern int _argc;
+extern myint _argc;
 extern char **_argv;
 
-void SavePCX256ToFile(const unsigned char *buf, int width, int height, const unsigned char *pal, const char *name);
-void SavePCXRGBToFile(const unsigned char *buf, int width, int height, const char *name);
+void SavePCX256ToFile(const unsigned char *buf, myint width, myint height, const unsigned char *pal, const char *name);
+void SavePCXRGBToFile(const unsigned char *buf, myint width, myint height, const char *name);
 
 void set_TimeCount(unsigned long t);
 unsigned long get_TimeCount(void);
 
-long filelength(int handle);
+long filelength(myint handle);
 
 #ifndef stricmp
 #define stricmp strcasecmp
@@ -22,35 +22,35 @@ long filelength(int handle);
 
 char *strlwr(char *s);
 
-char *itoa(int value, char *string, int radix);
-char *ltoa(long value, char *string, int radix);
-char *ultoa(unsigned long value, char *string, int radix);
+char *itoa(myint value, char *string, myint radix);
+char *ltoa(long value, char *string, myint radix);
+char *ultoa(unsigned long value, char *string, myint radix);
 
 uint16_t SwapInt16L(uint16_t i);
 uint32_t SwapInt32L(uint32_t i);
 
-extern int OpenWrite(const char *fn);
-extern int OpenWriteAppend(const char *fn);
-extern void CloseWrite(int fp);
+extern myint OpenWrite(const char *fn);
+extern myint OpenWriteAppend(const char *fn);
+extern void CloseWrite(myint fp);
 
-extern int WriteSeek(int fp, int offset, int whence);
-extern int WritePos(int fp);
+extern myint WriteSeek(myint fp, myint offset, myint whence);
+extern myint WritePos(myint fp);
 
-extern int WriteInt8(int fp, int8_t d);
-extern int WriteInt16(int fp, int16_t d);
-extern int WriteInt32(int fp, int32_t d);
-extern int WriteBytes(int fp, const byte *d, int len);
+extern myint WriteInt8(myint fp, int8_t d);
+extern myint WriteInt16(myint fp, int16_t d);
+extern myint WriteInt32(myint fp, int32_t d);
+extern myint WriteBytes(myint fp, const byte *d, myint len);
 
-extern int OpenRead(const char *fn);
-extern void CloseRead(int fp);
+extern myint OpenRead(const char *fn);
+extern void CloseRead(myint fp);
 
-extern int ReadSeek(int fp, int offset, int whence);
-extern int ReadLength(int fp);
+extern myint ReadSeek(myint fp, myint offset, myint whence);
+extern myint ReadLength(myint fp);
 
-extern int8_t ReadInt8(int fp);
-extern int16_t ReadInt16(int fp);
-extern int32_t ReadInt32(int fp);
-extern int ReadBytes(int fp, byte *d, int len);
+extern int8_t ReadInt8(myint fp);
+extern int16_t ReadInt16(myint fp);
+extern int32_t ReadInt32(myint fp);
+extern myint ReadBytes(myint fp, byte *d, myint len);
 
 
 static __inline__ uint16_t SwapInt16(uint16_t i)

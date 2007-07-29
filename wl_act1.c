@@ -13,7 +13,7 @@ statobj_t statobjlist[MAXSTATS], *laststatobj;
 
 struct
 {
-	int	picnum;
+	myint	picnum;
 	stat_t	type;
 } static const statinfo[] =
 {
@@ -116,7 +116,7 @@ void InitStaticList()
 ===============
 */
 
-void SpawnStatic(int tilex, int tiley, int type)
+void SpawnStatic(myint tilex, myint tiley, myint type)
 {
 	laststatobj->shapenum = statinfo[type].picnum;
 	laststatobj->tilex = tilex;
@@ -177,9 +177,9 @@ void SpawnStatic(int tilex, int tiley, int type)
 ===============
 */
 
-void PlaceItemType(int itemtype, int tilex, int tiley)
+void PlaceItemType(myint itemtype, myint tilex, myint tiley)
 {
-	int type;
+	myint type;
 	statobj_t *spot;
 
 //
@@ -248,7 +248,7 @@ Every time a door opens or closes the areabyplayer matrix gets recalculated.
 #define OPENTICS	300
 
 doorobj_t	doorobjlist[MAXDOORS],*lastdoorobj;
-int			doornum;
+myint			doornum;
 
 unsigned	doorposition[MAXDOORS];	// leading edge of door 0=closed
 					// 0xffff = fully open
@@ -267,9 +267,9 @@ boolean		areabyplayer[NUMAREAS];
 ==============
 */
 
-void RecursiveConnect(int areanumber)
+void RecursiveConnect(myint areanumber)
 {
-	int i;
+	myint i;
 
 	for (i = 0; i < NUMAREAS; i++)
 	{
@@ -319,7 +319,7 @@ void InitDoorList()
 ===============
 */
 
-void SpawnDoor(int tilex, int tiley, boolean vertical, int lock)
+void SpawnDoor(myint tilex, myint tiley, boolean vertical, myint lock)
 {
 	word *map;
 
@@ -366,7 +366,7 @@ void SpawnDoor(int tilex, int tiley, boolean vertical, int lock)
 =====================
 */
 
-void OpenDoor(int door)
+void OpenDoor(myint door)
 {
 	if (doorobjlist[door].action == dr_open)
 		doorobjlist[door].ticcount = 0;			// reset open time
@@ -382,9 +382,9 @@ void OpenDoor(int door)
 =====================
 */
 
-void CloseDoor(int door)
+void CloseDoor(myint door)
 {
-	int tilex, tiley, area;
+	myint tilex, tiley, area;
 	objtype *check;
 
 //
@@ -480,9 +480,9 @@ void CloseDoor(int door)
 =====================
 */
 
-void OperateDoor(int door)
+void OperateDoor(myint door)
 {
-	int	lock;
+	myint	lock;
 
 	lock = doorobjlist[door].lock;
 	if (lock >= dr_lock1 && lock <= dr_lock4)
@@ -517,7 +517,7 @@ void OperateDoor(int door)
 ===============
 */
 
-void DoorOpen (int door)
+void DoorOpen (myint door)
 {
 	if ( (doorobjlist[door].ticcount += tics) >= OPENTICS)
 		CloseDoor (door);
@@ -533,9 +533,9 @@ void DoorOpen (int door)
 ===============
 */
 
-void DoorOpening(int door)
+void DoorOpening(myint door)
 {
-	int		area1,area2;
+	myint		area1,area2;
 	word *map;
 	long	position;
 
@@ -596,12 +596,12 @@ void DoorOpening(int door)
 ===============
 */
 
-void DoorClosing(int door)
+void DoorClosing(myint door)
 {
-	int		area1,area2;
+	myint		area1,area2;
 	word *map;
 	long	position;
-	int		tilex,tiley;
+	myint		tilex,tiley;
 
 	tilex = doorobjlist[door].tilex;
 	tiley = doorobjlist[door].tiley;
@@ -664,7 +664,7 @@ void DoorClosing(int door)
 
 void MoveDoors()
 {
-	int door;
+	myint door;
 
 	if (gamestate.victoryflag)		// don't move door during victory sequence
 		return;
@@ -700,7 +700,7 @@ void MoveDoors()
 unsigned pwallstate;
 unsigned pwallpos; // amount a pushable wall has been moved (0-63)
 unsigned pwallx, pwally;
-int pwalldir;
+myint pwalldir;
 
 /*
 ===============
@@ -710,9 +710,9 @@ int pwalldir;
 ===============
 */
 
-void PushWall(int checkx, int checky, int dir)
+void PushWall(myint checkx, myint checky, myint dir)
 {
-	int oldtile;
+	myint oldtile;
 
 	if (pwallstate)
 		return;
@@ -784,7 +784,7 @@ void PushWall(int checkx, int checky, int dir)
 
 void MovePWalls()
 {
-	int oldblock, oldtile;
+	myint oldblock, oldtile;
 
 	if (!pwallstate)
 		return;

@@ -10,7 +10,7 @@
 
 void CountObjects()
 {
-	int i, total, count, active, inactive, doors;
+	myint i, total, count, active, inactive, doors;
 	objtype	*obj;
 
 	CenterWindow (16,7);
@@ -98,10 +98,10 @@ void ShapeTest()
 ================
 */
 
-int DebugKeys()
+myint DebugKeys()
 {
 	boolean esc;
-	int level;
+	myint level;
 
 	if (IN_KeyDown(sc_C))		// C = count objects
 	{

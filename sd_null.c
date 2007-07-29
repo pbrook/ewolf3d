@@ -124,16 +124,16 @@ void SD_MusicOff()
 //	SD_StartMusic() - starts playing the music pointed to
 //
 ///////////////////////////////////////////////////////////////////////////
-void SD_StartMusic(int music)
+void SD_StartMusic(myint music)
 {
 	SD_MusicOff();
 }
 
-void PlaySoundLocGlobal(word s, int id, fixed gx,fixed gy)
+void PlaySoundLocGlobal(word s, myint id, fixed gx,fixed gy)
 {
 	SD_PlaySound(s);
 }
 
-void UpdateSoundLoc(fixed x, fixed y, int angle)
+void UpdateSoundLoc(fixed x, fixed y, myint angle)
 {
 }

@@ -21,7 +21,7 @@
 =============================================================================
 */
 
-static const int starthitpoints[4][NUMENEMIES] =
+static const myint starthitpoints[4][NUMENEMIES] =
 	 //
 	 // BABY MODE
 	 //
@@ -179,7 +179,7 @@ void A_Smoke(objtype *ob)
 
 boolean ProjectileTryMove(objtype *ob)
 {
-	int xl,yl,xh,yh,x,y;
+	myint xl,yl,xh,yh,x,y;
  
 	xl = (ob->x-PROJSIZE) >>TILESHIFT;
 	yl = (ob->y-PROJSIZE) >>TILESHIFT;
@@ -211,7 +211,7 @@ boolean ProjectileTryMove(objtype *ob)
 void T_Projectile(objtype *ob)
 {
 	long	deltax,deltay;
-	int		damage;
+	myint		damage;
 	long	speed;
 
 	speed = (long)ob->speed*tics;
@@ -296,7 +296,7 @@ void T_Projectile(objtype *ob)
 ===============
 */
 
-void SpawnStand (enemy_t which, int tilex, int tiley, int dir)
+void SpawnStand (enemy_t which, myint tilex, myint tiley, myint dir)
 {
 	word *map, tile = 0;
 
@@ -370,7 +370,7 @@ void SpawnStand (enemy_t which, int tilex, int tiley, int dir)
 ===============
 */
 
-void SpawnDeadGuard (int tilex, int tiley)
+void SpawnDeadGuard (myint tilex, myint tiley)
 {
 	SpawnNewObj (tilex,tiley,s_grddie4);
 	new->obclass = inertobj;
@@ -386,7 +386,7 @@ void SpawnDeadGuard (int tilex, int tiley)
 ===============
 */
 
-void SpawnPatrol (enemy_t which, int tilex, int tiley, int dir)
+void SpawnPatrol (enemy_t which, myint tilex, myint tiley, myint dir)
 {
 	switch (which)
 	{
@@ -453,7 +453,7 @@ void SpawnPatrol (enemy_t which, int tilex, int tiley, int dir)
 		break;
 	}
 
-	actorat[new->tilex][new->tiley] = new->id | 0x8000;
+	actorat[new->tilex][new->tiley] = obj_id(new) | 0x8000;
 }
 
 
@@ -497,14 +497,14 @@ void A_DeathScream (objtype *ob)
 	case guardobj:
 		{
 #ifndef UPLOAD
-		 int sounds[8]={ DEATHSCREAM1SND, DEATHSCREAM2SND,
+		 myint sounds[8]={ DEATHSCREAM1SND, DEATHSCREAM2SND,
 				 DEATHSCREAM3SND, DEATHSCREAM4SND,
 				 DEATHSCREAM5SND, DEATHSCREAM7SND,
 				 DEATHSCREAM8SND, DEATHSCREAM9SND
 		 };
 		 PlaySoundLocActor(sounds[US_RndT()%8], ob);
 #else
-		 int sounds[3]={ DEATHSCREAM1SND, 
+		 myint sounds[3]={ DEATHSCREAM1SND, 
 		   		 DEATHSCREAM2SND,
 				 DEATHSCREAM3SND
 		 };
@@ -693,8 +693,8 @@ void T_Path (objtype *ob)
 
 void T_Shoot (objtype *ob)
 {
-	int	dx,dy,dist;
-	int	hitchance,damage;
+	myint	dx,dy,dist;
+	myint	hitchance,damage;
 
 	hitchance = 128;
 
@@ -825,7 +825,7 @@ void T_Bite (objtype *ob)
 ===============
 */
 
-void SpawnTrans (int tilex, int tiley)
+void SpawnTrans (myint tilex, myint tiley)
 {
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_transdie01].tictime = 105;
@@ -850,7 +850,7 @@ void SpawnTrans (int tilex, int tiley)
 ===============
 */
 
-void SpawnUber (int tilex, int tiley)
+void SpawnUber (myint tilex, myint tiley)
 {
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_uberdie01].tictime = 70;
@@ -873,7 +873,7 @@ void SpawnUber (int tilex, int tiley)
 
 void T_UShoot(objtype *ob)
 {
-	int dx, dy, dist;
+	myint dx, dy, dist;
 
 	T_Shoot(ob);
 
@@ -892,7 +892,7 @@ void T_UShoot(objtype *ob)
 ===============
 */
 
-void SpawnWill(int tilex, int tiley)
+void SpawnWill(myint tilex, myint tiley)
 {
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_willdie2].tictime = 70;
@@ -916,7 +916,7 @@ void SpawnWill(int tilex, int tiley)
 void T_Will(objtype *ob)
 {
 	long move;
-	int	dx,dy,dist;
+	myint	dx,dy,dist;
 	boolean	dodge;
 
 	dodge = false;
@@ -1008,7 +1008,7 @@ void T_Will(objtype *ob)
 ===============
 */
 
-void SpawnDeath(int tilex, int tiley)
+void SpawnDeath(myint tilex, myint tiley)
 {
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_deathdie2].tictime = 105;
@@ -1033,7 +1033,7 @@ void T_Launch(objtype *ob)
 {
 	long deltax, deltay;
 	float angle;
-	int iangle;
+	myint iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
@@ -1108,7 +1108,7 @@ void A_Breathing(objtype *ob)
 ===============
 */
 
-void SpawnAngel(int tilex, int tiley)
+void SpawnAngel(myint tilex, myint tiley)
 {
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_angeldie11].tictime = 105;
@@ -1178,7 +1178,7 @@ void A_Relaunch(objtype *ob)
 ===============
 */
 
-void SpawnSpectre(int tilex, int tiley)
+void SpawnSpectre(myint tilex, myint tiley)
 {
 	SpawnNewObj (tilex,tiley,s_spectrewait1);
 	new->obclass = spectreobj;
@@ -1199,8 +1199,8 @@ void SpawnSpectre(int tilex, int tiley)
 void A_Dormant(objtype *ob)
 {
 	long deltax, deltay;
-	int xl,xh,yl,yh;
-	int x,y;
+	myint xl,xh,yl,yh;
+	myint x,y;
 	unsigned tile;
 
 	deltax = ob->x - player->x;
@@ -1257,7 +1257,7 @@ moveok:
 ===============
 */
 
-void SpawnBoss (int tilex, int tiley)
+void SpawnBoss (myint tilex, myint tiley)
 {
 	SpawnNewObj (tilex,tiley,s_bossstand);
 	new->speed = SPDPATROL;
@@ -1278,7 +1278,7 @@ void SpawnBoss (int tilex, int tiley)
 ===============
 */
 
-void SpawnGretel (int tilex, int tiley)
+void SpawnGretel (myint tilex, myint tiley)
 {
 	SpawnNewObj (tilex,tiley,s_gretelstand);
 	new->speed = SPDPATROL;
@@ -1299,7 +1299,7 @@ void SpawnGretel (int tilex, int tiley)
 ===============
 */
 
-void SpawnGhosts (int which, int tilex, int tiley)
+void SpawnGhosts (myint which, myint tilex, myint tiley)
 {
 	switch(which)
 	{
@@ -1334,7 +1334,7 @@ void SpawnGhosts (int which, int tilex, int tiley)
 ===============
 */
 
-void SpawnSchabbs(int tilex, int tiley)
+void SpawnSchabbs(myint tilex, myint tiley)
 { 
 	if (DigiMode != sds_Off)
 		gamestates[s_schabbdie2].tictime = 140;
@@ -1361,7 +1361,7 @@ void SpawnSchabbs(int tilex, int tiley)
 ===============
 */
 
-void SpawnGift (int tilex, int tiley)
+void SpawnGift (myint tilex, myint tiley)
 {
 	if (DigiMode != sds_Off)
 		gamestates[s_giftdie2].tictime = 140;
@@ -1388,7 +1388,7 @@ void SpawnGift (int tilex, int tiley)
 ===============
 */
 
-void SpawnFat (int tilex, int tiley)
+void SpawnFat (myint tilex, myint tiley)
 {
 	if (DigiMode != sds_Off)
 		gamestates[s_fatdie2].tictime = 140;
@@ -1419,7 +1419,7 @@ void T_SchabbThrow (objtype *ob)
 {
 	long	deltax,deltay;
 	float	angle;
-	int		iangle;
+	myint		iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
@@ -1459,7 +1459,7 @@ void T_GiftThrow(objtype *ob)
 {
 	long deltax,deltay;
 	float angle;
-	int iangle;
+	myint iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
@@ -1499,7 +1499,7 @@ void T_GiftThrow(objtype *ob)
 void T_Schabb (objtype *ob)
 {
 	long move;
-	int	dx,dy,dist;
+	myint	dx,dy,dist;
 	boolean	dodge;
 
 	dodge = false;
@@ -1591,7 +1591,7 @@ void T_Schabb (objtype *ob)
 void T_Gift (objtype *ob)
 {
 	long move;
-	int	dx,dy,dist;
+	myint	dx,dy,dist;
 	boolean	dodge;
 
 	dodge = false;
@@ -1683,7 +1683,7 @@ void T_Gift (objtype *ob)
 void T_Fat (objtype *ob)
 {
 	long move;
-	int	dx,dy,dist;
+	myint	dx,dy,dist;
 	boolean	dodge;
 
 	dodge = false;
@@ -1780,7 +1780,7 @@ void T_Fat (objtype *ob)
 ===============
 */
 
-void SpawnFakeHitler(int tilex, int tiley)
+void SpawnFakeHitler(myint tilex, myint tiley)
 {
 	if (DigiMode != sds_Off)
 		gamestates[s_hitlerdie2].tictime = 140;
@@ -1807,7 +1807,7 @@ void SpawnFakeHitler(int tilex, int tiley)
 ===============
 */
 
-void SpawnHitler(int tilex, int tiley)
+void SpawnHitler(myint tilex, myint tiley)
 {
 	if (DigiMode != sds_Off)
 		gamestates[s_hitlerdie2].tictime = 140;
@@ -1884,7 +1884,7 @@ void T_FakeFire (objtype *ob)
 {
 	long	deltax,deltay;
 	float	angle;
-	int		iangle;
+	myint		iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
@@ -2015,7 +2015,7 @@ void T_Stand(objtype *ob)
 void T_Chase (objtype *ob)
 {
 	long move;
-	int	dx,dy,dist,chance;
+	myint	dx,dy,dist,chance;
 	boolean	dodge;
 
 	if (gamestate.victoryflag)
@@ -2395,7 +2395,7 @@ void T_BJDone(objtype *ob)
 
 boolean	CheckPosition(objtype *ob)
 {
-	int x, y, xl, yl, xh, yh;
+	myint x, y, xl, yl, xh, yh;
 
 	xl = (ob->x-PLAYERSIZE) >>TILESHIFT;
 	yl = (ob->y-PLAYERSIZE) >>TILESHIFT;

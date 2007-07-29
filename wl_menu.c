@@ -149,14 +149,14 @@ CusMenu[]=
 };
 
 
-static const int color_hlite[] = { DEACTIVE, HIGHLIGHT, READHCOLOR, 0x67 };
-static const int color_norml[] = { DEACTIVE, TEXTCOLOR, READCOLOR, 0x6b };
+static const myint color_hlite[] = { DEACTIVE, HIGHLIGHT, READHCOLOR, 0x67 };
+static const myint color_norml[] = { DEACTIVE, TEXTCOLOR, READCOLOR, 0x6b };
 
 #ifndef SPEAR
-static int EpisodeSelect[6] = { 1 };
+static myint EpisodeSelect[6] = { 1 };
 #endif
 
-static int SaveGamesAvail[10],StartGame,SoundStatus=1,pickquick;
+static myint SaveGamesAvail[10],StartGame,SoundStatus=1,pickquick;
 static char SaveGameNames[10][32],SaveName[13]="savegam?.";
 
 
@@ -217,7 +217,7 @@ const char *IN_GetScanName(ScanCode scan)
 ////////////////////////////////////////////////////////////////////
 void US_ControlPanel(byte scancode)
 {
-	int which;
+	myint which;
 
 	if (ingame)
 		if (CP_CheckQuick(scancode))
@@ -446,7 +446,7 @@ void BossKey()
 // CHECK QUICK-KEYS & QUIT (WHILE IN A GAME)
 //
 ////////////////////////////////////////////////////////////////////
-int CP_CheckQuick(unsigned scancode)
+myint CP_CheckQuick(unsigned scancode)
 {
 	switch(scancode)
 	{
@@ -633,7 +633,7 @@ int CP_CheckQuick(unsigned scancode)
 // END THE CURRENT GAME
 //
 ////////////////////////////////////////////////////////////////////
-int CP_EndGame()
+myint CP_EndGame()
 {
 	if (!Confirm(ENDGAMESTR))
 		return 0;
@@ -689,7 +689,7 @@ void CP_ViewScores()
 ////////////////////////////////////////////////////////////////////
 void CP_NewGame()
 {
-	int which,episode;
+	myint which,episode;
 
 #ifdef SPEAR
 	UnCacheLump (OPTIONS_LUMP_START,OPTIONS_LUMP_END);
@@ -806,7 +806,7 @@ firstpart:
 //
 void DrawNewEpisode(void)
 {
-	int i;
+	myint i;
 
 	ClearMScreen();
 	VWB_DrawPic(112,184,C_MOUSELBACKPIC);
@@ -862,7 +862,7 @@ void DrawNewGame(void)
 //
 // DRAW NEW GAME GRAPHIC
 //
-void DrawNewGameDiff(int w)
+void DrawNewGameDiff(myint w)
 {
 	VWB_DrawPic(NM_X+185,NM_Y+7,w+C_BABYMODEPIC);
 }
@@ -875,7 +875,7 @@ void DrawNewGameDiff(int w)
 ////////////////////////////////////////////////////////////////////
 void CP_Sound()
 {
-	int which;
+	myint which;
 
 #ifdef SPEAR
 	UnCacheLump (OPTIONS_LUMP_START,OPTIONS_LUMP_END);
@@ -985,7 +985,7 @@ void CP_Sound()
 //
 void DrawSoundMenu(void)
 {
-	int i,on;
+	myint i,on;
 
 	//
 	// DRAW SOUND MENU
@@ -1062,7 +1062,7 @@ void DrawSoundMenu(void)
 //
 // DRAW LOAD/SAVE IN PROGRESS
 //
-void DrawLSAction(int which)
+void DrawLSAction(myint which)
 {
 	#define LSA_X	96
 	#define LSA_Y	80
@@ -1092,9 +1092,9 @@ void DrawLSAction(int which)
 // LOAD SAVED GAMES
 //
 ////////////////////////////////////////////////////////////////////
-int CP_LoadGame(int quick)
+myint CP_LoadGame(myint quick)
 {
-	int which, exit=0;
+	myint which, exit=0;
 	char name[13];
 
 	strcpy(name, SaveName);
@@ -1171,9 +1171,9 @@ int CP_LoadGame(int quick)
 //
 // HIGHLIGHT CURRENT SELECTED ENTRY
 //
-void TrackWhichGame(int w)
+void TrackWhichGame(myint w)
 {
-	static int lastgameon=0;
+	static myint lastgameon=0;
 
 	PrintLSEntry(lastgameon,TEXTCOLOR);
 	PrintLSEntry(w,HIGHLIGHT);
@@ -1186,12 +1186,12 @@ void TrackWhichGame(int w)
 //
 // DRAW THE LOAD/SAVE SCREEN
 //
-void DrawLoadSaveScreen(int loadsave)
+void DrawLoadSaveScreen(myint loadsave)
 {
 	#define DISKX	100
 	#define DISKY	0
 
-	int i;
+	myint i;
 
 
 	ClearMScreen();
@@ -1219,7 +1219,7 @@ void DrawLoadSaveScreen(int loadsave)
 //
 // PRINT LOAD/SAVE GAME ENTRY W/BOX OUTLINE
 //
-void PrintLSEntry(int w,int color)
+void PrintLSEntry(myint w,myint color)
 {
 	SETFONTCOLOR(color,BKGDCOLOR);
 	DrawOutline(LSM_X+LSItems.indent,LSM_Y+w*13,LSM_W-LSItems.indent-15,11,color,color);
@@ -1241,9 +1241,9 @@ void PrintLSEntry(int w,int color)
 // SAVE CURRENT GAME
 //
 ////////////////////////////////////////////////////////////////////
-int CP_SaveGame(int quick)
+myint CP_SaveGame(myint quick)
 {
-	int which, exit=0;
+	myint which, exit=0;
 	char name[13], input[32];
 
 	strcpy(name,SaveName);
@@ -1343,7 +1343,7 @@ int CP_SaveGame(int quick)
 // CALIBRATE JOYSTICK
 //
 ////////////////////////////////////////////////////////////////////
-int CalibrateJoystick()
+myint CalibrateJoystick()
 {
 	#define CALX	85
 	#define CALY	40
@@ -1433,7 +1433,7 @@ int CalibrateJoystick()
 void CP_Control()
 {
 	enum {MOUSEENABLE,JOYENABLE,USEPORT2,PADENABLE,MOUSESENS,CUSTOMIZE};
-	int which;
+	myint which;
 
 #ifdef SPEAR
 	UnCacheLump (OPTIONS_LUMP_START,OPTIONS_LUMP_END);
@@ -1532,7 +1532,7 @@ void DrawMouseSens()
 void MouseSensitivity()
 {
 	ControlInfo ci;
-	int exit=0,oldMA;
+	myint exit=0,oldMA;
 
 
 	oldMA=mouseadjustment;
@@ -1606,7 +1606,7 @@ void MouseSensitivity()
 //
 void DrawCtlScreen()
 {
-	int i, x, y;
+	myint i, x, y;
 
 	ClearMScreen();
 	DrawStripes(10);
@@ -1685,11 +1685,11 @@ void DrawCtlScreen()
 ////////////////////////////////////////////////////////////////////
 enum {FIRE,STRAFE,RUN,OPEN};
 char mbarray[4][3]={"b0","b1","b2","b3"};
-int order[4]={RUN,OPEN,FIRE,STRAFE};
+myint order[4]={RUN,OPEN,FIRE,STRAFE};
 
 void CustomControls(void)
 {
- int which;
+ myint which;
 
 
  DrawCustomScreen();
@@ -1771,11 +1771,11 @@ void DefineKeyMove(void)
 // ENTER CONTROL DATA FOR ANY TYPE OF CONTROL
 //
 enum {FWRD,RIGHT,BKWD,LEFT};
-int moveorder[4]={LEFT,RIGHT,FWRD,BKWD};
+myint moveorder[4]={LEFT,RIGHT,FWRD,BKWD};
 
-void EnterCtrlData(int index,CustomCtrls *cust,void (*DrawRtn)(int),void (*PrintRtn)(int),int type)
+void EnterCtrlData(myint index,CustomCtrls *cust,void (*DrawRtn)(myint),void (*PrintRtn)(myint),myint type)
 {
- int j,exit,tick,redraw,which = 0,x = 0,picked;
+ myint j,exit,tick,redraw,which = 0,x = 0,picked;
  ControlInfo ci;
 
  ShootSnd();
@@ -1834,7 +1834,7 @@ void EnterCtrlData(int index,CustomCtrls *cust,void (*DrawRtn)(int),void (*Print
 
    do
    {
-	int button,result=0;
+	myint button,result=0;
 
 	if (type==KEYBOARDBTNS||type==KEYBOARDMOVE)
 	  IN_ClearKeysDown();
@@ -1877,7 +1877,7 @@ void EnterCtrlData(int index,CustomCtrls *cust,void (*DrawRtn)(int),void (*Print
 
 	   if (result)
 	   {
-	int z;
+	myint z;
 
 
 	for (z=0;z<4;z++)
@@ -1904,7 +1904,7 @@ void EnterCtrlData(int index,CustomCtrls *cust,void (*DrawRtn)(int),void (*Print
 
 	   if (result)
 	   {
-	int z;
+	myint z;
 
 
 	for (z=0;z<4;z++)
@@ -2009,10 +2009,10 @@ void EnterCtrlData(int index,CustomCtrls *cust,void (*DrawRtn)(int),void (*Print
 //
 // FIXUP GUN CURSOR OVERDRAW SHIT
 //
-void FixupCustom(int w)
+void FixupCustom(myint w)
 {
-	static int lastwhich=-1;
-	int y=CST_Y+26+w*13;
+	static myint lastwhich=-1;
+	myint y=CST_Y+26+w*13;
 
 
 	VW_Hlin(7,32,y-1,DEACTIVE);
@@ -2067,7 +2067,7 @@ void FixupCustom(int w)
 //
 void DrawCustomScreen(void)
 {
-	int i;
+	myint i;
 
 	ClearMScreen();
 	WindowX=0;
@@ -2193,9 +2193,9 @@ void DrawCustomScreen(void)
 }
 
 
-void PrintCustMouse(int i)
+void PrintCustMouse(myint i)
 {
-	int j;
+	myint j;
 
 	for (j=0;j<4;j++)
 		if (order[i]==buttonmouse[j])
@@ -2206,9 +2206,9 @@ void PrintCustMouse(int i)
 		}
 }
 
-void DrawCustMouse(int hilight)
+void DrawCustMouse(myint hilight)
 {
-	int i,color;
+	myint i,color;
 
 
 	color=TEXTCOLOR;
@@ -2229,9 +2229,9 @@ void DrawCustMouse(int hilight)
 		PrintCustMouse(i);
 }
 
-void PrintCustJoy(int i)
+void PrintCustJoy(myint i)
 {
-	int j;
+	myint j;
 
 	for (j=0;j<4;j++)
 		if (order[i]==buttonjoy[j])
@@ -2242,9 +2242,9 @@ void PrintCustJoy(int i)
 		}
 }
 
-void DrawCustJoy(int hilight)
+void DrawCustJoy(myint hilight)
 {
-	int i,color;
+	myint i,color;
 
 
 	color=TEXTCOLOR;
@@ -2266,15 +2266,15 @@ void DrawCustJoy(int hilight)
 }
 
 
-void PrintCustKeybd(int i)
+void PrintCustKeybd(myint i)
 {
 	PrintX=CST_START+CST_SPC*i;
 	US_Print(IN_GetScanName(buttonscan[order[i]]));
 }
 
-void DrawCustKeybd(int hilight)
+void DrawCustKeybd(myint hilight)
 {
-	int i,color;
+	myint i,color;
 
 
 	color=TEXTCOLOR;
@@ -2287,15 +2287,15 @@ void DrawCustKeybd(int hilight)
 		PrintCustKeybd(i);
 }
 
-void PrintCustKeys(int i)
+void PrintCustKeys(myint i)
 {
 	PrintX=CST_START+CST_SPC*i;
 	US_Print(IN_GetScanName(dirscan[moveorder[i]]));
 }
 
-void DrawCustKeys(int hilight)
+void DrawCustKeys(myint hilight)
 {
-	int i,color;
+	myint i,color;
 
 
 	color=TEXTCOLOR;
@@ -2316,7 +2316,7 @@ void DrawCustKeys(int hilight)
 ////////////////////////////////////////////////////////////////////
 void CP_ChangeView()
 {
-	int exit = 0, oldview, newview;
+	myint exit = 0, oldview, newview;
 	ControlInfo ci;
 
 	WindowX=WindowY=0;
@@ -2381,7 +2381,7 @@ void CP_ChangeView()
 //
 // DRAW THE CHANGEVIEW SCREEN
 //
-void DrawChangeView(int view)
+void DrawChangeView(myint view)
 {
 	VW_Bar(0,160,320,40,VIEWCOLOR);
 	ShowViewSize(view);
@@ -2448,18 +2448,18 @@ void ClearMScreen(void)
 // Un/Cache a LUMP of graphics
 //
 ////////////////////////////////////////////////////////////////////
-void CacheLump(int lumpstart, int lumpend)
+void CacheLump(myint lumpstart, myint lumpend)
 {
-	int i;
+	myint i;
 
 	for (i=lumpstart;i<=lumpend;i++)
 		CA_CacheGrChunk(i);
 }
 
 
-void UnCacheLump(int lumpstart, int lumpend)
+void UnCacheLump(myint lumpstart, myint lumpend)
 {
-	int i;
+	myint i;
 
 	for (i=lumpstart;i<=lumpend;i++)
 		CA_UnCacheGrChunk(i);
@@ -2471,13 +2471,13 @@ void UnCacheLump(int lumpstart, int lumpend)
 // Draw a window for a menu
 //
 ////////////////////////////////////////////////////////////////////
-void DrawWindow(int x,int y,int w,int h,int wcolor)
+void DrawWindow(myint x,myint y,myint w,myint h,myint wcolor)
 {
 	VW_Bar(x,y,w,h,wcolor);
 	DrawOutline(x,y,w,h,BORD2COLOR,DEACTIVE);
 }
 
-void DrawOutline(int x,int y,int w,int h,int color1,int color2)
+void DrawOutline(myint x,myint y,myint w,myint h,myint color1,myint color2)
 {
 	VW_Hlin(x,x+w,y,color2);
 	VW_Vlin(y,y+h,x,color2);
@@ -2493,7 +2493,7 @@ void DrawOutline(int x,int y,int w,int h,int color1,int color2)
 ////////////////////////////////////////////////////////////////////
 void SetupControlPanel()
 {
-	int which;
+	myint which;
 
 	//
 	// CACHE GRAPHICS & SOUNDS
@@ -2555,7 +2555,7 @@ void SetupControlPanel()
 		} while(_findnext(hand, &f) != -1);
 #else
 	glob_t globbuf;
-	int x;
+	myint x;
 	
 	if (glob(SaveName, 0, NULL, &globbuf))
 		return;
@@ -2601,11 +2601,11 @@ void CleanupControlPanel()
 // Handle moving gun around a menu
 //
 ////////////////////////////////////////////////////////////////////
-int HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(int w))
+myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w))
 {
 	char key;
-	static int redrawitem=1,lastitem=-1;
-	int i,x,y,basey,exit,which,shape,timer;
+	static myint redrawitem=1,lastitem=-1;
+	myint i,x,y,basey,exit,which,shape,timer;
 	ControlInfo ci;
 
 
@@ -2668,7 +2668,7 @@ int HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(int w))
 		key=LastASCII;
 		if (key)
 		{
-			int ok=0;
+			myint ok=0;
 
 			//
 			// CHECK FOR SCREEN CAPTURE
@@ -2843,7 +2843,7 @@ int HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(int w))
 //
 // ERASE GUN & DE-HIGHLIGHT STRING
 //
-void EraseGun(CP_iteminfo *item_i,CP_itemtype *items,int x,int y,int which)
+void EraseGun(CP_iteminfo *item_i,CP_itemtype *items,myint x,myint y,myint which)
 {
 	VW_Bar(x-1,y,25,16,BKGDCOLOR);
 	SetMenuTextColor(items+which,0);
@@ -2858,7 +2858,7 @@ void EraseGun(CP_iteminfo *item_i,CP_itemtype *items,int x,int y,int which)
 //
 // DRAW HALF STEP OF GUN TO NEXT POSITION
 //
-void DrawHalfStep(int x,int y)
+void DrawHalfStep(myint x,myint y)
 {
 	VWB_DrawPic(x,y,C_CURSOR1PIC);
 	VW_UpdateScreen();
@@ -2871,7 +2871,7 @@ void DrawHalfStep(int x,int y)
 //
 // DRAW GUN AT NEW POSITION
 //
-void DrawGun(CP_iteminfo *item_i,CP_itemtype *items,int x,int *y,int which,int basey,void (*routine)(int w))
+void DrawGun(CP_iteminfo *item_i,CP_itemtype *items,myint x,myint *y,myint which,myint basey,void (*routine)(myint w))
 {
 	VW_Bar(x-1,*y,25,16,BKGDCOLOR);
 	*y=basey+which*13;
@@ -2896,7 +2896,7 @@ void DrawGun(CP_iteminfo *item_i,CP_itemtype *items,int x,int *y,int which,int b
 // DELAY FOR AN AMOUNT OF TICS OR UNTIL CONTROLS ARE INACTIVE
 //
 ////////////////////////////////////////////////////////////////////
-void TicDelay(int count)
+void TicDelay(myint count)
 {
 	ControlInfo ci;
 
@@ -2914,7 +2914,7 @@ void TicDelay(int count)
 ////////////////////////////////////////////////////////////////////
 void DrawMenu(CP_iteminfo *item_i,CP_itemtype *items)
 {
-	int i,which=item_i->curpos;
+	myint i,which=item_i->curpos;
 
 
 	WindowX=PrintX=item_i->x+item_i->indent;
@@ -2946,7 +2946,7 @@ void DrawMenu(CP_iteminfo *item_i,CP_itemtype *items)
 // SET TEXT COLOR (HIGHLIGHT OR NO)
 //
 ////////////////////////////////////////////////////////////////////
-void SetMenuTextColor(CP_itemtype *items,int hlight)
+void SetMenuTextColor(CP_itemtype *items,myint hlight)
 {
 	if (hlight)
 		{SETFONTCOLOR(color_hlite[items->active],BKGDCOLOR);}
@@ -2976,7 +2976,7 @@ void WaitKeyUp(void)
 ////////////////////////////////////////////////////////////////////
 void ReadAnyControl(ControlInfo *ci)
 {
-	int mouseactive=0;
+	myint mouseactive=0;
 
 	IN_ReadControl(0,ci);
 
@@ -2995,9 +2995,9 @@ void ReadAnyControl(ControlInfo *ci)
 // DRAW DIALOG AND CONFIRM YES OR NO TO QUESTION
 //
 ////////////////////////////////////////////////////////////////////
-int Confirm(const char *string)
+myint Confirm(const char *string)
 {
-	int xit=0,x,y,tick=0,whichsnd[2]={ESCPRESSEDSND,SHOOTSND};
+	myint xit=0,x,y,tick=0,whichsnd[2]={ESCPRESSEDSND,SHOOTSND};
 
 	Message(string);
 	IN_ClearKeysDown();
@@ -3071,9 +3071,9 @@ void Message(const char *string)
 	VW_UpdateScreen();
 }
 
-static int lastmusic = -1;
+static myint lastmusic = -1;
 
-void StartCPMusic(int song)
+void StartCPMusic(myint song)
 {
 	FreeMusic();
 	
@@ -3117,7 +3117,7 @@ void CheckPause()
 ///////////////////////////////////////////////////////////////////////////
 void DrawMenuGun(CP_iteminfo *iteminfo)
 {
-	int x, y;
+	myint x, y;
 
 	x = iteminfo->x;
 	y = iteminfo->y+iteminfo->curpos*13-2;
@@ -3131,7 +3131,7 @@ void DrawMenuGun(CP_iteminfo *iteminfo)
 // DRAW SCREEN TITLE STRIPES
 //
 ///////////////////////////////////////////////////////////////////////////
-void DrawStripes(int y)
+void DrawStripes(myint y)
 {
 #ifndef SPEAR
 	VW_Bar(0,y,320,24,0);

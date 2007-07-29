@@ -8,9 +8,9 @@
 =====================
 */
 
-int DigiMap[LASTSOUND];
+myint DigiMap[LASTSOUND];
 
-static int wolfdigimap[] =
+static myint wolfdigimap[] =
 {
 #ifndef SPEAR
 	HALTSND,                0,
@@ -114,7 +114,7 @@ static int wolfdigimap[] =
 
 void InitDigiMap()
 {
-	int *map, i;
+	myint *map, i;
 
 	for (i = 0; i < LASTSOUND; i++)
 		DigiMap[i] = -1;

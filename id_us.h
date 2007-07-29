@@ -5,8 +5,8 @@
 #define	MaxScores	7
 typedef	struct {
 	char name[MaxHighName + 1];
-	int score;
-	int completed, episode;
+	myint score;
+	myint completed, episode;
 } HighScore;
 
 #define	MaxString	128	// Maximum input string size
@@ -32,8 +32,8 @@ void US_Startup(),
 				US_CPrintLine(const char *s),
 				US_Print(const char *s),
 				US_PrintUnsigned(longword n);
-boolean	US_LineInput(int x,int y,char *buf,const char *def,boolean escok,
-				int maxchars,int maxwidth);
-int				US_RndT();
+boolean	US_LineInput(myint x,myint y,char *buf,const char *def,boolean escok,
+				myint maxchars,myint maxwidth);
+myint				US_RndT();
 
 #endif

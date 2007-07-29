@@ -6,11 +6,11 @@
 #define OPL_OUTPUT_BIT 16
 
 typedef unsigned char	UINT8;   /* unsigned  8bit */
-typedef unsigned short	UINT16;  /* unsigned 16bit */
-typedef unsigned int	UINT32;  /* unsigned 32bit */
+typedef unsigned myint	UINT16;  /* unsigned 16bit */
+typedef unsigned myint	UINT32;  /* unsigned 32bit */
 typedef signed char		INT8;    /* signed  8bit   */
-typedef signed short	INT16;   /* signed 16bit   */
-typedef signed int		INT32;   /* signed 32bit   */
+typedef signed myint	INT16;   /* signed 16bit   */
+typedef signed myint		INT32;   /* signed 32bit   */
 
 #if (OPL_OUTPUT_BIT==16)
 typedef INT16 OPLSAMPLE;
@@ -68,14 +68,14 @@ typedef struct fm_opl_channel {
 /* OPL state */
 typedef struct fm_opl_f {
 	UINT8 type;			/* chip type                        */
-	int clock;			/* master clock  (Hz)                */
-	int rate;			/* sampling rate (Hz)                */
+	myint clock;			/* master clock  (Hz)                */
+	myint rate;			/* sampling rate (Hz)                */
 	double freqbase;	/* frequency base                    */
 	UINT8 address;		/* address register                  */
 	UINT32 mode;		/* Reg.08 : CSM , notesel,etc.       */
 	/* FM channel slots */
 	OPL_CH *P_CH;		/* pointer of CH       */
-	int	max_ch;			/* maximum channel     */
+	myint	max_ch;			/* maximum channel     */
 	/* Rythm sention */
 	UINT8 rythm;		/* Rythm mode , key flag */
 
@@ -96,13 +96,13 @@ typedef struct fm_opl_f {
 /* ---------- Generic interface section ---------- */
 #define OPL_TYPE_YM3812 0
 
-FM_OPL *OPLCreate(int type, int clock, int rate);
+FM_OPL *OPLCreate(myint type, myint clock, myint rate);
 void OPLDestroy(FM_OPL *OPL);
 
 void OPLResetChip(FM_OPL *OPL);
-void OPLWrite(FM_OPL *OPL,int a,int v);
-unsigned char OPLRead(FM_OPL *OPL,int a);
+void OPLWrite(FM_OPL *OPL,myint a,myint v);
+unsigned char OPLRead(FM_OPL *OPL,myint a);
 
-void YM3812UpdateOne(FM_OPL *OPL, INT16 *buffer, int length);
+void YM3812UpdateOne(FM_OPL *OPL, INT16 *buffer, myint length);
 
 #endif

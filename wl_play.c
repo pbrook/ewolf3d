@@ -12,7 +12,7 @@ boolean		madenoise;		// true when shooting or screaming
 
 exit_t		playstate;
 
-int		DebugOk;
+myint		DebugOk;
 
 objtype 	objlist[MAXACTORS],*new,*obj,*player,*lastobj,
 			*objfreelist,*killerobj;
@@ -23,20 +23,20 @@ boolean		singlestep,godmode,noclip;
 
 byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
 byte		spotvis[MAPSIZE][MAPSIZE];
-int		actorat[MAPSIZE][MAPSIZE];
+umyshort		actorat[MAPSIZE][MAPSIZE];
 
-int tics;
+myint tics;
 
 //
 // control info
 //
 boolean		mouseenabled,joystickenabled,joypadenabled;
-int			joystickport;
-int			dirscan[4] = {sc_UpArrow,sc_RightArrow,sc_DownArrow,sc_LeftArrow};
-int			buttonscan[NUMBUTTONS] =
+myint			joystickport;
+myint			dirscan[4] = {sc_UpArrow,sc_RightArrow,sc_DownArrow,sc_LeftArrow};
+myint			buttonscan[NUMBUTTONS] =
 			{sc_Control,sc_Alt,sc_RShift,sc_Space,sc_1,sc_2,sc_3,sc_4};
-int			buttonmouse[4]={bt_attack,bt_strafe,bt_use,bt_nobutton};
-int			buttonjoy[4]={bt_attack,bt_strafe,bt_use,bt_run};
+myint			buttonmouse[4]={bt_attack,bt_strafe,bt_use,bt_nobutton};
+myint			buttonjoy[4]={bt_attack,bt_strafe,bt_use,bt_run};
 
 boolean		buttonheld[NUMBUTTONS];
 
@@ -47,7 +47,7 @@ memptr		demobuffer;
 //
 // curent user input
 //
-int		controlx,controly;	/* range from -100 to 100 per tic */
+myint		controlx,controly;	/* range from -100 to 100 per tic */
 boolean		buttonstate[NUMBUTTONS];
 
 static void RemoveObj(objtype *gone);
@@ -61,7 +61,7 @@ static void RemoveObj(objtype *gone);
 */
 
 /* LIST OF SONGS FOR EACH VERSION */
-static const int songs[]=
+static const myint songs[]=
 {
 #ifndef SPEAR
 /* Episode One */
@@ -195,7 +195,7 @@ static const int songs[]=
 
 void PollKeyboardButtons()
 {
-	int i;
+	myint i;
 
 	for (i=0;i<NUMBUTTONS;i++)
 		if (IN_KeyDown(buttonscan[i]))
@@ -213,7 +213,7 @@ void PollKeyboardButtons()
 
 void PollMouseButtons()
 {
-	int	buttons;
+	myint	buttons;
 
 	buttons = IN_MouseButtons();
 
@@ -236,7 +236,7 @@ void PollMouseButtons()
 
 void PollJoystickButtons()
 {
-	int	buttons;
+	myint	buttons;
 
 	buttons = IN_JoyButtons();
 
@@ -308,7 +308,7 @@ void PollKeyboardMove()
 
 void PollMouseMove()
 {
-	int mousexmove = 0, mouseymove = 0;
+	myint mousexmove = 0, mouseymove = 0;
 
 	IN_GetMouseDelta(&mousexmove, &mouseymove);
 	
@@ -326,7 +326,7 @@ void PollMouseMove()
 
 void PollJoystickMove()
 {
-	int joyx, joyy;
+	myint joyx, joyy;
 
 	INL_GetJoyDelta(joystickport,&joyx,&joyy);
 
@@ -396,7 +396,7 @@ void UpdateInput()
 
 void PollControls()
 {
-	int max, min, i;
+	myint max, min, i;
 	byte buttonbits;
 
 	controlx = 0;
@@ -421,8 +421,8 @@ void PollControls()
 		if (demoptr == lastdemoptr)
 			playstate = ex_completed;		// demo is done
 
-		controlx *= (int)tics;
-		controly *= (int)tics;
+		controlx *= (myint)tics;
+		controly *= (myint)tics;
 
 		return;
 	}
@@ -452,8 +452,8 @@ void PollControls()
 	//
 	// save info out to demo buffer
 	//
-		controlx /= (int)tics;
-		controly /= (int)tics;
+		controlx /= (myint)tics;
+		controly /= (myint)tics;
 
 		buttonbits = 0;
 
@@ -471,8 +471,8 @@ void PollControls()
 		if (demoptr >= lastdemoptr)
 			Quit("Demo buffer overflowed!");
 
-		controlx *= (int)tics;
-		controly *= (int)tics;
+		controlx *= (myint)tics;
+		controly *= (myint)tics;
 	}
 }
 
@@ -731,14 +731,14 @@ next element.
 
 void InitActorList()
 {
-	int	i;
+	myint	i;
 
 //
 // init the actor lists
 //
 	for (i = 0; i < MAXACTORS; i++)
 	{
-		objlist[i].id = i;
+		//objlist[i].id = i;
 		objlist[i].prev = &objlist[i+1];
 		objlist[i].next = NULL;
 	}
@@ -769,17 +769,13 @@ void InitActorList()
 
 void GetNewActor()
 {
-	int id;
-	
 	if (!objfreelist)
 		Quit("GetNewActor: No free spots in objlist!");
 	
 	new = objfreelist;
-	id = new->id;
 	objfreelist = new->prev;
 	
 	memset(new, 0, sizeof(*new));
-	new->id = id;
 	
 	if (lastobj)
 		lastobj->next = new;
@@ -885,7 +881,7 @@ void StartMusic()
 byte	redshifts[NUMREDSHIFTS][768];
 byte	whiteshifts[NUMREDSHIFTS][768];
 
-int	damagecount,bonuscount;
+myint	damagecount,bonuscount;
 boolean	palshifted;
 
 /*
@@ -901,7 +897,7 @@ void InitRedShifts()
 	byte *workptr;
 	const byte *baseptr;
 
-	int	i,j,delta;
+	myint	i,j,delta;
 
 
 //
@@ -977,7 +973,7 @@ void StartBonusFlash()
 =====================
 */
 
-void StartDamageFlash(int damage)
+void StartDamageFlash(myint damage)
 {
 	damagecount += damage;
 }
@@ -993,7 +989,7 @@ void StartDamageFlash(int damage)
 
 void UpdatePaletteShifts()
 {
-	int red, white;
+	myint red, white;
 
 	if (bonuscount)
 	{
@@ -1109,7 +1105,7 @@ void DoActor(objtype *ob)
 		if ((ob->flags&FL_NONMARK) && actorat[ob->tilex][ob->tiley])
 			return;
 
-		actorat[ob->tilex][ob->tiley] = ob->id | 0x8000;
+		actorat[ob->tilex][ob->tiley] = obj_id(ob) | 0x8000;
 		return;
 	}
 
@@ -1168,7 +1164,7 @@ think:
 	if ((ob->flags&FL_NONMARK) && actorat[ob->tilex][ob->tiley])
 		return;
 
-	actorat[ob->tilex][ob->tiley] = ob->id | 0x8000;
+	actorat[ob->tilex][ob->tiley] = obj_id(ob) | 0x8000;
 }
 
 //==========================================================================

@@ -6,21 +6,21 @@
 
 typedef struct
 {
-	int width, height;
+	myint width, height;
 } pictabletype;
 
 extern pictabletype pictable[NUMPICS];
 
 extern byte fontcolor, backcolor;
-extern int fontnumber;
-extern int px, py;
+extern myint fontnumber;
+extern myint px, py;
 
 #define SETFONTCOLOR(f, b) { fontcolor = f; backcolor = b; }
 
 void VW_UpdateScreen();
 
-void VWB_DrawTile8(int x, int y, int tile);
-void VWB_DrawPic(int x, int y, int chunknum);
+void VWB_DrawTile8(myint x, myint y, myint tile);
+void VWB_DrawPic(myint x, myint y, myint chunknum);
 
 extern boolean screenfaded;
 
@@ -33,24 +33,24 @@ void	VW_MeasurePropString(const char *string, word *width, word *height);
 
 void VW_DrawPropString(const char *string);
 
-void VL_FadeOut(int start, int end, int red, int green, int blue, int steps);
-void VL_FadeIn(int start, int end, const byte *palette, int steps);
+void VL_FadeOut(myint start, myint end, myint red, myint green, myint blue, myint steps);
+void VL_FadeIn(myint start, myint end, const byte *palette, myint steps);
 
-void VL_CacheScreen(int chunk);
+void VL_CacheScreen(myint chunk);
 
-void VW_Bar(int x, int y, int width, int height, int color);
+void VW_Bar(myint x, myint y, myint width, myint height, myint color);
 
 void VW_Startup();
 void VW_Shutdown();
 
-void VL_FillPalette(int red, int green, int blue);
-void VW_Plot(int x, int y, int color);
+void VL_FillPalette(myint red, myint green, myint blue);
+void VW_Plot(myint x, myint y, myint color);
 void VL_Hlin(unsigned x, unsigned y, unsigned width, unsigned color);
-void VL_Vlin(int x, int y, int height, int color);
-void VL_Bar(int x, int y, int width, int height, int color);
+void VL_Vlin(myint x, myint y, myint height, myint color);
+void VL_Bar(myint x, myint y, myint width, myint height, myint color);
 
-void VL_MemToScreen(const byte *source, int width, int height, int x, int y);
+void VL_MemToScreen(const byte *source, myint width, myint height, myint x, myint y);
 
-void VL_DeModeXize(byte *buf, int width, int height);
+void VL_DeModeXize(byte *buf, myint width, myint height);
 
 #endif

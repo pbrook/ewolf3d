@@ -24,7 +24,7 @@ extern void SD_Shutdown();
 extern boolean SD_PlaySound(soundnames sound);
 extern void SD_StopSound(),
 				SD_WaitSoundDone(),
-				SD_StartMusic(int music),
+				SD_StartMusic(myint music),
 				SD_MusicOn(),
 				SD_MusicOff();
 
@@ -34,11 +34,11 @@ extern word SD_SoundPlaying();
 
 extern void SD_SetDigiDevice(SDSMode);
 
-void PlaySoundLocGlobal(word s, int id, fixed gx, fixed gy);
-void UpdateSoundLoc(fixed x, fixed y, int angle);
+void PlaySoundLocGlobal(word s, myint id, fixed gx, fixed gy);
+void UpdateSoundLoc(fixed x, fixed y, myint angle);
 
 
-extern int DigiMap[];
+extern myint DigiMap[];
 void InitDigiMap();
 
 #endif

@@ -1,7 +1,7 @@
 #include "wl_def.h"
 
 typedef	struct {
-	int x, y;
+	myint x, y;
 } Point;
 
 typedef	struct {
@@ -259,11 +259,11 @@ void US_DrawWindow(word x,word y,word w,word h)
 //	USL_XORICursor() - XORs the I-bar text cursor. Used by US_LineInput()
 //
 ///////////////////////////////////////////////////////////////////////////
-static void USL_XORICursor(int x, int y, const char *s, word cursor)
+static void USL_XORICursor(myint x, myint y, const char *s, word cursor)
 {
 	static boolean status;
 	char buf[MaxString];
-	int temp;
+	myint temp;
 	word w, h;
 
 	strcpy(buf,s);
@@ -293,8 +293,8 @@ static void USL_XORICursor(int x, int y, const char *s, word cursor)
 //		returned
 //
 ///////////////////////////////////////////////////////////////////////////
-boolean US_LineInput(int x,int y,char *buf,const char *def,boolean escok,
-				int maxchars,int maxwidth)
+boolean US_LineInput(myint x,myint y,char *buf,const char *def,boolean escok,
+				myint maxchars,myint maxwidth)
 {
 	boolean	redraw, cursorvis, cursormoved, done, result = true;
 	ScanCode sc;
@@ -467,7 +467,7 @@ boolean US_LineInput(int x,int y,char *buf,const char *def,boolean escok,
 	return(result);
 }
 
-static const int rndtable[256] ={
+static const byte rndtable[256] ={
   0,   8, 109, 220, 222, 241, 149, 107,  75, 248, 254, 140,  16,  66,
  74,  21, 211,  47,  80, 242, 154,  27, 205, 128, 161,  89,  77,  36,
  95, 110,  85,  48, 212, 140, 211, 249,  22,  79, 200,  50,  28, 188,
@@ -489,7 +489,7 @@ static const int rndtable[256] ={
 120, 163, 236, 249
 };
 
-static int rndindex = 0;
+static byte rndindex = 0;
 
 void US_InitRndT(boolean randomize)
 {
@@ -499,7 +499,7 @@ void US_InitRndT(boolean randomize)
 		rndindex = 0;
 }
 
-int US_RndT()
+myint US_RndT()
 {
 	rndindex++;
 	rndindex &= 0xFF;

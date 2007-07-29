@@ -2,15 +2,15 @@
 
 pictabletype pictable[NUMPICS];
 
-int px, py;
+myint px, py;
 byte fontcolor, backcolor;
-int fontnumber;
+myint fontnumber;
 
 boolean	screenfaded;
 
 static byte palette1[256][3], palette2[256][3];
 
-int xfrac, yfrac;
+myint xfrac, yfrac;
 
 /* ======================================================================== */
 
@@ -18,10 +18,10 @@ int xfrac, yfrac;
 #define SKIPFADE
 */
 
-void VL_FillPalette(int red, int green, int blue)
+void VL_FillPalette(myint red, myint green, myint blue)
 {
 	byte pal[768];
-	int i;
+	myint i;
 	
 	for (i = 0; i < 256; i++) {
 		pal[i*3+0] = red;
@@ -42,12 +42,12 @@ void VL_FillPalette(int red, int green, int blue)
 =================
 */
 
-void VL_FadeOut(int start, int end, int red, int green, int blue, int steps)
+void VL_FadeOut(myint start, myint end, myint red, myint green, myint blue, myint steps)
 {
 #ifdef SKIPFADE
 	VL_FillPalette(red, green, blue);
 #else
-	int i,j,orig,delta;
+	myint i,j,orig,delta;
 	byte *origptr, *newptr;
 
 	VL_GetPalette(&palette1[0][0]);
@@ -90,12 +90,12 @@ void VL_FadeOut(int start, int end, int red, int green, int blue, int steps)
 =================
 */
 
-void VL_FadeIn(int start, int end, const byte *palette, int steps)
+void VL_FadeIn(myint start, myint end, const byte *palette, myint steps)
 {
 #ifdef SKIPFADE
 	VL_SetPalette(palette);
 #else
-	int i, j, delta;
+	myint i, j, delta;
 
 	VL_GetPalette(&palette1[0][0]);
 	memcpy(&palette2[0][0],&palette1[0][0],sizeof(palette1));
@@ -122,17 +122,17 @@ void VL_FadeIn(int start, int end, const byte *palette, int steps)
 	screenfaded = false;
 }
 
-void VL_CacheScreen(int chunk)
+void VL_CacheScreen(myint chunk)
 {
 	CA_CacheGrChunk(chunk);
 	VL_MemToScreen(grsegs[chunk], 320, 200, 0, 0);
 	CA_UnCacheGrChunk(chunk);
 }
 
-void VL_DeModeXize(byte *buf, int width, int height)
+void VL_DeModeXize(byte *buf, myint width, myint height)
 {
 	byte *mem, *ptr, *destline;
-	int plane, x, y;
+	myint plane, x, y;
 	
 	if (width & 3) {
 		printf("Not divisible by 4?\n");
@@ -165,9 +165,9 @@ void VL_DeModeXize(byte *buf, int width, int height)
 =================
 */
 
-static void VL_Plot(int x, int y, int color)
+static void VL_Plot(myint x, myint y, myint color)
 {
-	int xend, yend, xs, ys;
+	myint xend, yend, xs, ys;
 	
 	xend = x + 1;
 	yend = y + 1;
@@ -187,7 +187,7 @@ static void VL_Plot(int x, int y, int color)
 			*(gfxbuf + ys * vwidth + xs) = color;
 }
 
-void VW_Plot(int x, int y, int color)
+void VW_Plot(myint x, myint y, myint color)
 {
 	VL_Plot(x, y, color);
 }
@@ -202,7 +202,7 @@ data
 void VW_DrawPropString(const char *string)
 {
 	byte *font;
-	int width, step, height, x, xs, y;
+	myint width, step, height, x, xs, y;
 	byte *source, *ptrs;
 	byte ch;
 
@@ -229,7 +229,7 @@ void VW_DrawPropString(const char *string)
 
 void VW_MeasurePropString(const char *string, word *width, word *height)
 {
-	int w, mw;
+	myint w, mw;
 	byte *font = grsegs[STARTFONT+fontnumber];
 	
 	w = 0;
@@ -252,15 +252,15 @@ void VW_MeasurePropString(const char *string, word *width, word *height)
 	*width = mw;
 }
 
-void VWB_DrawTile8(int x, int y, int tile)
+void VWB_DrawTile8(myint x, myint y, myint tile)
 {
 	VL_MemToScreen(grsegs[STARTTILE8]+(tile*64), 8, 8, x, y);
 }
 
-void VWB_DrawPic(int x, int y, int chunknum)
+void VWB_DrawPic(myint x, myint y, myint chunknum)
 {
-	int picnum = chunknum - STARTPICS;
-	int width, height;
+	myint picnum = chunknum - STARTPICS;
+	myint width, height;
 
 	width = pictable[picnum].width;
 	height = pictable[picnum].height;
@@ -279,8 +279,8 @@ void VWB_DrawPic(int x, int y, int chunknum)
 void VL_Hlin(unsigned x, unsigned y, unsigned width, unsigned color)
 {
 /*
-	int xend, yend;
-	int w, h;
+	myint xend, yend;
+	myint w, h;
 	byte *ptr;
 	
 	xend = x + width;
@@ -302,7 +302,7 @@ void VL_Hlin(unsigned x, unsigned y, unsigned width, unsigned color)
 	}
 */
 
-	unsigned int w;
+	unsigned myint w;
 	
 	for (w = 0; w < width; w++)
 		VL_Plot(x+w, y, color);
@@ -317,11 +317,11 @@ void VL_Hlin(unsigned x, unsigned y, unsigned width, unsigned color)
 =================
 */
 
-void VL_Vlin(int x, int y, int height, int color)
+void VL_Vlin(myint x, myint y, myint height, myint color)
 {
 /*
-	int xend, yend;
-	int w, h;
+	myint xend, yend;
+	myint w, h;
 	byte *ptr;
 	
 	xend = x + 1;
@@ -342,7 +342,7 @@ void VL_Vlin(int x, int y, int height, int color)
 		ptr += vwidth;
 	}
 */
-	int h;
+	myint h;
 	
 	for (h = 0; h < height; h++)
 		VL_Plot(x, y+h, color);
@@ -356,9 +356,9 @@ void VL_Vlin(int x, int y, int height, int color)
 =================
 */
 
-void VW_Bar(int x, int y, int width, int height, int color)
+void VW_Bar(myint x, myint y, myint width, myint height, myint color)
 {
-	int w, h;
+	myint w, h;
 	byte *ptr;
 	
 	x *= xfrac;
@@ -375,7 +375,7 @@ void VW_Bar(int x, int y, int width, int height, int color)
 	}
 }
 
-void VL_Bar(int x, int y, int width, int height, int color)
+void VL_Bar(myint x, myint y, myint width, myint height, myint color)
 {
 	byte *ptr = gfxbuf + vwidth * y + x;
 	while (height--) {
@@ -394,9 +394,9 @@ void VL_Bar(int x, int y, int width, int height, int color)
 =================
 */
 
-void VL_MemToScreen(const byte *source, int width, int height, int x, int y)
+void VL_MemToScreen(const byte *source, myint width, myint height, myint x, myint y)
 {
-	int w, h;
+	myint w, h;
 	
 	for (w = 0; w < width; w++)
 		for (h = 0; h < height; h++)
