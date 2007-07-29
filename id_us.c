@@ -9,7 +9,6 @@ typedef	struct {
 } Rect;
 
 //	Global variables
-boolean		NoWait;
 word		PrintX,PrintY;
 word		WindowX,WindowY,WindowW,WindowH;
 
@@ -40,9 +39,6 @@ void US_Startup()
 		return;
 
 	US_InitRndT(true);
-
-	if (MS_CheckParm("nowait"))
-		NoWait = true;
 
 	US_Started = true;
 }

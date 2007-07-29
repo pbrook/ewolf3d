@@ -1247,9 +1247,6 @@ void DemoLoop()
 	
 	StartCPMusic(INTROSONG);
 
-	if (!NoWait)
-		PG13();
-
 	i = MS_CheckParm("playdemo");
 	if (i && ((i+1) < _argc)) {
 		i++;
@@ -1274,66 +1271,6 @@ void DemoLoop()
 	
 	while (1)
 	{
-		while (!NoWait)
-		{
-//
-// title page
-//
-			MM_SortMem ();
-#ifdef SPEAR
-			CA_CacheGrChunk (TITLEPALETTE);
-
-			CA_CacheGrChunk (TITLE1PIC);
-			VWB_DrawPic (0,0,TITLE1PIC);
-			CA_UnCacheGrChunk (TITLE1PIC);
-
-			CA_CacheGrChunk (TITLE2PIC);
-			VWB_DrawPic (0,80,TITLE2PIC);
-			CA_UnCacheGrChunk(TITLE2PIC);
-			VW_UpdateScreen();
-			VL_FadeIn(0,255,grsegs[TITLEPALETTE],30);
-
-			CA_UnCacheGrChunk (TITLEPALETTE);
-#else
-			VL_CacheScreen(TITLEPIC);
-			VW_UpdateScreen ();
-			VW_FadeIn();
-#endif
-			if (IN_UserInput(TickBase*15))
-				break;
-			VW_FadeOut();
-//
-// credits page
-//
-			VL_CacheScreen(CREDITSPIC);
-			VW_UpdateScreen();
-			VW_FadeIn ();
-			if (IN_UserInput(TickBase*10))
-				break;
-			VW_FadeOut ();
-//
-// high scores
-//
-			DrawHighScores();
-			VW_UpdateScreen();
-			VW_FadeIn();
-
-			if (IN_UserInput(TickBase*10))
-				break;
-//
-// demo
-//
-			#ifndef SPEARDEMO
-			PlayDemo(LastDemo++%4);
-			#else
-			PlayDemo(0);
-			#endif
-
-			if (playstate == ex_abort)
-				break;
-			StartCPMusic(INTROSONG);
-		}
-
 		VW_FadeOut();
 
 		if (IN_KeyDown(sc_Tab) && MS_CheckParm("debugmode"))
