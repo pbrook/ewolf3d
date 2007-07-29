@@ -17,11 +17,11 @@
 */
    
 #ifndef WMODE
-#define WMODE 0
+#define WMODE 1
 #endif
 
 /* define WOLF92 if you have full version of Wolfenstein 3D dated 1992 */
-/* #define WOLF92 */
+#define WOLF92
 
 /* --- End of User-Modifiable Variables --- */
 

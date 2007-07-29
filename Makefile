@@ -27,7 +27,7 @@ OBJS += sd_null.o
 #CFLAGS += -D_REENTRANT
 #LDLIBS += -lpthread
 
-CFLAGS += $(shell sdl-config --cflags)
+#CFLAGS += $(shell sdl-config --cflags)
 
 SLDLIBS = $(LDLIBS) -lvga
 XLDLIBS = $(LDLIBS) -L/usr/X11R6/lib -lX11 -lXext
@@ -38,7 +38,7 @@ NASM = nasm
 .SUFFIXES: .asm
 
 #all:	swolf3d xwolf3d sdlwolf3d
-all:	sdlwolf3d
+all:	xwolf3d
 
 $(SOBJS): version.h id_heads.h wl_def.h
 $(XOBJS): version.h id_heads.h wl_def.h
