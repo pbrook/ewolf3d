@@ -761,7 +761,7 @@ void MM_GetPtr(memptr *baseptr, unsigned long size)
 	/* add some sort of linked list for purging */
   total_size += size;
   lastmalloc = size;
-  printf ("malloc %8d/%d\n", size, total_size);
+  printf ("malloc %8d/%d\n", (int)size, total_size);
 	*baseptr = malloc(size);
 }
 
@@ -810,6 +810,7 @@ static void PML_OpenPageFile()
 	myint i;
 	PageListStruct *page;
 	char fname[13];
+	int offset;
 	
 	strcpy(fname, pfilename);
 	strcat(fname, extension);
@@ -831,7 +832,13 @@ static void PML_OpenPageFile()
 
 	/* Read in the chunk offsets */
 	for (i = 0, page = PMPages; i < ChunksInFile; i++, page++) {
-		page->offset = ReadInt32(PageFile);
+		offset = ReadInt32(PageFile);
+		if (offset & 0xff0000ff)
+		  {
+		    printf ("Bad page offset 0x%x\n", offset);
+		    exit(1);
+		  }
+		page->offset = offset >> 8;
 	}
 		
 	/* Read in the chunk lengths */
@@ -872,7 +879,7 @@ memptr PM_GetPage(myint pagenum)
 	page = &PMPages[pagenum];
 	if (page->addr == NULL) {
 		MM_GetPtr((memptr)&page->addr, PMPageSize);
-		PML_ReadFromFile(page->addr, page->offset, page->length);
+		PML_ReadFromFile(page->addr, (int32_t)page->offset << 8, page->length);
 	}
 	return page->addr;
 }
