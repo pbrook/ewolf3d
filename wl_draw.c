@@ -12,7 +12,7 @@
  /* #define DRAWCEIL */
 #endif
  
-static unsigned wallheight[MAXVIEWWIDTH];
+static umyshort wallheight[MAXVIEWWIDTH];
 
 /* refresh variables */
 extern fixed viewx, viewy;		/* the focal point */
@@ -23,7 +23,7 @@ static unsigned tilehit;
 
 static myint xtile, ytile;
 static myint xtilestep, ytilestep;
-static long xintercept, yintercept;
+static fixed xintercept, yintercept;
 
 static unsigned postx;
 
@@ -739,6 +739,7 @@ static void ScaleLineTrans(unsigned myint height, byte *source, myint x)
 	}
 }
 
+/* FIXME: make spritegfx smaller.  */
 static byte *spritegfx[SPR_TOTAL];
 
 static void DeCompileSprite(myint shapenum)
