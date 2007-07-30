@@ -555,15 +555,13 @@ typedef struct doorstruct
 
 typedef struct objstruct
 {
-	//myint		id;
-	
-	activetype	active;
-	myint		ticcount;
-	classtype	obclass;
+	activetype	active:2;
+	dirtype		dir:4;
+	classtype	obclass:5;
 	myshort		state; /* stateenum */
+	myint		ticcount;
 
 	int32_t		distance;	/* if negative, wait for that door to open */
-	dirtype		dir;
 
 	fixed 		x,y;
 	byte	tilex,tiley;
