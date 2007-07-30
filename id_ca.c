@@ -2,8 +2,9 @@
 
 typedef struct
 {
-	/* 0-255 is a character, > is a pointer to a node */
-	myint bit0, bit1;
+	byte val[2];
+	boolean flag0:1;
+	boolean flag1:1;
 } huffnode;
 
 /*
@@ -168,20 +169,21 @@ void CAL_HuffExpand(const byte *source, byte *dest, long length,
 
 	do {
 		if (*source & mask)
-			path = nodeon->bit1;
+		  path = 1;
 	        else
-			path = nodeon->bit0;
+		  path = 0;
        		mask <<= 1;
 	        if (mask == 0x00) {   
 			mask = 0x01;
 			source++;
 	        } 
-		if (path < 256) {  
-			*dest = (byte)path;
+		if (path ? nodeon->flag1 : nodeon->flag0) {  
+			nodeon = (htable + nodeon->val[path]);
+		} else {
+			*dest = nodeon->val[path];
 			dest++;
 			nodeon = headptr;
-		} else
-			nodeon = (htable + (path - 256));
+		}
 	} while (dest != endoff);   
 } 
 
@@ -310,6 +312,7 @@ static void CAL_SetupGrFile()
 	myint handle;
 	byte *grtemp;
 	myint i;
+	myshort v;
 
 /* load vgadict.ext (huffman dictionary for graphics files) */
 	strcpy(fname, gdictname);
@@ -320,8 +323,13 @@ static void CAL_SetupGrFile()
 		CA_CannotOpen(fname);
 
 	for (i = 0; i < 256; i++) {
-		grhuffman[i].bit0 = ReadInt16(handle);
-		grhuffman[i].bit1 = ReadInt16(handle);
+	/* 0-255 is a character, > is a pointer to a node */
+		v = ReadInt16(handle);
+		grhuffman[i].flag0 = v >> 8;
+		grhuffman[i].val[0] = v & 0xff;
+		v = ReadInt16(handle);
+		grhuffman[i].flag1 = v >> 8;
+		grhuffman[i].val[1] = v & 0xff;
 	}
 	
 	CloseRead(handle);
