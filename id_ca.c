@@ -21,7 +21,9 @@ myint mapon;
 
 word	*mapsegs[MAPPLANES];
 maptype	*mapheaderseg[NUMMAPS];
-byte	*audiosegs[NUMSNDCHUNKS];
+#ifdef ENABLE_AUDIO
+static byte	*audiosegs[NUMSNDCHUNKS];
+#endif
 byte	*grsegs[NUMCHUNKS];
 
 char extension[5];
@@ -306,6 +308,7 @@ void CA_RLEWexpand(const word *source, word *dest, long length, word rlewtag)
 ======================
 */
 
+/* TODO: build huffman table into flash.  */
 static void CAL_SetupGrFile()
 {
 	char fname[13];
@@ -535,6 +538,7 @@ void CA_Shutdown()
 ======================
 */
 
+#ifdef ENABLE_AUDIO
 void CA_CacheAudioChunk(myint chunk)
 {
 	myint pos, length;
@@ -562,6 +566,7 @@ void CA_UnCacheAudioChunk(myint chunk)
 	MM_FreePtr((memptr *)&audiosegs[chunk]);
 	audiosegs[chunk] = 0;
 }
+#endif
 
 /*
 ======================
@@ -573,10 +578,12 @@ void CA_UnCacheAudioChunk(myint chunk)
 
 void CA_LoadAllSounds()
 {
+#ifdef ENABLE_AUDIO
 	myint start, i;
 
 	for (start = STARTADLIBSOUNDS, i = 0; i < NUMSOUNDS; i++, start++)
 		CA_CacheAudioChunk(start);
+#endif
 }
 
 /* ======================================================================== */

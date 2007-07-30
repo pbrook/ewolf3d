@@ -33,8 +33,10 @@ boolean CA_WriteFile(const char *filename, const void *ptr, long length);
 void CA_Startup();
 void CA_Shutdown();
 
+#ifdef ENABLE_AUDIO
 void CA_CacheAudioChunk(myint chunk);
 void CA_UnCacheAudioChunk(myint chunk);
+#endif
 void CA_LoadAllSounds();
 
 void CA_CacheMap(myint mapnum);

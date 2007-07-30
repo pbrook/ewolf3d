@@ -26,6 +26,7 @@
 /* Palette shifting.  */
 //#define ENABLE_FLASHES 1
 
+//#define ENABLE_AUDIO 1
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0
