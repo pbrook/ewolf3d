@@ -541,10 +541,10 @@ typedef struct statstruct
 typedef struct doorstruct
 {
 	byte	tilex,tiley;
-	byte	vertical:3;
-	byte	lock:3;
-	enum PACKED {dr_open,dr_closed,dr_opening,dr_closing} action :3;
-	myshort	ticcount;
+	boolean	vertical:1;
+	door_t	lock:3;
+	enum PACKED {dr_open,dr_closed,dr_opening,dr_closing} action :2;
+	myshort	ticcount:10;
 } doorobj_t;
 
 //--------------------
