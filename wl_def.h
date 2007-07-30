@@ -570,7 +570,7 @@ typedef struct objstruct
 
 
 	myshort	 	viewx;
-	unsigned myshort	viewheight;
+	umyshort	viewheight;
 	fixed		transx, transy;		/* in global coord */
 
 	myshort 		angle;

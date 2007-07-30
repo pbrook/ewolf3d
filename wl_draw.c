@@ -165,7 +165,7 @@ static void TransformActor(objtype *ob)
 ========================
 */
 
-static boolean TransformTile(myint tx, myint ty, myint *dispx, myint *dispheight)
+static boolean TransformTile(myint tx, myint ty, myshort *dispx, myshort *dispheight)
 {
 	fixed gx,gy,gxt,gyt,nx,ny;
 
@@ -263,9 +263,9 @@ static myint CalcRotate(objtype *ob)
 #define MAXVISABLE      64
 
 typedef struct {
-	myint viewx;
-	myint viewheight;
-	myint shapenum;
+	myshort viewx;
+	myshort viewheight;
+	myshort shapenum;
 } visobj_t;
 
 static visobj_t vislist[MAXVISABLE], *visptr, *visstep, *farthest;
