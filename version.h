@@ -23,6 +23,9 @@
 /* define WOLF92 if you have full version of Wolfenstein 3D dated 1992 */
 #define WOLF92
 
+/* Palette shifting.  */
+//#define ENABLE_FLASHES 1
+
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0

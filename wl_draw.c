@@ -408,8 +408,10 @@ static void DrawPlayerWeapon()
 	}
 #endif
 
-	shapenum = weaponscale[gamestate.weapon]+gamestate.weaponframe;
-	SimpleScaleShape(viewwidth/2,shapenum,viewheight+1);
+	if (gamestate.weapon != wp_none) {
+	    shapenum = weaponscale[gamestate.weapon]+gamestate.weaponframe;
+	    SimpleScaleShape(viewwidth/2,shapenum,viewheight+1);
+	}
 
 	if (demorecord || demoplayback)
 		SimpleScaleShape(viewwidth/2,SPR_DEMO,viewheight+1);

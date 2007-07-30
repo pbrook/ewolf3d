@@ -883,6 +883,14 @@ void StartMusic()
 =============================================================================
 */
 
+#ifndef ENABLE_FLASHES
+
+void InitRedShifts()
+{
+}
+
+#else
+
 #define NUMREDSHIFTS	6
 #define REDSTEPS		8
 
@@ -891,8 +899,8 @@ void StartMusic()
 #define WHITETICS		6
 
 
-byte	redshifts[NUMREDSHIFTS][768];
-byte	whiteshifts[NUMREDSHIFTS][768];
+static byte	redshifts[NUMREDSHIFTS][768];
+static byte	whiteshifts[NUMREDSHIFTS][768];
 
 myint	damagecount,bonuscount;
 boolean	palshifted;
@@ -948,6 +956,7 @@ void InitRedShifts()
 		}
 	}
 }
+#endif
 
 
 /*
@@ -960,7 +969,10 @@ void InitRedShifts()
 
 void ClearPaletteShifts()
 {
+#ifdef ENABLE_FLASHES
 	bonuscount = damagecount = 0;
+#endif
+
 }
 
 
@@ -974,7 +986,10 @@ void ClearPaletteShifts()
 
 void StartBonusFlash()
 {
+#ifdef ENABLE_FLASHES
 	bonuscount = NUMWHITESHIFTS*WHITETICS;		// white shift palette
+#endif
+
 }
 
 
@@ -988,7 +1003,10 @@ void StartBonusFlash()
 
 void StartDamageFlash(myint damage)
 {
+#ifdef ENABLE_FLASHES
 	damagecount += damage;
+#endif
+
 }
 
 
@@ -1002,6 +1020,7 @@ void StartDamageFlash(myint damage)
 
 void UpdatePaletteShifts()
 {
+#ifdef ENABLE_FLASHES
 	myint red, white;
 
 	if (bonuscount)
@@ -1045,6 +1064,8 @@ void UpdatePaletteShifts()
 		VL_SetPalette(gamepal);		// back to normal
 		palshifted = false;
 	}
+#endif
+
 }
 
 
@@ -1060,11 +1081,14 @@ void UpdatePaletteShifts()
 
 void FinishPaletteShifts()
 {
+#ifdef ENABLE_FLASHES
 	if (palshifted)
 	{
 		palshifted = 0;
 		VL_SetPalette(gamepal);
 	}
+#endif
+
 }
 
 
