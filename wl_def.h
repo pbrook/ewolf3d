@@ -70,7 +70,6 @@ extern myint vwidth, vheight; /* size of screen */
 // object flag values
 
 #define FL_SHOOTABLE	1
-#define FL_BONUS		2
 #define FL_NEVERMARK	4
 #define FL_VISABLE		8
 #define FL_ATTACKMODE	16
@@ -528,10 +527,9 @@ typedef enum PACKED {
 typedef struct statstruct
 {
 	byte	tilex,tiley;
-	byte	*visspot;
-	myshort	shapenum;		/* if shapenum == -1 the obj has been removed */
-	byte	flags;
-	byte	itemnumber;
+	myshort	shapenum:10;		/* if shapenum == -1 the obj has been removed */
+	stat_t	itemnumber:5;
+	boolean is_bonus:1;
 } statobj_t;
 
 //---------------------
@@ -543,9 +541,9 @@ typedef struct statstruct
 typedef struct doorstruct
 {
 	byte	tilex,tiley;
-	boolean	vertical;
-	byte	lock;
-	enum PACKED {dr_open,dr_closed,dr_opening,dr_closing} action;
+	byte	vertical:3;
+	byte	lock:3;
+	enum PACKED {dr_open,dr_closed,dr_opening,dr_closing} action :3;
 	myshort	ticcount;
 } doorobj_t;
 

@@ -467,7 +467,7 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 			WriteInt8(fd,  statobjlist[i].tilex);
 			WriteInt8(fd,  statobjlist[i].tiley);
 			WriteInt32(fd, statobjlist[i].shapenum);
-			WriteInt8(fd,  statobjlist[i].flags);
+			WriteInt8(fd,  statobjlist[i].is_bonus);
 			WriteInt8(fd,  statobjlist[i].itemnumber);
 		}
 	
@@ -758,9 +758,8 @@ myint LoadTheGame(const char *fn, myint dx, myint dy)
 		statobjlist[i].tilex		= ReadInt8(fd);
 		statobjlist[i].tiley		= ReadInt8(fd);
 		statobjlist[i].shapenum		= ReadInt32(fd);
-		statobjlist[i].flags		= ReadInt8(fd);
+		statobjlist[i].is_bonus		= ReadInt8(fd);
 		statobjlist[i].itemnumber	= ReadInt8(fd);
-		statobjlist[i].visspot 		= &spotvis[statobjlist[i].tilex][statobjlist[i].tiley];
 	}
 	
 	DiskFlopAnim(dx, dy);
@@ -1305,6 +1304,12 @@ myint WolfMain(myint argc, char *argv[])
 {
 	_argc = argc;
 	_argv = argv;
+
+	if (SPR_TOTAL >= 512) {
+	    /* statstruct:shapenum is a 10-bit signed field.  */
+	    printf ("Too many sprites\n");
+	    exit (1);
+	}
 
 	if (MS_CheckParm("version")) {
 		printf("Game: %s\n", GAMENAME);

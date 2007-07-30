@@ -13,7 +13,7 @@ statobj_t statobjlist[MAXSTATS], *laststatobj;
 
 struct
 {
-	myint	picnum;
+	myshort	picnum;
 	stat_t	type;
 } static const statinfo[] =
 {
@@ -121,14 +121,13 @@ void SpawnStatic(myint tilex, myint tiley, myint type)
 	laststatobj->shapenum = statinfo[type].picnum;
 	laststatobj->tilex = tilex;
 	laststatobj->tiley = tiley;
-	laststatobj->visspot = &spotvis[tilex][tiley];
 
 	switch (statinfo[type].type)
 	{
 	case block:
 		actorat[tilex][tiley] = 1;	// consider it a blocking tile
 	case dressing:
-		laststatobj->flags = 0;
+		laststatobj->is_bonus = 0;
 		break;
 
 	case	bo_cross:
@@ -152,7 +151,7 @@ void SpawnStatic(myint tilex, myint tiley, myint type)
 	case	bo_alpo:
 	case	bo_gibs:
 	case	bo_spear:
-		laststatobj->flags = FL_BONUS;
+		laststatobj->is_bonus = true;
 		laststatobj->itemnumber = statinfo[type].type;
 		break;
 	default: 
@@ -215,8 +214,7 @@ void PlaceItemType(myint itemtype, myint tilex, myint tiley)
 	spot->shapenum = statinfo[type].picnum;
 	spot->tilex = tilex;
 	spot->tiley = tiley;
-	spot->visspot = &spotvis[tilex][tiley];
-	spot->flags = FL_BONUS;
+	spot->is_bonus = 1;
 	spot->itemnumber = statinfo[type].type;
 }
 
@@ -252,8 +250,10 @@ myint			doornum;
 
 umyshort	doorposition[MAXDOORS];	// leading edge of door 0=closed
 					// 0xffff = fully open
+// FIXME: This could maybe be smaller.
 byte		areaconnect[NUMAREAS][NUMAREAS];
 
+// FIXME: Use an actual bitfield.
 boolean		areabyplayer[NUMAREAS];
 
 

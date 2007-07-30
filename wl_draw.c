@@ -287,11 +287,12 @@ static void DrawScaleds()
 		if ((visptr->shapenum = statptr->shapenum) == -1)
 			continue;			/* object has been deleted */
 
-		if (!*statptr->visspot)
+		spotloc = (obj->tilex << 6) + obj->tiley;
+		if (!spotvis[statptr->tilex][statptr->tiley])
 			continue;			/* not visable */
 
 		if (TransformTile(statptr->tilex, statptr->tiley
-			,&visptr->viewx,&visptr->viewheight) && statptr->flags & FL_BONUS)
+			,&visptr->viewx,&visptr->viewheight) && statptr->is_bonus)
 		{
 			GetBonus(statptr);
 			continue;
