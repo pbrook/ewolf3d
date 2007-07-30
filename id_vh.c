@@ -8,15 +8,13 @@ myint fontnumber;
 
 boolean	screenfaded;
 
+#ifndef SKIPFADE
 static byte palette1[256][3], palette2[256][3];
+#endif
 
 myint xfrac, yfrac;
 
 /* ======================================================================== */
-
-/*
-#define SKIPFADE
-*/
 
 void VL_FillPalette(myint red, myint green, myint blue)
 {

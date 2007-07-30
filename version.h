@@ -27,6 +27,9 @@
 //#define ENABLE_FLASHES 1
 
 //#define ENABLE_AUDIO 1
+
+#define SKIPFADE 1
+
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0

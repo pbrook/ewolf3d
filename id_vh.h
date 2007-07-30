@@ -6,7 +6,7 @@
 
 typedef struct
 {
-	myint width, height;
+	myshort width, height;
 } pictabletype;
 
 extern pictabletype pictable[NUMPICS];
