@@ -21,7 +21,7 @@
 =============================================================================
 */
 
-static const myint starthitpoints[4][NUMENEMIES] =
+static const myshort starthitpoints[4][NUMENEMIES] =
 	 //
 	 // BABY MODE
 	 //

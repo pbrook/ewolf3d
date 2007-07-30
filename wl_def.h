@@ -770,7 +770,8 @@ extern	doorobj_t	doorobjlist[MAXDOORS],*lastdoorobj;
 extern	unsigned	farmapylookup[MAPSIZE];
 
 extern	byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
-extern	byte		spotvis[MAPSIZE][MAPSIZE];
+// FIXME: Make this a proper bitfield
+extern	boolean		spotvis[MAPSIZE][MAPSIZE];
 extern	umyshort		actorat[MAPSIZE][MAPSIZE];
 
 extern	boolean		singlestep,godmode,noclip;
@@ -808,8 +809,13 @@ void 	FinishPaletteShifts (void);
 void	CenterWindow(word w,word h);
 void 	InitActorList (void);
 void 	GetNewActor (void);
+#ifdef ENABLE_MUSIC
 void 	StopMusic(void);
 void 	StartMusic(void);
+#else
+#define StopMusic() do {} while (0)
+#define StartMusic() do {} while (0)
+#endif
 void	PlayLoop (void);
 void StartDamageFlash (myint damage);
 void StartBonusFlash (void);

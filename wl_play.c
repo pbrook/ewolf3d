@@ -60,6 +60,7 @@ static void RemoveObj(objtype *gone);
 =============================================================================
 */
 
+#ifdef ENABLE_MUSIC
 /* LIST OF SONGS FOR EACH VERSION */
 static const myint songs[]=
 {
@@ -171,6 +172,7 @@ static const myint songs[]=
 
 #endif
 };
+#endif
 
 
 /*
@@ -835,6 +837,7 @@ static void RemoveObj(objtype *gone)
 
 }
 
+#ifdef ENABLE_MUSIC
 /*
 =============================================================================
 
@@ -869,6 +872,7 @@ void StartMusic()
 {
 	StartCPMusic(songs[gamestate.mapon+gamestate.episode*10]);
 }
+#endif
 
 
 /*
