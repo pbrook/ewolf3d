@@ -617,6 +617,6 @@ typedef enum {
 	MAXSTATES
 } stateenum;
 
-extern statetype gamestates[MAXSTATES];
+extern const statetype gamestates[MAXSTATES];
 
 #endif

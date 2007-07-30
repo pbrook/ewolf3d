@@ -51,7 +51,7 @@ void T_DeathCam(objtype *ob);
 void T_Player(objtype *ob);
 void T_Attack(objtype *ob);
 
-statetype gamestates[MAXSTATES] = {
+const statetype gamestates[MAXSTATES] = {
 /* s_none */	{false,0,0,NULL,NULL,s_none},
 /* s_boom1 */	{false,SPR_BOOM_1,6,NULL,NULL,s_boom2},
 /* s_boom2 */	{false,SPR_BOOM_2,6,NULL,NULL,s_boom3},

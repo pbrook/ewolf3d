@@ -14,6 +14,8 @@
                      
 #include "fmopl.h"
 
+#include "sd_comm.c"
+
 typedef	struct {
 	longword length;
 	word priority;

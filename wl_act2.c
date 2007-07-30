@@ -827,8 +827,10 @@ void T_Bite (objtype *ob)
 
 void SpawnTrans (myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_transdie01].tictime = 105;
+#endif
 
 	SpawnNewObj(tilex,tiley,s_transstand);
 	new->obclass = transobj;
@@ -852,8 +854,10 @@ void SpawnTrans (myint tilex, myint tiley)
 
 void SpawnUber (myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_uberdie01].tictime = 70;
+#endif
 
 	SpawnNewObj (tilex,tiley,s_uberstand);
 	new->obclass = uberobj;
@@ -894,8 +898,10 @@ void T_UShoot(objtype *ob)
 
 void SpawnWill(myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_willdie2].tictime = 70;
+#endif
 
 	SpawnNewObj (tilex,tiley,s_willstand);
 	new->obclass = willobj;
@@ -1010,8 +1016,10 @@ void T_Will(objtype *ob)
 
 void SpawnDeath(myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_deathdie2].tictime = 105;
+#endif
 
 	SpawnNewObj (tilex,tiley,s_deathstand);
 	new->obclass = deathobj;
@@ -1110,8 +1118,10 @@ void A_Breathing(objtype *ob)
 
 void SpawnAngel(myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (SoundBlasterPresent && DigiMode != sds_Off)
 		gamestates[s_angeldie11].tictime = 105;
+#endif
 
 	SpawnNewObj (tilex,tiley,s_angelstand);
 	new->obclass = angelobj;
@@ -1336,10 +1346,12 @@ void SpawnGhosts (myint which, myint tilex, myint tiley)
 
 void SpawnSchabbs(myint tilex, myint tiley)
 { 
+#ifdef WEIRD_TIMER_HACK
 	if (DigiMode != sds_Off)
 		gamestates[s_schabbdie2].tictime = 140;
 	else
 		gamestates[s_schabbdie2].tictime = 5;
+#endif
 
 	SpawnNewObj(tilex, tiley, s_schabbstand);
 	new->speed = SPDPATROL;
@@ -1363,10 +1375,12 @@ void SpawnSchabbs(myint tilex, myint tiley)
 
 void SpawnGift (myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (DigiMode != sds_Off)
 		gamestates[s_giftdie2].tictime = 140;
 	else
 		gamestates[s_giftdie2].tictime = 5;
+#endif
 
 	SpawnNewObj (tilex,tiley,s_giftstand);
 	new->speed = SPDPATROL;
@@ -1390,10 +1404,12 @@ void SpawnGift (myint tilex, myint tiley)
 
 void SpawnFat (myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (DigiMode != sds_Off)
 		gamestates[s_fatdie2].tictime = 140;
 	else
 		gamestates[s_fatdie2].tictime = 5;
+#endif
 
 	SpawnNewObj (tilex,tiley,s_fatstand);
 	new->speed = SPDPATROL;
@@ -1782,10 +1798,12 @@ void T_Fat (objtype *ob)
 
 void SpawnFakeHitler(myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (DigiMode != sds_Off)
 		gamestates[s_hitlerdie2].tictime = 140;
 	else
 		gamestates[s_hitlerdie2].tictime = 5;
+#endif
 
 	SpawnNewObj(tilex, tiley, s_fakestand);
 	new->speed = SPDPATROL;
@@ -1809,11 +1827,12 @@ void SpawnFakeHitler(myint tilex, myint tiley)
 
 void SpawnHitler(myint tilex, myint tiley)
 {
+#ifdef WEIRD_TIMER_HACK
 	if (DigiMode != sds_Off)
 		gamestates[s_hitlerdie2].tictime = 140;
 	else
 		gamestates[s_hitlerdie2].tictime = 5;
-
+#endif
 
 	SpawnNewObj (tilex,tiley,s_mechastand);
 	new->speed = SPDPATROL;
