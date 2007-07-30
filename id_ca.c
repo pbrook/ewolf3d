@@ -36,14 +36,18 @@ char extension[5];
 #define afilename "audiot."
 #define pfilename "vswap."
 
-static int32_t *grstarts;	/* array of offsets in vgagraph */
+static int32_t grstarts[NUMCHUNKS + 1];	/* array of offsets in vgagraph */
+#ifdef ENABLE_AUDIO
 static int32_t *audiostarts; /* array of offsets in audiot */
+#endif
 
 static huffnode grhuffman[256];
 
 static myint grhandle = -1;	/* handle to VGAGRAPH */
 static myint maphandle = -1;	/* handle to GAMEMAPS */
+#ifdef ENABLE_AUDIO
 static myint audiohandle = -1;	/* handle to AUDIOT */
+#endif
 
 /*
 =============================================================================
@@ -338,7 +342,7 @@ static void CAL_SetupGrFile()
 	CloseRead(handle);
 	
 /* load the data offsets from vgahead.ext */
-	MM_GetPtr((memptr)&grstarts, (NUMCHUNKS+1)*4);
+	//MM_GetPtr((memptr)&grstarts, (NUMCHUNKS+1)*4);
 	MM_GetPtr((memptr)&grtemp, (NUMCHUNKS+1)*3);
 	
 	strcpy(fname, gheadname);
@@ -459,6 +463,7 @@ static void CAL_SetupMapFile()
 
 static void CAL_SetupAudioFile()
 {
+#ifdef ENABLE_AUDIO
 	myint handle;
 	long length;
 	char fname[13];
@@ -488,6 +493,7 @@ static void CAL_SetupAudioFile()
 	audiohandle = OpenRead(fname);
 	if (audiohandle == -1)
 		CA_CannotOpen(fname);
+#endif
 }
 
 /* ======================================================================== */
@@ -525,7 +531,9 @@ void CA_Shutdown()
 {
 	CloseRead(maphandle);
 	CloseRead(grhandle);
+#ifdef ENABLE_AUDIO
 	CloseRead(audiohandle);
+#endif
 }
 
 /* ======================================================================== */
@@ -746,9 +754,14 @@ void MM_Shutdown()
 {
 }
 
+static int total_size = 0;
+static int lastmalloc;
 void MM_GetPtr(memptr *baseptr, unsigned long size)
 {
 	/* add some sort of linked list for purging */
+  total_size += size;
+  lastmalloc = size;
+  printf ("malloc %8d/%d\n", size, total_size);
 	*baseptr = malloc(size);
 }
 
@@ -764,6 +777,9 @@ void MM_SetPurge(memptr *baseptr, myint purge)
 
 void MM_SetLock(memptr *baseptr, boolean locked)
 {
+  static int total_locked = 0;
+  total_locked += lastmalloc;
+  printf ("Locked %d\n", total_locked);
 }
 
 void MM_SortMem()

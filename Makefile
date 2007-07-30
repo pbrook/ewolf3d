@@ -1,4 +1,5 @@
 CC = gcc
+#CC = arm-linux-gnueabi-gcc
 #CC=/opt/intel/compiler60/ia32/bin/icc
 
 #CFLAGS = -g -Wall
