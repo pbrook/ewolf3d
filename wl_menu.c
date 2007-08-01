@@ -39,10 +39,14 @@ CP_iteminfo
 #else
 	MainItems={MENU_X,MENU_Y, 9,STARTITEM,24},
 #endif
+#ifdef ENABLE_AUDIO
 	SndItems={SM_X,SM_Y1,12,0,52},
+#endif
 	LSItems={LSM_X,LSM_Y,10,0,24},
+#ifdef ENABLE_CONTROLS
 	CtlItems={CTL_X,CTL_Y,6,-1,56},
 	CusItems={8,CST_Y+13*2,9,-1,0},
+#endif
 	NewEitems={NE_X,NE_Y,11,0,88},
 	NewItems={NM_X,NM_Y,4,2,24};
 
@@ -3138,14 +3142,10 @@ void Message(const char *string)
 	VW_UpdateScreen();
 }
 
-static myint lastmusic = -1;
-
 void StartCPMusic(myint song)
 {
 	FreeMusic();
 	
-	lastmusic = song;
-
 	SD_StartMusic(song);
 }
 
