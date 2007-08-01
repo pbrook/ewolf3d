@@ -770,8 +770,7 @@ extern	objtype 	objlist[MAXACTORS],*new,*obj,*player,*lastobj,
 extern	statobj_t	statobjlist[MAXSTATS],*laststatobj;
 extern	doorobj_t	doorobjlist[MAXDOORS],*lastdoorobj;
 
-extern	unsigned	farmapylookup[MAPSIZE];
-
+#define farmapylookup(y) (y << 6)
 extern	byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
 
 extern uint64_t spotvis[MAPSIZE];

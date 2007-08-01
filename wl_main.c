@@ -1200,11 +1200,6 @@ void InitGame()
 // build some tables
 //
 
-	for (i = 0;i < MAPSIZE; i++)
-	{
-		farmapylookup[i] = i*64;
-	}
-
 	ReadConfig();
 
 /* load in and lock down some basic chunks */

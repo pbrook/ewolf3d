@@ -868,7 +868,7 @@ void Thrust(myint angle, long speed)
 	player->tilex = player->x >> TILESHIFT;		// scale to tile values
 	player->tiley = player->y >> TILESHIFT;
 
-	offset = farmapylookup[player->tiley]+player->tilex;
+	offset = farmapylookup(player->tiley)+player->tilex;
 	player->areanumber = *(mapsegs[0] + offset) -AREATILE;
 
 	if (*(mapsegs[1] + offset) == EXITTILE)
@@ -956,7 +956,7 @@ void Cmd_Use()
 	}
 
 	doornum = tilemap[checkx][checky];
-	if (*(mapsegs[1]+farmapylookup[checky]+checkx) == PUSHABLETILE)
+	if (*(mapsegs[1]+farmapylookup(checky)+checkx) == PUSHABLETILE)
 	{
 	//
 	// pushable wall
@@ -973,7 +973,7 @@ void Cmd_Use()
 		buttonheld[bt_use] = true;
 
 		tilemap[checkx][checky]++;		// flip switch
-		if (*(mapsegs[0]+farmapylookup[player->tiley]+player->tilex) == ALTELEVATORTILE)
+		if (*(mapsegs[0]+farmapylookup(player->tiley)+player->tilex) == ALTELEVATORTILE)
 			playstate = ex_secretlevel;
 		else
 			playstate = ex_completed;
@@ -1015,7 +1015,7 @@ void SpawnPlayer (myint tilex, myint tiley, myint dir)
 	player->tilex = tilex;
 	player->tiley = tiley;
 	player->areanumber =
-		*(mapsegs[0] + farmapylookup[player->tiley]+player->tilex);
+		*(mapsegs[0] + farmapylookup(player->tiley)+player->tilex);
 	player->x = ((long)tilex<<TILESHIFT)+TILEGLOBAL/2;
 	player->y = ((long)tiley<<TILESHIFT)+TILEGLOBAL/2;
 	player->state = s_player;

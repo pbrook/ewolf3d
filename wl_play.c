@@ -17,8 +17,6 @@ myint		DebugOk;
 objtype 	objlist[MAXACTORS],*new,*obj,*player,*lastobj,
 			*objfreelist,*killerobj;
 
-unsigned	farmapylookup[MAPSIZE];
-
 boolean		singlestep,godmode,noclip;
 
 byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
