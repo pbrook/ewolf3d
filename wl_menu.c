@@ -174,7 +174,12 @@ static const myint color_norml[] = { DEACTIVE, TEXTCOLOR, READCOLOR, 0x6b };
 static myint EpisodeSelect[6] = { 1 };
 #endif
 
-static myint SaveGamesAvail[10],StartGame,SoundStatus=1,pickquick;
+static word SaveGamesAvail;
+static boolean StartGame;
+#ifdef ENABLE_AUDIO
+static boolean SoundStatus = true;
+#endif
+static myint pickquick;
 #ifdef ENABLE_SAVENAME
 static char SaveGameNames[10][32];
 #endif
@@ -498,7 +503,8 @@ myint CP_CheckQuick(unsigned scancode)
 		// QUICKSAVE
 		//
 		case sc_F8:
-			if (SaveGamesAvail[LSItems.curpos] && pickquick)
+			if ((SaveGamesAvail & (1 << LSItems.curpos))
+			    && pickquick)
 			{
 				CA_CacheGrChunk(STARTFONT+1);
 				fontnumber = 1;
@@ -558,7 +564,8 @@ myint CP_CheckQuick(unsigned scancode)
 
 		/* QUICKLOAD */
 		case sc_F9:
-			if (SaveGamesAvail[LSItems.curpos] && pickquick)
+			if ((SaveGamesAvail & (1 << LSItems.curpos))
+			    && pickquick)
 			{
 				char string[100]=STR_LGC;
 
@@ -1135,7 +1142,7 @@ myint CP_LoadGame(myint quick)
 	{
 		which=LSItems.curpos;
 
-		if (SaveGamesAvail[which])
+		if (SaveGamesAvail & (1 << which))
 		{
 			name[7]=which+'0';
 			loadedgame=true;
@@ -1159,7 +1166,7 @@ myint CP_LoadGame(myint quick)
 	do
 	{
 		which=HandleMenu(&LSItems,&LSMenu[0],TrackWhichGame);
-		if (which>=0 && SaveGamesAvail[which])
+		if (which>=0 && (SaveGamesAvail & (1 << which)))
 		{
 			ShootSnd();
 			name[7]=which+'0';
@@ -1256,7 +1263,7 @@ void PrintLSEntry(myint w,myint color)
 	PrintY=LSM_Y+w*13+1;
 	fontnumber=0;
 
-	if (SaveGamesAvail[w])
+	if (SaveGamesAvail & (1 << w))
 #ifdef ENABLE_SAVENAME
 		US_Print(SaveGameNames[w]);
 #else
@@ -1288,7 +1295,7 @@ myint CP_SaveGame(myint quick)
 	{
 		which=LSItems.curpos;
 
-		if (SaveGamesAvail[which])
+		if (SaveGamesAvail & (1 << which))
 		{
 			name[7] = which+'0';
 #ifdef ENABLE_SAVENAME
@@ -1317,7 +1324,7 @@ myint CP_SaveGame(myint quick)
 			//
 			// OVERWRITE EXISTING SAVEGAME?
 			//
-			if (SaveGamesAvail[which]) {
+			if (SaveGamesAvail & (1 << which)) {
 				if (!Confirm(GAMESVD))
 				{
 					DrawLoadSaveScreen(1);
@@ -1338,7 +1345,7 @@ myint CP_SaveGame(myint quick)
 			name[7]=which+'0';
 
 			fontnumber=0;
-			if (!SaveGamesAvail[which])
+			if (!(SaveGamesAvail & (1 << which)))
 				VW_Bar(LSM_X+LSItems.indent+1,LSM_Y+which*13+1,LSM_W-LSItems.indent-16,10,BKGDCOLOR);
 			VW_UpdateScreen();
 
@@ -1347,7 +1354,7 @@ myint CP_SaveGame(myint quick)
 			{
 				strcpy(&SaveGameNames[which][0],input);
 #endif
-				SaveGamesAvail[which] = 1;
+				SaveGamesAvail |= 1 << which;
 				DrawLSAction(1);
 				SaveTheGame(name, input, LSA_X+8, LSA_Y+5);
 				ShootSnd();
@@ -2595,7 +2602,7 @@ void SetupControlPanel()
 				char temp[32];
 
 				if (ReadSaveTag(f.ff_name, temp) != -1) {
-					SaveGamesAvail[which]=1;
+					SaveGamesAvail |= 1 << which;
 #ifdef ENABLE_SAVENAME
 					strcpy(&SaveGameNames[which][0],temp);
 #endif
@@ -2615,7 +2622,7 @@ void SetupControlPanel()
 				char temp[32];
 				
 				if (ReadSaveTag(f.name, temp) != -1) {
-					SaveGamesAvail[which]=1;
+					SaveGamesAvail |= 1 << which;
 #ifdef ENABLE_SAVENAME
 					strcpy(&SaveGameNames[which][0],temp);
 #endif
@@ -2635,7 +2642,7 @@ void SetupControlPanel()
 			char temp[32];
 			
 			if (ReadSaveTag(globbuf.gl_pathv[x], temp) != -1) {
-				SaveGamesAvail[which]=1;
+				SaveGamesAvail |= 1 << which;
 #ifdef ENABLE_SAVENAME
 				strcpy(&SaveGameNames[which][0],temp);
 #endif
@@ -3163,13 +3170,14 @@ void CheckPause()
 {
 	if (Paused)
 	{
-		switch(SoundStatus)
-		{
-			case 0: SD_MusicOn(); break;
-			case 1: SD_MusicOff(); break;
-		}
+#ifdef ENABLE_AUDIO
+		if (SoundStatus)
+		    SD_MusicOff();
+		else
+		    SD_MusicOn();
 
-		SoundStatus^=1;
+		SoundStatus = !SoundStatus;
+#endif
 		VW_WaitVBL(3);
 		IN_ClearKeysDown();
 		Paused=false;
