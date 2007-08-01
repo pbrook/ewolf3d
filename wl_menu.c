@@ -50,7 +50,11 @@ CP_itemtype
 MainMenu[]=
 {
 	{1,STR_NG,(MenuFunc)CP_NewGame},
+#ifdef ENABLE_AUDIO
 	{1,STR_SD,(MenuFunc)CP_Sound},
+#else
+	{0,STR_SD,NULL},
+#endif
 	{1,STR_CL,(MenuFunc)CP_Control},
 	{1,STR_LG,(MenuFunc)CP_LoadGame},
 	{0,STR_SG,(MenuFunc)CP_SaveGame},
@@ -63,6 +67,7 @@ MainMenu[]=
 	{1,STR_QT,0}
 },
 
+#ifdef ENABLE_AUDIO
 SndMenu[]=
 {
 	{1,STR_NONE,0},
@@ -78,6 +83,7 @@ SndMenu[]=
 	{1,STR_NONE,0},
 	{1,STR_ALSB,0}
 },
+#endif
 
 CtlMenu[]=
 {
@@ -251,7 +257,9 @@ void US_ControlPanel(byte scancode)
 			goto finishup;
 
 		case sc_F4:
+#ifdef ENABLE_AUDIO
 			CP_Sound();
+#endif
 			goto finishup;
 
 		case sc_F5:
@@ -873,6 +881,7 @@ void DrawNewGameDiff(myint w)
 }
 
 
+#ifdef ENABLE_AUDIO
 ////////////////////////////////////////////////////////////////////
 //
 // HANDLE SOUND MENU
@@ -1062,6 +1071,7 @@ void DrawSoundMenu(void)
 	DrawMenuGun(&SndItems);
 	VW_UpdateScreen();
 }
+#endif
 
 
 //
@@ -1759,7 +1769,7 @@ void CustomControls(void)
 //
 void DefineMouseBtns(void)
 {
- CustomCtrls mouseallowed={ {0,1,1,1} };
+ static const CustomCtrls mouseallowed={ {0,1,1,1} };
  EnterCtrlData(2,&mouseallowed,DrawCustMouse,PrintCustMouse,MOUSE);
 }
 
@@ -1770,7 +1780,7 @@ void DefineMouseBtns(void)
 //
 void DefineJoyBtns(void)
 {
- CustomCtrls joyallowed={ {1,1,1,1} };
+ static const CustomCtrls joyallowed={ {1,1,1,1} };
  EnterCtrlData(5,&joyallowed,DrawCustJoy,PrintCustJoy,JOYSTICK);
 }
 
@@ -1781,7 +1791,7 @@ void DefineJoyBtns(void)
 //
 void DefineKeyBtns(void)
 {
- CustomCtrls keyallowed={ {1,1,1,1} };
+ static const CustomCtrls keyallowed={ {1,1,1,1} };
  EnterCtrlData(8,&keyallowed,DrawCustKeybd,PrintCustKeybd,KEYBOARDBTNS);
 }
 
@@ -1804,7 +1814,7 @@ void DefineKeyMove(void)
 enum {FWRD,RIGHT,BKWD,LEFT};
 myint moveorder[4]={LEFT,RIGHT,FWRD,BKWD};
 
-void EnterCtrlData(myint index,CustomCtrls *cust,void (*DrawRtn)(myint),void (*PrintRtn)(myint),myint type)
+void EnterCtrlData(myint index,const CustomCtrls *cust,void (*DrawRtn)(myint),void (*PrintRtn)(myint),myint type)
 {
  myint j,exit,tick,redraw,which = 0,x = 0,picked;
  ControlInfo ci;

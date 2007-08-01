@@ -104,7 +104,7 @@ typedef struct {
 } CP_itemtype;
 
 typedef struct {
-	myint allowed[4];
+	boolean allowed[4];
 } CustomCtrls;
 
 extern CP_itemtype MainMenu[], NewEMenu[];
@@ -145,7 +145,7 @@ void DefineMouseBtns(void);
 void DefineJoyBtns(void);
 void DefineKeyBtns(void);
 void DefineKeyMove(void);
-void EnterCtrlData(myint index,CustomCtrls *cust,void (*DrawRtn)(myint),void (*PrintRtn)(myint),myint type);
+void EnterCtrlData(myint index,const CustomCtrls *cust,void (*DrawRtn)(myint),void (*PrintRtn)(myint),myint type);
 
 void DrawMainMenu(void);
 void DrawSoundMenu(void);
