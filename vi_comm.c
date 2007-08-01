@@ -15,7 +15,7 @@ boolean		MousePresent;
 boolean		JoysPresent[MaxJoys];
 
 // 	Global variables
-boolean		Keyboard[NumCodes];
+uint32_t	Keyboard[NumCodes >> 5];
 boolean		Paused;
 char		LastASCII;
 ScanCode	LastScan;
@@ -69,6 +69,12 @@ static	const Direction	DirTable[] =		// Quick lookup for total direction
 
 static boolean btnstate[8];
 
+#define	GetKey(code) \
+  ((Keyboard[(code >> 5)] & (1 << (code & 31))) != 0)
+#define	SetKey(code) \
+  Keyboard[(code >> 5)] |= (1 << (code & 31))
+#define	ClearKey(code) \
+  Keyboard[(code >> 5)] &= ~(1 << (code & 31))
 void keyboard_handler(myint code, myint press)
 {
 	byte k, c = 0;
@@ -81,21 +87,21 @@ void keyboard_handler(myint code, myint press)
 	{
 		if (press == 0)	
 		{
-			Keyboard[k] = false;
+			ClearKey(k);
 		}
 		else			// Make code
 		{
 			LastCode = CurCode;
 			CurCode = LastScan = k;
 			
-			Keyboard[k] = true;
+			SetKey(k);
 
 			if (k == sc_CapsLock)
 			{
 				CapsLock ^= true;
 			}
 
-			if (Keyboard[sc_LShift] || Keyboard[sc_RShift])	// If shifted
+			if (GetKey(sc_LShift) || GetKey(sc_RShift))	// If shifted
 			{
 				c = ShiftNames[k];
 				if ((c >= 'A') && (c <= 'Z') && CapsLock)
@@ -277,28 +283,28 @@ IN_CheckAck();
 		case ctrl_Keyboard:
 			def = &KbdDefs;
 
-			if (Keyboard[def->upleft])
+			if (GetKey(def->upleft))
 				mx = motion_Left,my = motion_Up;
-			else if (Keyboard[def->upright])
+			else if (GetKey(def->upright))
 				mx = motion_Right,my = motion_Up;
-			else if (Keyboard[def->downleft])
+			else if (GetKey(def->downleft))
 				mx = motion_Left,my = motion_Down;
-			else if (Keyboard[def->downright])
+			else if (GetKey(def->downright))
 				mx = motion_Right,my = motion_Down;
 
-			if (Keyboard[def->up])
+			if (GetKey(def->up))
 				my = motion_Up;
-			else if (Keyboard[def->down])
+			else if (GetKey(def->down))
 				my = motion_Down;
 
-			if (Keyboard[def->left])
+			if (GetKey(def->left))
 				mx = motion_Left;
-			else if (Keyboard[def->right])
+			else if (GetKey(def->right))
 				mx = motion_Right;
 
-			if (Keyboard[def->button0])
+			if (GetKey(def->button0))
 				buttons += 1 << 0;
-			if (Keyboard[def->button1])
+			if (GetKey(def->button1))
 				buttons += 1 << 1;
 			realdelta = false;
 			break;

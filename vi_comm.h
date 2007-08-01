@@ -142,7 +142,8 @@ typedef	struct {
 		left, right, downleft, down, downright;
 } KeyboardDef;
 
-extern boolean Keyboard[], MousePresent, JoysPresent[];
+extern uint32_t Keyboard[];
+extern boolean MousePresent, JoysPresent[];
 
 extern	boolean		Paused;
 extern	char		LastASCII;
@@ -150,7 +151,8 @@ extern	ScanCode	LastScan;
 extern	KeyboardDef	KbdDefs;
 extern	ControlType	Controls[MaxPlayers];
 
-#define	IN_KeyDown(code)	(Keyboard[(code)])
+#define	IN_KeyDown(code) \
+  ((Keyboard[(code >> 5)] & (1u << (code & 31))) != 0)
 
 extern void INL_Update();
 
