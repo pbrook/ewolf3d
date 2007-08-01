@@ -60,8 +60,7 @@ extern myint vwidth, vheight; /* size of screen */
 #define MINDIST		0x5800
 
 //#define MAXVIEWWIDTH	1280
-//FIXME: Reduce maxwidth to 128.
-#define MAXVIEWWIDTH 320
+#define MAXVIEWWIDTH 128
 
 #define MAPSIZE		64		/* maps are 64*64 */
 

@@ -934,8 +934,8 @@ void ShowViewSize(myint width)
 
 void NewViewSize(myint width)
 {
-	if (width > 20)
-		width = 20;
+	if (width > (MAXVIEWWIDTH / 16))
+		width = MAXVIEWWIDTH / 16;
 	if (width < 4)
 		width = 4;	
 	
