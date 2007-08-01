@@ -36,6 +36,9 @@
 
 //#define ENABLE_SAVENAME 1
 
+/* Enable custom control menu.  */
+//#define ENABLE_CONTROLS 1
+
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0

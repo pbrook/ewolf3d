@@ -55,7 +55,11 @@ MainMenu[]=
 #else
 	{0,STR_SD,NULL},
 #endif
+#ifdef ENABLE_CONTROLS
 	{1,STR_CL,(MenuFunc)CP_Control},
+#else
+	{0,STR_CL,NULL},
+#endif
 	{1,STR_LG,(MenuFunc)CP_LoadGame},
 	{0,STR_SG,(MenuFunc)CP_SaveGame},
 	{1,STR_CV,(MenuFunc)CP_ChangeView},
@@ -85,6 +89,7 @@ SndMenu[]=
 },
 #endif
 
+#ifdef ENABLE_CONTROLS
 CtlMenu[]=
 {
 	{0,STR_MOUSEEN,0},
@@ -94,6 +99,7 @@ CtlMenu[]=
 	{0,STR_SENS,(MenuFunc)MouseSensitivity},
 	{1,STR_CUSTOM,(MenuFunc)CustomControls}
 },
+#endif
 
 #ifndef SPEAR
 NewEmenu[]=
@@ -139,9 +145,10 @@ LSMenu[]=
 	{1,"",0},
 	{1,"",0},
 	{1,"",0}
-},
+}
 
-CusMenu[]=
+#ifdef ENABLE_CONTROLS
+,CusMenu[]=
 {
 	{1,"",0},
 	{0,"",0},
@@ -152,8 +159,9 @@ CusMenu[]=
 	{1,"",0},
 	{0,"",0},
 	{1,"",0}
-};
-
+}
+#endif
+;
 
 static const myint color_hlite[] = { DEACTIVE, HIGHLIGHT, READHCOLOR, 0x67 };
 static const myint color_norml[] = { DEACTIVE, TEXTCOLOR, READCOLOR, 0x6b };
@@ -267,7 +275,9 @@ void US_ControlPanel(byte scancode)
 			goto finishup;
 
 		case sc_F6:
+#ifdef ENABLE_CONTROLS
 			CP_Control();
+#endif
 			goto finishup;
 
 		finishup:
@@ -1456,6 +1466,7 @@ myint CalibrateJoystick()
 #endif
 
 
+#ifdef ENABLE_CONTROLS
 ////////////////////////////////////////////////////////////////////
 //
 // DEFINE CONTROLS
@@ -2356,6 +2367,7 @@ void DrawCustKeys(myint hilight)
 	for (i=0;i<4;i++)
 		PrintCustKeys(i);
 }
+#endif
 
 
 ////////////////////////////////////////////////////////////////////
