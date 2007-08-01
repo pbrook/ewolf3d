@@ -9,10 +9,10 @@
 */
 
 
-static dirtype opposite[9] =
+static const dirtype opposite[9] =
 	{west,southwest,south,southeast,east,northeast,north,northwest,nodir};
 
-static dirtype diagonal[9][9] =
+static const dirtype diagonal[9][9] =
 {
 /* east */	{nodir,nodir,northeast,nodir,nodir,nodir,southeast,nodir,nodir},
 			{nodir,nodir,nodir,nodir,nodir,nodir,nodir,nodir,nodir},
