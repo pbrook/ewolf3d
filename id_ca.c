@@ -18,12 +18,14 @@ typedef struct
 =============================================================================
 */
 
+#ifndef ENABLE_PRECOMPILE
 static word RLEWtag;
+maptype	*mapheaderseg[NUMMAPS];
+#endif
 
 myint mapon;
 
 word	*mapsegs[MAPPLANES];
-maptype	*mapheaderseg[NUMMAPS];
 #ifdef ENABLE_AUDIO
 static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
@@ -405,10 +407,21 @@ static void CAL_SetupGrFile()
 static void CAL_SetupMapFile()
 {
 	myint i;
+#ifndef ENABLE_PRECOMPILE
 	myint handle;
 	long pos;
+#endif
 	char fname[13];
 	
+/* open the data file */
+	strcpy(fname, gmapsname);
+	strcat(fname, extension);
+
+	maphandle = OpenRead(fname);
+	if (maphandle == -1)
+		CA_CannotOpen(fname);
+
+#ifndef ENABLE_PRECOMPILE
 	strcpy(fname, mheadname);
 	strcat(fname, extension);
 
@@ -417,14 +430,6 @@ static void CAL_SetupMapFile()
 		CA_CannotOpen(fname);
 
 	RLEWtag = ReadInt16(handle);
-
-/* open the data file */
-	strcpy(fname, gmapsname);
-	strcat(fname, extension);
-
-	maphandle = OpenRead(fname);
-	if (maphandle == -1)
-		CA_CannotOpen(fname);
 
 /* load all map header */
 	for (i = 0; i < NUMMAPS; i++)
@@ -449,10 +454,11 @@ static void CAL_SetupMapFile()
 		mapheaderseg[i]->planelength[2] = ReadInt16(maphandle);
 		mapheaderseg[i]->width = ReadInt16(maphandle);
 		mapheaderseg[i]->height = ReadInt16(maphandle);
-		ReadBytes(maphandle, (byte *)mapheaderseg[i]->name, 16);		
+		ReadSeek(maphandle, 16, SEEK_CUR);
 	}
 
 	CloseRead(handle);
+#endif
 	
 /* allocate space for 2 64*64 planes */
 	for (i = 0;i < MAPPLANES; i++) {
@@ -727,8 +733,13 @@ void CA_CacheMap(myint mapnum)
 
 	for (plane = 0; plane < MAPPLANES; plane++)
 	{
+#ifdef ENABLE_PRECOMPILE
+		pos = mapheaderseg[mapnum].planestart[plane];
+		compressed = mapheaderseg[mapnum].planelength[plane];
+#else
 		pos = mapheaderseg[mapnum]->planestart[plane];
 		compressed = mapheaderseg[mapnum]->planelength[plane];
+#endif
 
 		ReadSeek(maphandle, pos, SEEK_SET);
 		

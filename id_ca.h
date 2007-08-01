@@ -8,10 +8,14 @@
 
 typedef	struct
 {
+#ifdef ENABLE_PRECOMPILE
+	myint planestart[2];
+	umyshort planelength[2];
+#else
 	myint planestart[3];
 	myint planelength[3];
 	myint width, height;
-	char name[16];
+#endif
 } maptype;
 
 /* ======================================================================== */
@@ -19,7 +23,12 @@ typedef	struct
 extern	myint	mapon;
 
 extern	word	*mapsegs[MAPPLANES];
+#ifdef ENABLE_PRECOMPILE
+extern	const maptype	mapheaderseg[NUMMAPS];
+extern const word RLEWtag;
+#else
 extern	maptype	*mapheaderseg[NUMMAPS];
+#endif
 extern	byte	*audiosegs[NUMSNDCHUNKS];
 extern	byte	*grsegs[NUMCHUNKS];
 

@@ -12,7 +12,7 @@ CFLAGS = -g -Wall -fno-common
 OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_text.o wl_main.o \
-	wl_debug.o vi_comm.o tables.o
+	wl_debug.o vi_comm.o tables.o mapheaders.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
@@ -68,9 +68,13 @@ huffman.h: build_huffman.c
 	gcc build_huffman.c -o build_huffman -lm
 	./build_huffman > huffman.h
 
+mapheaders.c: build_mapheaders.c
+	gcc build_mapheaders.c -o build_mapheaders -lm
+	./build_mapheaders > mapheaders.c
+
 clean:
 	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c \
-	  build_huffman huffman.c
+	  build_huffman huffman.h build_mapheaders mapheaders.c
 
 distclean: clean
 	rm -rf *~ DEADJOE

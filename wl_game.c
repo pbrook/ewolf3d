@@ -474,8 +474,10 @@ void SetupGameLevel()
 /* load the level */
 	CA_CacheMap(gamestate.mapon+10*gamestate.episode);
 	
+#ifndef ENABLE_PRECOMPILE
 	if ((mapheaderseg[mapon]->width != 64) || (mapheaderseg[mapon]->height != 64))
 		Quit("Map not 64*64!");
+#endif
 
 	mapon -= gamestate.episode*10;
 	
