@@ -2245,9 +2245,9 @@ void DrawCustMouse(myint hilight)
 
 void PrintCustJoy(myint i)
 {
+#ifdef ENABLE_JOYSTICK
 	myint j;
 
-#ifdef ENABLE_JOYSTICK
 	for (j=0;j<4;j++)
 		if (order[i]==buttonjoy[j])
 		{
