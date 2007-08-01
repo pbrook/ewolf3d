@@ -969,6 +969,7 @@ void NewViewSize(myint width)
 
 //===========================================================================
 
+#ifdef ENABLE_AUDIO
 #ifndef SPEARDEMO
 
 #ifndef SPEAR
@@ -1122,6 +1123,7 @@ void DoJukebox()
 #endif
 }
 #endif
+#endif
 
 /* ======================================================================== */
 
@@ -1227,9 +1229,11 @@ void InitGame()
 //
 // HOLDING DOWN 'M' KEY?
 //
+#ifdef ENABLE_AUDIO
 #ifndef SPEARDEMO
 	if (IN_KeyDown(sc_M))
 		DoJukebox();
+#endif
 #endif
 }
 
