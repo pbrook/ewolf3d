@@ -16,6 +16,7 @@ word		WindowX,WindowY,WindowW,WindowH;
 
 static	boolean	US_Started;
 
+#ifdef ENABLE_HIGHSCORES
 HighScore	Scores[MaxScores] = {
 		{"id software-'92",10000,1},
 		{"Adrian Carmack",10000,1},
@@ -25,6 +26,7 @@ HighScore	Scores[MaxScores] = {
 		{"John Romero",10000,1},
 		{"Jay Wilbur",10000,1},
 };
+#endif
 
 //	Public routines
 

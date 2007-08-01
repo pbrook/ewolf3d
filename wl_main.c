@@ -162,12 +162,14 @@ myint WriteConfig()
 		WriteInt32(fd, 0x00000000);		/* Padding */
 		WriteInt32(fd, 0x00000000);		/* Checksum (placeholder) */
 	
+#ifdef ENABLE_HIGHSCORES
 		for (i = 0; i < 7; i++) { /* MaxScores = 7 */
 			WriteBytes(fd, (byte *)Scores[i].name, 58);
 			WriteInt32(fd, Scores[i].score);
 			WriteInt32(fd, Scores[i].completed);
 			WriteInt32(fd, Scores[i].episode);
 		}
+#endif
 		
 		WriteInt32(fd, viewsize);
 
@@ -280,12 +282,14 @@ myint ReadConfig()
 		
 		ReadSeek(fd, 32, SEEK_SET);
 		
+#ifdef ENABLE_HIGHSCORES
 		for (i = 0; i < 7; i++) { /* MaxScores = 7 */
 			ReadBytes(fd, (byte *)Scores[i].name, 58);
 			Scores[i].score = ReadInt32(fd);
 			Scores[i].completed = ReadInt32(fd);
 			Scores[i].episode = ReadInt32(fd);
 		}
+#endif
 		
 		viewsize = ReadInt32(fd);
 		

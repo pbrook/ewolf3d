@@ -30,6 +30,10 @@
 
 #define SKIPFADE 1
 
+//#define ENABLE_JOYSTICK 1
+
+//#define ENABLE_HIGHSCORES 1
+
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0
