@@ -16,7 +16,6 @@ boolean		JoysPresent[MaxJoys];
 
 // 	Global variables
 boolean		Keyboard[NumCodes];
-boolean		InternalKeyboard[NumCodes];
 boolean		Paused;
 char		LastASCII;
 ScanCode	LastScan;
@@ -83,7 +82,6 @@ void keyboard_handler(myint code, myint press)
 		if (press == 0)	
 		{
 			Keyboard[k] = false;
-			InternalKeyboard[k] = false;
 		}
 		else			// Make code
 		{
@@ -91,7 +89,6 @@ void keyboard_handler(myint code, myint press)
 			CurCode = LastScan = k;
 			
 			Keyboard[k] = true;
-			InternalKeyboard[k] = true;
 
 			if (k == sc_CapsLock)
 			{
