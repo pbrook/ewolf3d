@@ -1,4 +1,4 @@
-CC = gcc
+CC = gcc -m32
 #CC = arm-linux-gnueabi-gcc
 #CC=/opt/intel/compiler60/ia32/bin/icc
 
