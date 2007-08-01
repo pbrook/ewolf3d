@@ -60,7 +60,7 @@ void SpawnNewObj(unsigned tilex, unsigned tiley, myint state) /* stateenum */
 
 	actorat[tilex][tiley] = obj_id(new) | 0x8000;
 	new->areanumber =
-		*(mapsegs[0] + farmapylookup(new->tiley)+new->tilex) - AREATILE;
+		*(mapseg0 + farmapylookup(new->tiley)+new->tilex) - AREATILE;
 }
 
 /*
@@ -289,7 +289,7 @@ boolean TryWalk(objtype *ob)
 
 
 	ob->areanumber =
-		*(mapsegs[0] + farmapylookup(ob->tiley)+ob->tilex) - AREATILE;
+		*(mapseg0 + farmapylookup(ob->tiley)+ob->tilex) - AREATILE;
 
 	ob->distance = TILEGLOBAL;
 	return true;

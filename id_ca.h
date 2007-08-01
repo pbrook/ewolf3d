@@ -22,7 +22,8 @@ typedef	struct
 
 extern	myint	mapon;
 
-extern	word	*mapsegs[MAPPLANES];
+extern	word	mapseg0[64 * 64];
+extern	word	mapseg1[64 * 64];
 #ifdef ENABLE_PRECOMPILE
 extern	const maptype	mapheaderseg[NUMMAPS];
 extern const word RLEWtag;

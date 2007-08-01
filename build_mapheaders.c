@@ -7,6 +7,8 @@ int main()
     struct {
 	uint32_t offset[3];
 	uint16_t size[3];
+	uint16_t width;
+	uint16_t height;
     } __attribute__((packed)) data;
     int i;
     uint16_t rlew;
@@ -25,9 +27,14 @@ int main()
     for (i = 0; i < 60; i++)
       {
 	fseek(f, offsets[i], SEEK_SET);
-	fread(&data, 2, 9, f);
+	fread(&data, 2, 11, f);
 	printf("{{%d, %d}, {%d, %d}},\n",
 	       data.offset[0], data.offset[1], data.size[0], data.size[1]);
+	if (data.width != 64 || data.height != 64)
+	  {
+	    fprintf(stderr, "Map %d not 64*64\n", i);
+	    return 1;
+	  }
       }
     printf("};\n");
     return 0;

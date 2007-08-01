@@ -51,7 +51,7 @@ void ScanInfoPlane()
 	myint tile;
 	word *start;
 
-	start = mapsegs[1];
+	start = mapseg1;
 	for (y=0;y<mapheight;y++)
 		for (x=0;x<mapwidth;x++)
 		{
@@ -485,7 +485,7 @@ void SetupGameLevel()
 	memset(actorat, 0, sizeof(actorat));
 
 /* copy the wall data to a data segment array */	
-	map = mapsegs[0];
+	map = mapseg0;
 	for (y = 0; y < mapheight; y++)
 		for (x = 0; x < mapwidth; x++) {
 			tile = *map++;
@@ -503,7 +503,7 @@ void SetupGameLevel()
 	InitStaticList();
 
 /* spawn doors */
-	map = mapsegs[0];
+	map = mapseg0;
 	for (y = 0; y < mapheight; y++)
 		for (x = 0; x < mapwidth; x++)
 		{
@@ -537,7 +537,7 @@ void SetupGameLevel()
 	ScanInfoPlane();
 
 /* take out the ambush markers */
-	map = mapsegs[0];
+	map = mapseg0;
 	for (y=0;y<mapheight;y++)
 		for (x=0;x<mapwidth;x++)
 		{

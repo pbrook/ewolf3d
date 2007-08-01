@@ -25,7 +25,8 @@ maptype	*mapheaderseg[NUMMAPS];
 
 myint mapon;
 
-word	*mapsegs[MAPPLANES];
+word	mapseg0[MAPSIZE * MAPSIZE];
+word	mapseg1[MAPSIZE * MAPSIZE];
 #ifdef ENABLE_AUDIO
 static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
@@ -460,11 +461,6 @@ static void CAL_SetupMapFile()
 	CloseRead(handle);
 #endif
 	
-/* allocate space for 2 64*64 planes */
-	for (i = 0;i < MAPPLANES; i++) {
-		MM_GetPtr((memptr)&mapsegs[i], 64*64*2);
-		MM_SetLock((memptr)&mapsegs[i], true);
-	}
 }
 
 
@@ -761,7 +757,8 @@ void CA_CacheMap(myint mapnum)
 		MM_FreePtr((void *)&source);
 
 		expanded = 64*64*2;
-		CA_RLEWexpand(((word *)buffer2seg)+1, mapsegs[plane], expanded, RLEWtag);
+		CA_RLEWexpand(((word *)buffer2seg)+1,
+			      plane ? mapseg1 : mapseg0, expanded, RLEWtag);
 		MM_FreePtr(&buffer2seg);
 	}
 }

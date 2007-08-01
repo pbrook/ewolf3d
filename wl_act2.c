@@ -334,7 +334,7 @@ void SpawnStand (enemy_t which, myint tilex, myint tiley, myint dir)
 	}
 
 
-	map = mapsegs[0]+farmapylookup(tiley)+tilex;
+	map = mapseg0+farmapylookup(tiley)+tilex;
 	if (*map == AMBUSHTILE)
 	{
 		tilemap[tilex][tiley] = 0;
@@ -592,7 +592,7 @@ void SelectPathDir(objtype *ob)
 {
 	unsigned spot;
 
-	spot = *(mapsegs[1]+farmapylookup(ob->tiley)+ob->tilex)-ICONARROWS;
+	spot = *(mapseg1+farmapylookup(ob->tiley)+ob->tilex)-ICONARROWS;
 
 	if (spot<8)
 	{
