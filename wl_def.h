@@ -691,8 +691,9 @@ extern	myint		mouseadjustment;
 
 /* math tables */
 extern myint pixelangle[MAXVIEWWIDTH];
-extern int32_t finetangent[FINEANGLES/4];
-extern fixed sintable[], *costable;
+extern const fixed finetangent[FINEANGLES/4];
+extern const fixed sintable[];
+extern const fixed *const costable;
 
 extern char configname[13];
 
