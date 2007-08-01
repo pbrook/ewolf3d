@@ -11,7 +11,7 @@ CFLAGS = -g -Wall -fno-common
 #CFLAGS=-O3 -xiMK -tpp6 -c99 -wp_ipo -g
 OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
-	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_text.o wl_main.o \
+	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
 	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o

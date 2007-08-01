@@ -41,6 +41,8 @@
 
 #define ENABLE_PRECOMPILE 1
 
+//#define ENABLE_ENDTEXT 1
+
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0

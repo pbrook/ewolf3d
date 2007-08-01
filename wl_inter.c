@@ -231,7 +231,9 @@ void Victory()
 	UnCacheLump(LEVELEND_LUMP_START,LEVELEND_LUMP_END);
 
 #ifndef SPEAR
+#ifdef ENABLE_ENDTEXT
 	EndText();
+#endif
 #else
 	EndSpear();
 #endif
