@@ -44,6 +44,7 @@ all:	xwolf3d
 $(SOBJS): version.h id_heads.h wl_def.h
 $(XOBJS): version.h id_heads.h wl_def.h
 $(DOBJS): version.h id_heads.h wl_def.h
+id_ca.o: huffman.h
 
 .asm.o:
 	$(NASM) -f elf -o $@ $<
@@ -63,8 +64,13 @@ tables.c: build_tables.c
 	gcc build_tables.c -o build_tables -lm
 	./build_tables > tables.c
 
+huffman.h: build_huffman.c
+	gcc build_huffman.c -o build_huffman -lm
+	./build_huffman > huffman.h
+
 clean:
-	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c
+	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c \
+	  build_huffman huffman.c
 
 distclean: clean
 	rm -rf *~ DEADJOE

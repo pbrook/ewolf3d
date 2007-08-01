@@ -39,6 +39,8 @@
 /* Enable custom control menu.  */
 //#define ENABLE_CONTROLS 1
 
+#define ENABLE_PRECOMPILE 1
+
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0

@@ -1,12 +1,15 @@
 #include "wl_def.h"
 
+#ifndef ENABLE_PRECOMPILE
 typedef struct
 {
 	byte val[2];
 	boolean flag0:1;
 	boolean flag1:1;
 } huffnode;
-
+#else
+#include "huffman.h"
+#endif
 /*
 =============================================================================
 
@@ -29,7 +32,9 @@ byte	*grsegs[NUMCHUNKS];
 char extension[5];
 #define gheadname "vgahead."
 #define gfilename "vgagraph."
+#ifndef ENABLE_PRECOMPILE
 #define gdictname "vgadict."
+#endif
 #define mheadname "maphead."
 #define gmapsname "gamemaps."
 #define aheadname "audiohed."
@@ -41,7 +46,9 @@ static int32_t grstarts[NUMCHUNKS + 1];	/* array of offsets in vgagraph */
 static int32_t *audiostarts; /* array of offsets in audiot */
 #endif
 
+#ifndef ENABLE_PRECOMPILE
 static huffnode grhuffman[256];
+#endif
 
 static myint grhandle = -1;	/* handle to VGAGRAPH */
 static myint maphandle = -1;	/* handle to GAMEMAPS */
@@ -319,8 +326,8 @@ static void CAL_SetupGrFile()
 	myint handle;
 	byte *grtemp;
 	myint i;
-	myshort v;
 
+#ifndef ENABLE_PRECOMPILE
 /* load vgadict.ext (huffman dictionary for graphics files) */
 	strcpy(fname, gdictname);
 	strcat(fname, extension);
@@ -329,8 +336,10 @@ static void CAL_SetupGrFile()
 	if (handle == -1)
 		CA_CannotOpen(fname);
 
+#ifndef ENABLE_PRECOMPILE
 	for (i = 0; i < 256; i++) {
 	/* 0-255 is a character, > is a pointer to a node */
+		myshort v;
 		v = ReadInt16(handle);
 		grhuffman[i].flag0 = v >> 8;
 		grhuffman[i].val[0] = v & 0xff;
@@ -338,8 +347,10 @@ static void CAL_SetupGrFile()
 		grhuffman[i].flag1 = v >> 8;
 		grhuffman[i].val[1] = v & 0xff;
 	}
+#endif
 	
 	CloseRead(handle);
+#endif
 	
 /* load the data offsets from vgahead.ext */
 	//MM_GetPtr((memptr)&grstarts, (NUMCHUNKS+1)*4);
