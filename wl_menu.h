@@ -91,14 +91,15 @@
 // TYPEDEFS
 //
 typedef struct {
-	myint x,y,amount,curpos,indent;
+	myshort x,y,amount,curpos,indent;
 } CP_iteminfo;
 
 typedef void (* MenuFunc)(myint temp1);
 
 typedef struct {
-	myint active;
-	char string[36];
+	byte active;
+	char string[35];
+	// FIXME: Make this an index.
 	MenuFunc routine;
 } CP_itemtype;
 
