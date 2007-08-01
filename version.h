@@ -34,6 +34,8 @@
 
 //#define ENABLE_HIGHSCORES 1
 
+//#define ENABLE_SAVENAME 1
+
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0

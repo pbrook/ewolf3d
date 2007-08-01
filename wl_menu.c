@@ -157,7 +157,10 @@ static myint EpisodeSelect[6] = { 1 };
 #endif
 
 static myint SaveGamesAvail[10],StartGame,SoundStatus=1,pickquick;
-static char SaveGameNames[10][32],SaveName[13]="savegam?.";
+#ifdef ENABLE_SAVENAME
+static char SaveGameNames[10][32];
+#endif
+static char SaveName[13]="savegam?.";
 
 
 ////////////////////////////////////////////////////////////////////
@@ -540,7 +543,9 @@ myint CP_CheckQuick(unsigned scancode)
 				CA_CacheGrChunk(STARTFONT+1);
 				fontnumber = 1;
 
+#ifdef ENABLE_SAVENAME
 				strcat(string,SaveGameNames[LSItems.curpos]);
+#endif
 				strcat(string,"\"?");
 
 				if (Confirm(string))
@@ -1228,7 +1233,11 @@ void PrintLSEntry(myint w,myint color)
 	fontnumber=0;
 
 	if (SaveGamesAvail[w])
+#ifdef ENABLE_SAVENAME
 		US_Print(SaveGameNames[w]);
+#else
+		US_Print("Saved Game");
+#endif
 	else
 		US_Print("      - "STR_EMPTY" -");
 
@@ -1258,7 +1267,11 @@ myint CP_SaveGame(myint quick)
 		if (SaveGamesAvail[which])
 		{
 			name[7] = which+'0';
+#ifdef ENABLE_SAVENAME
 			SaveTheGame(name, &SaveGameNames[which][0], 0, 0);
+#else
+			SaveTheGame(name, name, 0, 0);
+#endif
 			
 			return 1;
 		}
@@ -1295,7 +1308,9 @@ myint CP_SaveGame(myint quick)
 			}
 			ShootSnd();
 
+#ifdef ENABLE_SAVENAME
 			strcpy(input,&SaveGameNames[which][0]);
+#endif
 			name[7]=which+'0';
 
 			fontnumber=0;
@@ -1303,14 +1318,17 @@ myint CP_SaveGame(myint quick)
 				VW_Bar(LSM_X+LSItems.indent+1,LSM_Y+which*13+1,LSM_W-LSItems.indent-16,10,BKGDCOLOR);
 			VW_UpdateScreen();
 
+#ifdef ENABLE_SAVENAME
 			if (US_LineInput(LSM_X+LSItems.indent+2,LSM_Y+which*13+1,input,input,true,31,LSM_W-LSItems.indent-30))
 			{
+				strcpy(&SaveGameNames[which][0],input);
+#endif
 				SaveGamesAvail[which] = 1;
 				DrawLSAction(1);
-				strcpy(&SaveGameNames[which][0],input);
 				SaveTheGame(name, input, LSA_X+8, LSA_Y+5);
 				ShootSnd();
 				exit=1;
+#ifdef ENABLE_SAVENAME
 			}
 			else
 			{
@@ -1320,6 +1338,7 @@ myint CP_SaveGame(myint quick)
 				SD_PlaySound(ESCPRESSEDSND);
 				continue;
 			}
+#endif
 
 			fontnumber=1;
 			break;
@@ -2551,7 +2570,9 @@ void SetupControlPanel()
 
 				if (ReadSaveTag(f.ff_name, temp) != -1) {
 					SaveGamesAvail[which]=1;
+#ifdef ENABLE_SAVENAME
 					strcpy(&SaveGameNames[which][0],temp);
+#endif
 				}
 			}
 		} while(!findnext(&f));
@@ -2569,7 +2590,9 @@ void SetupControlPanel()
 				
 				if (ReadSaveTag(f.name, temp) != -1) {
 					SaveGamesAvail[which]=1;
+#ifdef ENABLE_SAVENAME
 					strcpy(&SaveGameNames[which][0],temp);
+#endif
 				}
 			}
 		} while(_findnext(hand, &f) != -1);
@@ -2587,7 +2610,9 @@ void SetupControlPanel()
 			
 			if (ReadSaveTag(globbuf.gl_pathv[x], temp) != -1) {
 				SaveGamesAvail[which]=1;
+#ifdef ENABLE_SAVENAME
 				strcpy(&SaveGameNames[which][0],temp);
+#endif
 			}
 		}
 	}
