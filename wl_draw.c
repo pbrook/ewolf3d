@@ -273,7 +273,7 @@ static visobj_t vislist[MAXVISABLE], *visptr, *visstep, *farthest;
 static void DrawScaleds()
 {
 	myint 		i,least,numvisable,height;
-	byte		*tilespot,*visspot;
+	byte		*tilespot;
 	unsigned	spotloc;
 
 	statobj_t	*statptr;
@@ -287,7 +287,7 @@ static void DrawScaleds()
 		if ((visptr->shapenum = statptr->shapenum) == -1)
 			continue;			/* object has been deleted */
 
-		if (!spotvis[statptr->tilex][statptr->tiley])
+		if (!getspotvis(statptr->tilex, statptr->tiley))
 			continue;			/* not visable */
 
 		if (TransformTile(statptr->tilex, statptr->tiley
@@ -309,25 +309,32 @@ static void DrawScaleds()
 //
 	for (obj = obj_next(player); obj; obj = obj_next(obj))
 	{
+		uint64_t spotmask;
+		uint64_t spota;
+		uint64_t spotb;
+		uint64_t spotc;
 		if (!(visptr->shapenum = gamestates[obj->state].shapenum))
 			continue;  // no shape
 
 		spotloc = (obj->tilex << 6) + obj->tiley;
-		visspot = &spotvis[0][0] + spotloc;
 		tilespot = &tilemap[0][0] + spotloc;
+		spota = spotvis[obj->tilex-1];
+		spotb = spotvis[obj->tilex];
+		spotc = spotvis[obj->tilex+1];
+		spotmask = 1ull << obj->tiley;
 
 		//
 		// could be in any of the nine surrounding tiles
 		//
-		if (*visspot
-		|| (*(visspot-1) && !*(tilespot-1))
-		|| (*(visspot+1) && !*(tilespot+1))
-		|| (*(visspot-65) && !*(tilespot-65))
-		|| (*(visspot-64) && !*(tilespot-64))
-		|| (*(visspot-63) && !*(tilespot-63))
-		|| (*(visspot+65) && !*(tilespot+65))
-		|| (*(visspot+64) && !*(tilespot+64))
-		|| (*(visspot+63) && !*(tilespot+63))) 
+		if ((spotb & spotmask)
+		|| ((spotb & (spotmask >> 1)) && !*(tilespot-1))
+		|| ((spotb & (spotmask << 1)) && !*(tilespot+1))
+		|| ((spota & (spotmask >> 1)) && !*(tilespot-65))
+		|| ((spota & spotmask) && !*(tilespot-64))
+		|| ((spota & (spotmask << 1)) && !*(tilespot-63))
+		|| ((spotc & (spotmask >> 1)) && !*(tilespot+63))
+		|| ((spotc & spotmask) && !*(tilespot+64))
+		|| ((spotc & (spotmask << 1)) && !*(tilespot+65)))
 		{
 			obj->active = ac_yes;
 			TransformActor(obj);
@@ -1200,7 +1207,7 @@ vertentry:
 		continue;
 	}
 passvert:
-	spotvis[xtile][TILE(yintercept)] = 1;
+	setspotvis(xtile,TILE(yintercept));
 	xtile += xtilestep;
 	yintercept += ystep;
 	goto vertcheck;
@@ -1248,7 +1255,7 @@ horizentry:
 		continue;
 	}
 passhoriz:
-	spotvis[TILE(xintercept)][ytile] = 1;
+	setspotvis(TILE(xintercept), ytile);
 	ytile += ytilestep;
 	xintercept += xstep;
 	goto horizcheck;

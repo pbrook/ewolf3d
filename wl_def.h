@@ -774,8 +774,17 @@ extern	doorobj_t	doorobjlist[MAXDOORS],*lastdoorobj;
 extern	unsigned	farmapylookup[MAPSIZE];
 
 extern	byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
-// FIXME: Make this a proper bitfield
-extern	boolean		spotvis[MAPSIZE][MAPSIZE];
+
+extern uint64_t spotvis[MAPSIZE];
+static inline boolean getspotvis(int x, int y)
+{
+  return (spotvis[x] & (1ull << y)) != 0;
+}
+static inline void setspotvis(int x, int y)
+{
+  spotvis[x] |= (1ull << y);
+}
+
 extern	umyshort		actorat[MAPSIZE][MAPSIZE];
 
 extern	boolean		singlestep,godmode,noclip;

@@ -22,7 +22,7 @@ unsigned	farmapylookup[MAPSIZE];
 boolean		singlestep,godmode,noclip;
 
 byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
-byte		spotvis[MAPSIZE][MAPSIZE];
+uint64_t		spotvis[MAPSIZE];
 umyshort		actorat[MAPSIZE][MAPSIZE];
 
 myint tics;
