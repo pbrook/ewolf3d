@@ -287,7 +287,6 @@ static void DrawScaleds()
 		if ((visptr->shapenum = statptr->shapenum) == -1)
 			continue;			/* object has been deleted */
 
-		spotloc = (obj->tilex << 6) + obj->tiley;
 		if (!spotvis[statptr->tilex][statptr->tiley])
 			continue;			/* not visable */
 
