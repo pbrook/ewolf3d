@@ -210,8 +210,8 @@ typedef enum
 // WL_INTER
 //
 typedef struct {
-	myint kill,secret,treasure;
-	long time;
+	myshort kill,secret,treasure;
+	myshort time;
 } LRstruct;
 
 extern LRstruct LevelRatios[];
