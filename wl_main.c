@@ -228,9 +228,11 @@ static void SetDefaults()
 	
 	mouseenabled = false;
 
+#ifdef JOYSTICK_ENABLED
 	joystickenabled = false;
 	joypadenabled = false;
 	joystickport = 0;
+#endif
 
 	mouseadjustment = 5;
 

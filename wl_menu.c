@@ -1338,6 +1338,7 @@ myint CP_SaveGame(myint quick)
 }
 
 
+#ifdef ENABLE_JOYSTICK
 ////////////////////////////////////////////////////////////////////
 //
 // CALIBRATE JOYSTICK
@@ -1423,6 +1424,7 @@ myint CalibrateJoystick()
 
 	return 1;
 }
+#endif
 
 
 ////////////////////////////////////////////////////////////////////
@@ -1456,6 +1458,7 @@ void CP_Control()
 				ShootSnd();
 				break;
 
+#ifdef JOYSTICK_ENABLED
 			case JOYENABLE:
 				joystickenabled^=1;
 				DrawCtlScreen();
@@ -1473,6 +1476,7 @@ void CP_Control()
 				DrawCtlScreen();
 				ShootSnd();
 				break;
+#endif
 
 			case MOUSESENS:
 			case CUSTOMIZE:
@@ -1623,7 +1627,9 @@ void DrawCtlScreen()
    CtlMenu[2].active=
    CtlMenu[3].active=1;
 
+#ifdef JOYSTICK_ENABLED
  CtlMenu[2].active=CtlMenu[3].active=joystickenabled;
+#endif
 
  if (MousePresent)
  {
@@ -1645,21 +1651,27 @@ void DrawCtlScreen()
    VWB_DrawPic(x,y,C_NOTSELECTEDPIC);
 
  y=CTL_Y+16;
+#ifdef JOYSTICK_ENABLED
  if (joystickenabled)
    VWB_DrawPic(x,y,C_SELECTEDPIC);
  else
+#endif
    VWB_DrawPic(x,y,C_NOTSELECTEDPIC);
 
  y=CTL_Y+29;
+#ifdef JOYSTICK_ENABLED
  if (joystickport)
    VWB_DrawPic(x,y,C_SELECTEDPIC);
  else
+#endif
    VWB_DrawPic(x,y,C_NOTSELECTEDPIC);
 
  y=CTL_Y+42;
+#ifdef JOYSTICK_ENABLED
  if (joypadenabled)
    VWB_DrawPic(x,y,C_SELECTEDPIC);
  else
+#endif
    VWB_DrawPic(x,y,C_NOTSELECTEDPIC);
 
  //
@@ -1894,6 +1906,7 @@ void EnterCtrlData(myint index,CustomCtrls *cust,void (*DrawRtn)(myint),void (*P
 	   break;
 
 	 case JOYSTICK:
+#ifdef JOYSTICK_ENABLED
 	   if (ci.button0) result=1;
 	   else
 	   if (ci.button1) result=2;
@@ -1918,6 +1931,7 @@ void EnterCtrlData(myint index,CustomCtrls *cust,void (*DrawRtn)(myint),void (*P
 	picked=1;
 	SD_PlaySound(SHOOTDOORSND);
 	   }
+#endif
 	   break;
 
 	 case KEYBOARDBTNS:
@@ -2233,6 +2247,7 @@ void PrintCustJoy(myint i)
 {
 	myint j;
 
+#ifdef ENABLE_JOYSTICK
 	for (j=0;j<4;j++)
 		if (order[i]==buttonjoy[j])
 		{
@@ -2240,6 +2255,7 @@ void PrintCustJoy(myint i)
 			US_Print(mbarray[j]);
 			break;
 		}
+#endif
 }
 
 void DrawCustJoy(myint hilight)
@@ -2252,13 +2268,17 @@ void DrawCustJoy(myint hilight)
 		color=HIGHLIGHT;
 	SETFONTCOLOR(color,BKGDCOLOR);
 
+#ifdef JOYSTICK_ENABLED
 	if (!joystickenabled)
 	{
+#endif
 		SETFONTCOLOR(DEACTIVE,BKGDCOLOR);
 		CusMenu[3].active=0;
+#ifdef JOYSTICK_ENABLED
 	}
 	else
 		CusMenu[3].active=1;
+#endif
 
 	PrintY=CST_Y+13*5;
 	for (i=0;i<4;i++)

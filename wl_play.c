@@ -30,13 +30,16 @@ myint tics;
 //
 // control info
 //
-boolean		mouseenabled,joystickenabled,joypadenabled;
+boolean		mouseenabled;
+#ifdef ENABLE_JOYSTICK
+boolean joystickenabled,joypadenabled;
 myint			joystickport;
+myint			buttonjoy[4]={bt_attack,bt_strafe,bt_use,bt_run};
+#endif
 myint			dirscan[4] = {sc_UpArrow,sc_RightArrow,sc_DownArrow,sc_LeftArrow};
 myint			buttonscan[NUMBUTTONS] =
 			{sc_Control,sc_Alt,sc_RShift,sc_Space,sc_1,sc_2,sc_3,sc_4};
 myint			buttonmouse[4]={bt_attack,bt_strafe,bt_use,bt_nobutton};
-myint			buttonjoy[4]={bt_attack,bt_strafe,bt_use,bt_run};
 
 boolean		buttonheld[NUMBUTTONS];
 
@@ -228,6 +231,7 @@ void PollMouseButtons()
 }
 
 
+#ifdef ENABLE_JOYSTICK
 /*
 ===================
 =
@@ -264,6 +268,7 @@ void PollJoystickButtons()
 		}
 	}
 }
+#endif
 
 /*
 ===================
@@ -318,6 +323,7 @@ void PollMouseMove()
 	controly += mouseymove*20/(13-mouseadjustment);
 }
 
+#ifdef ENABLE_JOYSTICK
 /*
 ===================
 =
@@ -355,6 +361,7 @@ void PollJoystickMove()
 			controly -= BASEMOVE*tics;
 	}
 }
+#endif
 
 void UpdateInput()
 {
@@ -366,8 +373,10 @@ void UpdateInput()
 	if (mouseenabled)
 		PollMouseButtons();
 
+#ifdef ENABLE_JOYSTICK
 	if (joystickenabled)
 		PollJoystickButtons();
+#endif
 
 //
 // get movements
@@ -377,8 +386,10 @@ void UpdateInput()
 	if (mouseenabled)
 		PollMouseMove();
 
+#ifdef ENABLE_JOYSTICK
 	if (joystickenabled)
 		PollJoystickMove();
+#endif
 }
 
 /*
