@@ -170,7 +170,7 @@ static char SaveGameNames[10][32],SaveName[13]="savegam?.";
 ////////////////////////////////////////////////////////////////////
 
 static const char
-					*ScanNames[] =		// Scan code names with single chars
+					*const ScanNames[] =		// Scan code names with single chars
 					{
 	"?","?","1","2","3","4","5","6","7","8","9","0","-","+","?","?",
 	"Q","W","E","R","T","Y","U","I","O","P","[","]","|","?","A","S",
@@ -181,7 +181,7 @@ static const char
 	"?","?","?","?","?","?","?","?","?","?","?","?","?","?","?","?",
 	"?","?","?","?","?","?","?","?","?","?","?","?","?","?","?","?"
 					},	// DEBUG - consolidate these
-					*ExtScanNames[] =	// Names corresponding to ExtScanCodes
+					*const ExtScanNames[] =	// Names corresponding to ExtScanCodes
 					{
 	"Esc","BkSp","Tab","Ctrl","LShft","Space","CapsLk","F1","F2","F3","F4",
 	"F5","F6","F7","F8","F9","F10","F11","F12","ScrlLk","Enter","RShft",
@@ -200,7 +200,7 @@ static const ScanCode
 
 const char *IN_GetScanName(ScanCode scan)
 {
-	const char **p;
+	const char *const*p;
 	const ScanCode *s;
 
 	for (s = ExtScanCodes, p = ExtScanNames; *s; p++, s++)
