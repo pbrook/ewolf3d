@@ -108,7 +108,7 @@ typedef	enum {
 	ctrl_Joystick1 = ctrl_Joystick, 
 	ctrl_Joystick2,
 	ctrl_Mouse
-} ControlType;
+} PACKED ControlType;
 
 typedef	enum {
 	motion_Left = -1,
@@ -116,7 +116,7 @@ typedef	enum {
 	motion_None = 0,
 	motion_Right = 1,
 	motion_Down = 1
-} Motion;
+} PACKED Motion;
 
 typedef	enum {
 	dir_North,
@@ -128,7 +128,7 @@ typedef	enum {
 	dir_West,
 	dir_NorthWest,
 	dir_None
-} Direction;
+} PACKED Direction;
 
 typedef	struct {
 	boolean button0, button1, button2, button3;
