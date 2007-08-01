@@ -121,10 +121,12 @@ void ScanInfoPlane()
 			case 68:
 			case 69:
 			case 70:
+#ifdef SPEAR
 			case 71:
 			case 72:
 			case 73:						// TRUCK AND SPEAR!
 			case 74:
+#endif
 
 				SpawnStatic(x,y,tile-23);
 				break;

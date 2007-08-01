@@ -438,7 +438,7 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 		for (ob = player; ob; ob = obj_next(ob)) {
 			DiskFlopAnim(dx, dy);
 			
-			//WriteInt32(fd, ob->id);
+			WriteInt32(fd, obj_id(ob));
 			WriteInt32(fd, ob->active);
 			WriteInt32(fd, ob->ticcount);
 			WriteInt32(fd, ob->obclass);

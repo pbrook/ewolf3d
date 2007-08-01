@@ -761,7 +761,7 @@ void MM_GetPtr(memptr *baseptr, unsigned long size)
 	/* add some sort of linked list for purging */
   total_size += size;
   lastmalloc = size;
-  printf ("malloc %8d/%d\n", (int)size, total_size);
+  //printf ("malloc %8d/%d\n", (int)size, total_size);
 	*baseptr = malloc(size);
 }
 
@@ -779,7 +779,7 @@ void MM_SetLock(memptr *baseptr, boolean locked)
 {
   static int total_locked = 0;
   total_locked += lastmalloc;
-  printf ("Locked %d\n", total_locked);
+  //printf ("Locked %d\n", total_locked);
 }
 
 void MM_SortMem()
