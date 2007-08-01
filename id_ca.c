@@ -407,8 +407,8 @@ static void CAL_SetupGrFile()
 
 static void CAL_SetupMapFile()
 {
-	myint i;
 #ifndef ENABLE_PRECOMPILE
+	myint i;
 	myint handle;
 	long pos;
 #endif
@@ -796,9 +796,13 @@ void MM_SetPurge(memptr *baseptr, myint purge)
 
 void MM_SetLock(memptr *baseptr, boolean locked)
 {
+#ifdef ENABLE_PRECOMPILE
+  printf ("Locked Page\n");
+  abort();
+#else
   static int total_locked = 0;
   total_locked += lastmalloc;
-  //printf ("Locked %d\n", total_locked);
+#endif
 }
 
 void MM_SortMem()
@@ -808,9 +812,10 @@ void MM_SortMem()
 static boolean PMStarted;
 
 static myint PageFile = -1;
+#ifndef ENABLE_PRECOMPILE
 myint ChunksInFile, PMSpriteStart, PMSoundStart;
-
 PageListStruct *PMPages;
+#endif
 
 static void PML_ReadFromFile(byte *buf, long offset, word length)
 {
@@ -826,10 +831,12 @@ static void PML_ReadFromFile(byte *buf, long offset, word length)
 
 static void PML_OpenPageFile()
 {
+	char fname[13];
+#ifndef ENABLE_PRECOMPILE
 	myint i;
 	PageListStruct *page;
-	char fname[13];
 	int offset;
+#endif
 	
 	strcpy(fname, pfilename);
 	strcat(fname, extension);
@@ -838,6 +845,7 @@ static void PML_OpenPageFile()
 	if (PageFile == -1)
 		Quit("PML_OpenPageFile: Unable to open page file");
 
+#ifndef ENABLE_PRECOMPILE
 	/* Read in header variables */
 	ChunksInFile = ReadInt16(PageFile);
 	PMSpriteStart = ReadInt16(PageFile);
@@ -864,6 +872,11 @@ static void PML_OpenPageFile()
 	for (i = 0, page = PMPages; i < ChunksInFile; i++, page++) {	
 		page->length = ReadInt16(PageFile);
 	}
+
+	MM_GetPtr((memptr)&PageAddr, sizeof(memptr) * ChunksInFile);
+	MM_SetLock((memptr)&PageAddr, true);
+	memset(PageAddr, 0, sizeof(memptr) * ChunksInFile);
+#endif
 }
 
 static void PML_ClosePageFile()
@@ -871,6 +884,7 @@ static void PML_ClosePageFile()
 	if (PageFile != -1)
 		CloseRead(PageFile);
 		
+#ifndef ENABLE_PRECOMPILE
 	if (PMPages) {
 		myint i;
 		
@@ -886,37 +900,23 @@ static void PML_ClosePageFile()
 		MM_SetLock((memptr)&PMPages,false);
 		MM_FreePtr((memptr)&PMPages);
 	}
+#endif
 }
 
 memptr PM_GetPage(myint pagenum)
 {
-	PageListStruct *page;
-	
 	if (pagenum >= ChunksInFile)
 		Quit("PM_GetPage: Invalid page request");
 
-	page = &PMPages[pagenum];
-	if (page->addr == NULL) {
-		MM_GetPtr((memptr)&page->addr, PMPageSize);
-		PML_ReadFromFile(page->addr, (int32_t)page->offset << 8, page->length);
+	if (!PageAddr[pagenum]) {
+		const PageListStruct *page = &PMPages[pagenum];
+		MM_GetPtr(&PageAddr[pagenum], PMPageSize);
+		PML_ReadFromFile(PageAddr[pagenum],
+				  (int32_t)page->offset << 8, page->length);
 	}
-	return page->addr;
+	return PageAddr[pagenum];
 }
 
-void PM_FreePage(myint pagenum)
-{
-	PageListStruct *page;
-	
-	if (pagenum >= ChunksInFile)
-		Quit("PM_FreePage: Invalid page request");
-	
-	page = &PMPages[pagenum];
-	if (page->addr != NULL) {
-		MM_FreePtr((memptr)&page->addr);
-		page->addr = NULL;
-	}
-}
-	
 void PM_Startup()
 {
 	if (PMStarted)

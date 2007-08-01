@@ -70,19 +70,22 @@ void MM_SortMem();
 typedef	struct {
 	umyshort offset;	/* Offset of chunk into file, >> 8 */
 	myshort length;	/* Length of the chunk */
-	memptr addr;
 } PageListStruct;
 
+#ifdef ENABLE_PRECOMPILE
+extern const myint ChunksInFile, PMSpriteStart, PMSoundStart;
+extern const PageListStruct PMPages[];
+// FIXME: Could be 16-bit offsets.
+extern memptr PageAddr[];
+#else
 extern myint ChunksInFile, PMSpriteStart, PMSoundStart;
-
 extern PageListStruct *PMPages;
+extern memptr *PageAddr;
+#endif
 
 #define	PM_GetSoundPage(v)	PM_GetPage(PMSoundStart + (v))
 #define	PM_GetSpritePage(v)	PM_GetPage(PMSpriteStart + (v))
 memptr PM_GetPage(myint pagenum);
-#define	PM_FreeSoundPage(v)	PM_FreePage(PMSoundStart + (v))
-#define	PM_FreeSpritePage(v)	PM_FreePage(PMSpriteStart + (v))
-void PM_FreePage(myint pagenum);
 
 void PM_Startup();
 void PM_Shutdown();
