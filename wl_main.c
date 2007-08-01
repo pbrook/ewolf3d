@@ -32,9 +32,9 @@ long frameon;
 long lasttimecount;
 fixed viewsin, viewcos;
 fixed viewx, viewy;		/* the focal point */
-myint pixelangle[MAXVIEWWIDTH];
+myshort pixelangle[MAXVIEWWIDTH];
 //int32_t finetangent[FINEANGLES/4];
-myint horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
+myshort horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
 
 char configname[13] = "config.";
 

@@ -690,7 +690,7 @@ extern	boolean         startgame,loadedgame;
 extern	myint		mouseadjustment;
 
 /* math tables */
-extern myint pixelangle[MAXVIEWWIDTH];
+extern myshort pixelangle[MAXVIEWWIDTH];
 extern const fixed finetangent[FINEANGLES/4];
 extern const fixed sintable[];
 extern const fixed *const costable;
@@ -866,7 +866,7 @@ extern long frameon;
 extern fixed viewx, viewy;			/* the focal point */
 extern fixed viewsin, viewcos;
 
-extern myint horizwall[], vertwall[];
+extern myshort horizwall[], vertwall[];
 
 
 void BuildTables();
