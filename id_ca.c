@@ -765,12 +765,87 @@ void CA_CacheMap(myint mapnum)
 
 /* ======================================================================== */
 
+#define POOL_SIZE 16416
+static byte *MM_Pool;
+word pool_offset;
+
+typedef struct
+{
+  /* FIXME: This is broken on 64-bit hosts.  */
+  pool_id *owner;
+  uint16_t size;
+  uint16_t pad;
+} pool_header;
+
 void MM_Startup()
 {
+  pool_header *p;
+  MM_Pool = malloc(POOL_SIZE);
+  p = (pool_header *)MM_Pool;
+  p->owner = NULL;
+  p->size = POOL_SIZE - 8;
+  pool_offset = 0;
 }
 
 void MM_Shutdown()
 {
+  if (MM_Pool)
+    free(MM_Pool);
+}
+
+memptr MM_AllocPool(pool_id *id, unsigned long size)
+{
+  pool_header *h;
+  pool_header *next;
+  h = (pool_header *)(MM_Pool + pool_offset);
+  size = (size + 7) & ~7;
+  if (size > POOL_SIZE - 8)
+    {
+      fprintf(stderr, "Pool allocation too big\n");
+      abort();
+    }
+  /* Reclaim entries until we have enough space.  */
+  while (h->size < size)
+    {
+      /* Wrap back to the start of the pool.  */
+      if (pool_offset + h->size + 8 == POOL_SIZE)
+	{
+	  pool_offset = 0;
+	  h = (pool_header *)MM_Pool;
+	  continue;
+	}
+      next = (pool_header *)(MM_Pool + pool_offset + h->size + 8);
+      if (next->owner)
+	*next->owner = 0;
+      h->size += next->size + 8;
+    }
+  /* Make sure this entry is free.  */
+  if (h->owner)
+    {
+      *h->owner = 0;
+    }
+  if (size < h->size - 8) {
+      next = (pool_header *)(MM_Pool + pool_offset + size + 8);
+      next->owner = NULL;
+      next->size = h->size - (size + 8);
+      h->size = size;
+  }
+  h->owner = id;
+  *id = pool_offset + 8;
+  pool_offset += h->size + 8;
+  if (pool_offset == POOL_SIZE)
+    pool_offset = 0;
+  return (memptr)(h + 1);
+}
+
+memptr MM_PoolPtr(pool_id id)
+{
+  if (!id)
+    {
+      fprintf(stderr, "Pool entry absent\n");
+      abort();
+    }
+  return (memptr)(MM_Pool + id);
 }
 
 static int total_size = 0;

@@ -745,8 +745,7 @@ static void ScaleLineTrans(unsigned myint height, byte *source, myint x)
 	}
 }
 
-/* FIXME: make spritegfx smaller.  */
-static byte *spritegfx[SPR_TOTAL];
+static pool_id spritegfx[SPR_TOTAL];
 
 static void DeCompileSprite(myint shapenum)
 {
@@ -759,7 +758,7 @@ static void DeCompileSprite(myint shapenum)
 	myint x, left, right;
 	myint cmd;
 	
-	MM_GetPtr((void *)&buf, 64 * 64);
+	buf = MM_AllocPool(&spritegfx[shapenum], 64 * 64);
 	
 	memset(buf, 255, 64 * 64);
 	
@@ -795,8 +794,6 @@ static void DeCompileSprite(myint shapenum)
 			cmd += 6;
 		}
 	}
-	
-	spritegfx[shapenum] = buf;
 }
 
 void ScaleShape(myint xcenter, myint shapenum, unsigned height)
@@ -804,9 +801,11 @@ void ScaleShape(myint xcenter, myint shapenum, unsigned height)
 	unsigned myint scaler = (64 << 16) / (height >> 2);
 	unsigned myint x;
 	myint p;
+	byte *source;
 
-	if (spritegfx[shapenum] == NULL)
+	if (!spritegfx[shapenum])
 		DeCompileSprite(shapenum);
+	source = MM_PoolPtr(spritegfx[shapenum]);
 	
 	p = xcenter - (height >> 3);
 	if (p < 0) {
@@ -821,7 +820,7 @@ void ScaleShape(myint xcenter, myint shapenum, unsigned height)
 		if (wallheight[p] >= height)
 			continue;
 
-		ScaleLineTrans(height >> 2, spritegfx[shapenum] + ((x >> 16) << 6), p);
+		ScaleLineTrans(height >> 2, source + ((x >> 16) << 6), p);
 	}	
 }
 
@@ -830,9 +829,11 @@ void SimpleScaleShape(myint xcenter, myint shapenum, unsigned height)
 	unsigned myint scaler = (64 << 16) / height;
 	unsigned myint x;
 	myint p;
+	byte *source;
 	
-	if (spritegfx[shapenum] == NULL)
+	if (!spritegfx[shapenum])
 		DeCompileSprite(shapenum);
+	source = MM_PoolPtr(spritegfx[shapenum]);
 	
 	p = xcenter - (height / 2);
 	if (p < 0) {
@@ -845,7 +846,7 @@ void SimpleScaleShape(myint xcenter, myint shapenum, unsigned height)
 		if (p >= viewwidth)
 			break;	
 
-		ScaleLineTrans(height, spritegfx[shapenum] + ((x >> 16) << 6), p);
+		ScaleLineTrans(height, source + ((x >> 16) << 6), p);
 	}
 }
 

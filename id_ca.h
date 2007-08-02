@@ -55,10 +55,14 @@ void CA_UnCacheGrChunk(myint chunk);
 
 /* ======================================================================= */
 
+typedef word pool_id;
+
 void MM_Startup();
 void MM_Shutdown();
 
 void MM_GetPtr(memptr *baseptr, unsigned long size);
+memptr MM_AllocPool(pool_id *id, unsigned long size);
+memptr MM_PoolPtr(pool_id id);
 void MM_FreePtr(memptr *baseptr);
 
 void MM_SetPurge(memptr *baseptr, myint purge);
