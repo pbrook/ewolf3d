@@ -79,12 +79,12 @@ typedef	struct {
 #ifdef ENABLE_PRECOMPILE
 extern const myint ChunksInFile, PMSpriteStart, PMSoundStart;
 extern const PageListStruct PMPages[];
-// FIXME: Could be 16-bit offsets.
-extern memptr PageAddr[];
+extern pool_id PageAddr[];
+extern const uint32_t grstarts[NUMCHUNKS + 1];
 #else
 extern myint ChunksInFile, PMSpriteStart, PMSoundStart;
 extern PageListStruct *PMPages;
-extern memptr *PageAddr;
+extern pool_id *PageAddr;
 #endif
 
 #define	PM_GetSoundPage(v)	PM_GetPage(PMSoundStart + (v))

@@ -33,23 +33,23 @@ static byte	*audiosegs[NUMSNDCHUNKS];
 byte	*grsegs[NUMCHUNKS];
 
 char extension[5];
-#define gheadname "vgahead."
 #define gfilename "vgagraph."
 #ifndef ENABLE_PRECOMPILE
 #define gdictname "vgadict."
-#endif
 #define mheadname "maphead."
+#define gheadname "vgahead."
+#endif
 #define gmapsname "gamemaps."
 #define aheadname "audiohed."
 #define afilename "audiot."
 #define pfilename "vswap."
 
-static int32_t grstarts[NUMCHUNKS + 1];	/* array of offsets in vgagraph */
 #ifdef ENABLE_AUDIO
 static int32_t *audiostarts; /* array of offsets in audiot */
 #endif
 
 #ifndef ENABLE_PRECOMPILE
+static int32_t grstarts[NUMCHUNKS + 1];	/* array of offsets in vgagraph */
 static huffnode grhuffman[256];
 #endif
 
@@ -326,11 +326,11 @@ void CA_RLEWexpand(const word *source, word *dest, long length, word rlewtag)
 static void CAL_SetupGrFile()
 {
 	char fname[13];
-	myint handle;
 	byte *grtemp;
 	myint i;
 
 #ifndef ENABLE_PRECOMPILE
+	myint handle;
 /* load vgadict.ext (huffman dictionary for graphics files) */
 	strcpy(fname, gdictname);
 	strcat(fname, extension);
@@ -339,7 +339,6 @@ static void CAL_SetupGrFile()
 	if (handle == -1)
 		CA_CannotOpen(fname);
 
-#ifndef ENABLE_PRECOMPILE
 	for (i = 0; i < 256; i++) {
 	/* 0-255 is a character, > is a pointer to a node */
 		myshort v;
@@ -350,13 +349,10 @@ static void CAL_SetupGrFile()
 		grhuffman[i].flag1 = v >> 8;
 		grhuffman[i].val[1] = v & 0xff;
 	}
-#endif
 	
 	CloseRead(handle);
-#endif
 	
 /* load the data offsets from vgahead.ext */
-	//MM_GetPtr((memptr)&grstarts, (NUMCHUNKS+1)*4);
 	MM_GetPtr((memptr)&grtemp, (NUMCHUNKS+1)*3);
 	
 	strcpy(fname, gheadname);
@@ -374,6 +370,7 @@ static void CAL_SetupGrFile()
 	MM_FreePtr((memptr)&grtemp);
 	
 	CloseRead(handle);
+#endif
 	
 /* Open the graphics file, leaving it open until the game is finished */
 	strcpy(fname, gfilename);
@@ -765,9 +762,9 @@ void CA_CacheMap(myint mapnum)
 
 /* ======================================================================== */
 
-#define POOL_SIZE 16416
+#define POOL_SIZE 65536
 static byte *MM_Pool;
-word pool_offset;
+unsigned int pool_offset;
 
 typedef struct
 {
@@ -948,9 +945,9 @@ static void PML_OpenPageFile()
 		page->length = ReadInt16(PageFile);
 	}
 
-	MM_GetPtr((memptr)&PageAddr, sizeof(memptr) * ChunksInFile);
+	MM_GetPtr((memptr)&PageAddr, sizeof(pool_id) * ChunksInFile);
 	MM_SetLock((memptr)&PageAddr, true);
-	memset(PageAddr, 0, sizeof(memptr) * ChunksInFile);
+	memset(PageAddr, 0, sizeof(pool_id) * ChunksInFile);
 #endif
 }
 
@@ -980,16 +977,19 @@ static void PML_ClosePageFile()
 
 memptr PM_GetPage(myint pagenum)
 {
+	memptr addr;
 	if (pagenum >= ChunksInFile)
 		Quit("PM_GetPage: Invalid page request");
 
-	if (!PageAddr[pagenum]) {
+	if (PageAddr[pagenum]) {
+		addr = MM_PoolPtr(PageAddr[pagenum]);
+	} else {
 		const PageListStruct *page = &PMPages[pagenum];
-		MM_GetPtr(&PageAddr[pagenum], PMPageSize);
-		PML_ReadFromFile(PageAddr[pagenum],
-				  (int32_t)page->offset << 8, page->length);
+		addr = MM_AllocPool(&PageAddr[pagenum], PMPageSize);
+		PML_ReadFromFile(addr, (int32_t)page->offset << 8,
+				 page->length);
 	}
-	return PageAddr[pagenum];
+	return addr;
 }
 
 void PM_Startup()
