@@ -30,7 +30,7 @@ word	mapseg1[MAPSIZE * MAPSIZE];
 #ifdef ENABLE_AUDIO
 static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
-static byte	*grsegs[NUMCHUNKS];
+static pool_id grsegs[NUMCHUNKS];
 
 char extension[5];
 #define gfilename "vgagraph."
@@ -618,10 +618,11 @@ void CA_LoadAllSounds()
 ======================
 */
 
-static void CAL_ExpandGrChunk(myint chunk, const byte *source)
+static byte *CAL_ExpandGrChunk(myint chunk, const byte *source)
 {
 	myint tilecount = 0, i;
 	long expanded;
+	byte *dest;
 	
 	myint width = 0, height = 0;
 	
@@ -644,15 +645,16 @@ static void CAL_ExpandGrChunk(myint chunk, const byte *source)
 	}
 
 /* allocate final space and decompress it */
-	MM_GetPtr((void *)&grsegs[chunk], expanded);
-	CAL_HuffExpand(source, grsegs[chunk], expanded, grhuffman);
+	dest = MM_AllocPool(&grsegs[chunk], expanded);
+	CAL_HuffExpand(source, dest, expanded, grhuffman);
 	if (width && height) {
 		if (tilecount) {
 			for (i = 0; i < tilecount; i++) 
-				VL_DeModeXize(grsegs[chunk]+(width*height)*i, width, height);
+				VL_DeModeXize(dest+(width*height)*i, width, height);
 		} else			
-			VL_DeModeXize(grsegs[chunk], width, height);
+			VL_DeModeXize(dest, width, height);
 	}
+	return dest;
 }
 
 /*
@@ -669,12 +671,13 @@ memptr CA_GetChunk(myint chunk)
 {
 	long pos, compressed;
 	byte *source;
+	byte *dest;
 
 	if (grhandle == -1)
 		return NULL;
 		
 	if (grsegs[chunk]) {
-		return grsegs[chunk];
+		return MM_PoolPtr(grsegs[chunk]);
 	}
 
 /* load the chunk into a buffer */
@@ -687,33 +690,18 @@ memptr CA_GetChunk(myint chunk)
 	MM_GetPtr((memptr)&source, compressed);
 	ReadBytes(grhandle, source, compressed);
 
-	CAL_ExpandGrChunk(chunk, source);
+	dest = CAL_ExpandGrChunk(chunk, source);
 	
 	MM_FreePtr((memptr)&source);
-	return grsegs[chunk];
+	return dest;
 }
 
-// FIXME: Remove dead code
-#if 0
-void CA_UnCacheGrChunk(myint chunk)
-{
-	if (grsegs[chunk] == 0) {
-		fprintf(stderr, "Trying to free null pointer %d!\n", chunk);
-		return;
-	}
-	
-	MM_FreePtr((memptr)&grsegs[chunk]);
-	
-	grsegs[chunk] = NULL;
-}
-#else
 void CA_UnCacheGrChunk(myint chunk)
 {
 }
 void CA_CacheGrChunk(myint chunk)
 {
 }
-#endif
 	
 /* ======================================================================== */
 
