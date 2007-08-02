@@ -123,7 +123,7 @@ void VL_FadeIn(myint start, myint end, const byte *palette, myint steps)
 void VL_CacheScreen(myint chunk)
 {
 	CA_CacheGrChunk(chunk);
-	VL_MemToScreen(grsegs[chunk], 320, 200, 0, 0);
+	VL_MemToScreen(CA_GetChunk(chunk), 320, 200, 0, 0);
 	CA_UnCacheGrChunk(chunk);
 }
 
@@ -204,7 +204,7 @@ void VW_DrawPropString(const char *string)
 	byte *source, *ptrs;
 	byte ch;
 
-	font = grsegs[STARTFONT+fontnumber];
+	font = CA_GetChunk(STARTFONT+fontnumber);
 	height = font[0] | (font[1] << 8);
 
 	xs = 0;
@@ -228,7 +228,7 @@ void VW_DrawPropString(const char *string)
 void VW_MeasurePropString(const char *string, word *width, word *height)
 {
 	myint w, mw;
-	byte *font = grsegs[STARTFONT+fontnumber];
+	byte *font = CA_GetChunk(STARTFONT+fontnumber);
 	
 	w = 0;
 	mw = 0;
@@ -252,7 +252,7 @@ void VW_MeasurePropString(const char *string, word *width, word *height)
 
 void VWB_DrawTile8(myint x, myint y, myint tile)
 {
-	VL_MemToScreen(grsegs[STARTTILE8]+(tile*64), 8, 8, x, y);
+	VL_MemToScreen(CA_GetChunk(STARTTILE8)+(tile*64), 8, 8, x, y);
 }
 
 void VWB_DrawPic(myint x, myint y, myint chunknum)
@@ -263,7 +263,7 @@ void VWB_DrawPic(myint x, myint y, myint chunknum)
 	width = pictable[picnum].width;
 	height = pictable[picnum].height;
 
-	VL_MemToScreen(grsegs[chunknum], width, height, x, y);
+	VL_MemToScreen(CA_GetChunk(chunknum), width, height, x, y);
 }
 
 /*

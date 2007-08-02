@@ -506,6 +506,7 @@ void Quit(const char *error)
 	memptr screen = NULL;
 	myint l = 0;
 	
+#ifdef ENABLE_QUITMSG
 	if (!error || !*error) {
 		CA_CacheGrChunk(ORDERSCREEN);
 		screen = grsegs[ORDERSCREEN];
@@ -516,6 +517,7 @@ void Quit(const char *error)
 		screen = grsegs[ERRORSCREEN];
 		l = 7;
 	}
+#endif
 	
 	ShutdownId();
 	

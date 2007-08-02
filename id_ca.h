@@ -31,7 +31,6 @@ extern const word RLEWtag;
 extern	maptype	*mapheaderseg[NUMMAPS];
 #endif
 extern	byte	*audiosegs[NUMSNDCHUNKS];
-extern	byte	*grsegs[NUMCHUNKS];
 
 extern char extension[5];
 
@@ -52,6 +51,8 @@ void CA_LoadAllSounds();
 void CA_CacheMap(myint mapnum);
 void CA_CacheGrChunk(myint chunk);
 void CA_UnCacheGrChunk(myint chunk);
+
+memptr CA_GetChunk(myint chunk);
 
 /* ======================================================================= */
 

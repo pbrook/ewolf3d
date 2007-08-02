@@ -30,7 +30,7 @@ word	mapseg1[MAPSIZE * MAPSIZE];
 #ifdef ENABLE_AUDIO
 static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
-byte	*grsegs[NUMCHUNKS];
+static byte	*grsegs[NUMCHUNKS];
 
 char extension[5];
 #define gfilename "vgagraph."
@@ -383,7 +383,7 @@ static void CAL_SetupGrFile()
 /* load the pic headers into pictable */
 	CA_CacheGrChunk(STRUCTPIC);
 	
-	grtemp = grsegs[STRUCTPIC];
+	grtemp = CA_GetChunk(STRUCTPIC);
 	for (i = 0; i < NUMPICS; i++) {
 		pictable[i].width = grtemp[i*4+0] | (grtemp[i*4+1] << 8);
 		pictable[i].height = grtemp[i*4+2] | (grtemp[i*4+3] << 8);
@@ -656,23 +656,23 @@ static void CAL_ExpandGrChunk(myint chunk, const byte *source)
 /*
 ======================
 =
-= CA_CacheGrChunk
+= CA_GetChunk
 =
 = Makes sure a given chunk is in memory, loadiing it if needed
 =
 ======================
 */
 
-void CA_CacheGrChunk(myint chunk)
+memptr CA_GetChunk(myint chunk)
 {
 	long pos, compressed;
 	byte *source;
 
 	if (grhandle == -1)
-		return;
+		return NULL;
 		
 	if (grsegs[chunk]) {
-		return;
+		return grsegs[chunk];
 	}
 
 /* load the chunk into a buffer */
@@ -688,8 +688,11 @@ void CA_CacheGrChunk(myint chunk)
 	CAL_ExpandGrChunk(chunk, source);
 	
 	MM_FreePtr((memptr)&source);
+	return grsegs[chunk];
 }
 
+// FIXME: Remove dead code
+#if 0
 void CA_UnCacheGrChunk(myint chunk)
 {
 	if (grsegs[chunk] == 0) {
@@ -701,6 +704,14 @@ void CA_UnCacheGrChunk(myint chunk)
 	
 	grsegs[chunk] = NULL;
 }
+#else
+void CA_UnCacheGrChunk(myint chunk)
+{
+}
+void CA_CacheGrChunk(myint chunk)
+{
+}
+#endif
 	
 /* ======================================================================== */
 

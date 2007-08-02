@@ -43,6 +43,10 @@
 
 //#define ENABLE_ENDTEXT 1
 
+//#define ENABLE_QUITMSG 1
+
+// FIXME: Remove the rest of the demo code.
+//#define ENABLE_DEMO 1
 /* --- End of User-Modifiable Variables --- */
 
 #if WMODE == 0

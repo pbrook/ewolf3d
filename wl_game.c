@@ -800,6 +800,7 @@ void RecordDemo()
 
 void PlayDemo(myint demonumber)
 {
+#ifdef ENABLE_DEMO
 	myint length;
 
 #ifndef SPEARDEMO
@@ -844,6 +845,7 @@ void PlayDemo(myint demonumber)
 	StopMusic();
 	VW_FadeOut();
 	ClearMemory();
+#endif
 }
 
 myint PlayDemoFromFile(const char *demoname)
