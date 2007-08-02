@@ -190,7 +190,7 @@ boolean ProjectileTryMove(objtype *ob)
 /* check for solid walls */
 	for (y=yl;y<=yh;y++) {
 		for (x=xl;x<=xh;x++) {
-			if (actorat[x][y] && !(actorat[x][y] & 0x8000))
+			if (solid_actor_at(x, y))
 				return false;
 		}
 	}
@@ -435,7 +435,7 @@ void SpawnPatrol (enemy_t which, myint tilex, myint tiley, myint dir)
 	new->flags |= FL_SHOOTABLE;
 	new->active = ac_yes;
 
-	actorat[new->tilex][new->tiley] = 0;	// don't use original spot
+	clear_actor(new->tilex, new->tiley); // don't use original spot
 
 	switch (dir)
 	{
@@ -453,7 +453,7 @@ void SpawnPatrol (enemy_t which, myint tilex, myint tiley, myint dir)
 		break;
 	}
 
-	actorat[new->tilex][new->tiley] = obj_id(new) | 0x8000;
+	move_actor(new);
 }
 
 
@@ -1231,12 +1231,10 @@ moveok:
 	for (y = yl; y <= yh; y++)
 		for (x = xl; x <= xh; x++)
 		{
-			tile = actorat[x][y];
-			if (!tile)
+			if (!obj_actor_at(x, y))
 				continue;
-			if (tile < 256)
-				return;
-			if (objlist[tile & ~0x8000].flags & FL_SHOOTABLE)
+			tile = get_actor_at(x, y);
+			if (objlist[tile].flags & FL_SHOOTABLE)
 				return;
 		}
 
@@ -2428,7 +2426,7 @@ boolean	CheckPosition(objtype *ob)
 	for (y=yl;y<=yh;y++)
 		for (x=xl;x<=xh;x++)
 		{
-			if (actorat[x][y] && !(actorat[x][y] & 0x8000))
+			if (solid_actor_at(x, y))
 				return false;
 		}
 

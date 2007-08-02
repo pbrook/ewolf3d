@@ -21,7 +21,8 @@ boolean		singlestep,godmode,noclip;
 
 byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
 uint64_t		spotvis[MAPSIZE];
-umyshort		actorat[MAPSIZE][MAPSIZE];
+uint64_t		objactor[MAPSIZE];
+byte		actorat[MAPSIZE][MAPSIZE];
 
 myint tics;
 
@@ -1126,7 +1127,7 @@ void DoActor(objtype *ob)
 		return;
 
 	if (!(ob->flags & (FL_NONMARK|FL_NEVERMARK)))
-		actorat[ob->tilex][ob->tiley] = 0;
+		clear_actor(ob->tilex, ob->tiley);
 
 //
 // non transitional object
@@ -1148,10 +1149,10 @@ void DoActor(objtype *ob)
 		if (ob->flags&FL_NEVERMARK)
 			return;
 
-		if ((ob->flags&FL_NONMARK) && actorat[ob->tilex][ob->tiley])
+		if ((ob->flags&FL_NONMARK) && any_actor_at(ob->tilex, ob->tiley))
 			return;
 
-		actorat[ob->tilex][ob->tiley] = obj_id(ob) | 0x8000;
+		move_actor(ob);
 		return;
 	}
 
@@ -1207,10 +1208,10 @@ think:
 	if (ob->flags&FL_NEVERMARK)
 		return;
 
-	if ((ob->flags&FL_NONMARK) && actorat[ob->tilex][ob->tiley])
+	if ((ob->flags&FL_NONMARK) && any_actor_at(ob->tilex, ob->tiley))
 		return;
 
-	actorat[ob->tilex][ob->tiley] = obj_id(ob) | 0x8000;
+	move_actor(ob);
 }
 
 //==========================================================================

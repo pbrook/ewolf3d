@@ -58,7 +58,7 @@ void SpawnNewObj(unsigned tilex, unsigned tiley, myint state) /* stateenum */
 	new->y = ((long)tiley<<TILESHIFT)+TILEGLOBAL/2;
 	new->dir = nodir;
 
-	actorat[tilex][tiley] = obj_id(new) | 0x8000;
+	move_actor(new);
 	new->areanumber =
 		*(mapseg0 + farmapylookup(new->tiley)+new->tilex) - AREATILE;
 }
@@ -112,28 +112,27 @@ void NewState(objtype *ob, myint state) /* stateenum */
 ==================================
 */
 
+// FIXME: These tests could be reordering to optimize.
 #define CHECKDIAG(x,y)								\
 {                                               \
-	temp = actorat[x][y];                   \
-	if (temp)                                       \
+	if (any_actor_at(x, y))                                       \
 	{                                               \
-		if (temp < 256)                               \
+		if (!obj_actor_at(x, y))                               \
 			return false;                           \
-		if (objlist[temp & ~0x8000].flags & FL_SHOOTABLE)  \
+		if (objlist[get_actor_at(x, y)].flags & FL_SHOOTABLE)  \
 			return false;                           \
 	}                                               \
 }
 
 #define CHECKSIDE(x,y)								\
 {                                               \
-	temp = actorat[x][y];                   \
-	if (temp)                                       \
+	if (any_actor_at(x, y))                                       \
 	{                                               \
-		if (temp < 128)                               \
+		if (wall_actor_at(x, y))                               \
 			return false;                           \
-		if (temp < 256)                               \
-			doornum = temp&63;                      \
-		else if (objlist[temp & ~0x8000].flags & FL_SHOOTABLE) \
+		if (!obj_actor_at(x, y))                               \
+			doornum = get_actor_at(x, y);                      \
+		else if (objlist[get_actor_at(x, y)].flags & FL_SHOOTABLE) \
 			return false;                           \
 	}                                               \
 }
@@ -142,7 +141,6 @@ void NewState(objtype *ob, myint state) /* stateenum */
 boolean TryWalk(objtype *ob)
 {
 	myint doornum;
-	unsigned temp;
 
 	doornum = -1;
 
@@ -863,7 +861,7 @@ void KillActor (objtype *ob)
 
 	gamestate.killcount++;
 	ob->flags &= ~FL_SHOOTABLE;
-	actorat[ob->tilex][ob->tiley] = 0;
+	clear_actor(ob->tilex, ob->tiley);
 	ob->flags |= FL_NONMARK;
 }
 

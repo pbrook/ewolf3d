@@ -483,6 +483,7 @@ void SetupGameLevel()
 	
 	memset(tilemap, 0, sizeof(tilemap));
 	memset(actorat, 0, sizeof(actorat));
+	memset(objactor, 0, sizeof(objactor));
 
 /* copy the wall data to a data segment array */	
 	map = mapseg0;
@@ -491,10 +492,10 @@ void SetupGameLevel()
 			tile = *map++;
 			if (tile < AREATILE) { /* solid wall */
 				tilemap[x][y] = tile;
-				actorat[x][y] = tile;
+				set_wall_at(x, y, tile);
 			} else { /* area floor */
 				tilemap[x][y] = 0;
-				actorat[x][y] = 0;
+				clear_actor(x, y);
 			}
 		}
 		
@@ -545,8 +546,8 @@ void SetupGameLevel()
 			if (tile == AMBUSHTILE)
 			{
 				tilemap[x][y] = 0;
-				if (actorat[x][y] == AMBUSHTILE)
-					actorat[x][y] = 0;
+				if (get_actor_at(x, y) == AMBUSHTILE)
+					clear_actor(x, y);
 
 				if (*map >= AREATILE)
 					tile = *map;

@@ -783,7 +783,48 @@ static inline void setspotvis(int x, int y)
   spotvis[x] |= (1ull << y);
 }
 
-extern	umyshort		actorat[MAPSIZE][MAPSIZE];
+extern uint64_t objactor[MAPSIZE];
+static inline boolean getactorflag(int x, int y)
+{
+  return (objactor[x] & (1ull << y)) != 0;
+}
+static inline void setactorflag(int x, int y)
+{
+  objactor[x] |= (1ull << y);
+}
+static inline void clearactorflag(int x, int y)
+{
+  objactor[x] &= ~(1ull << y);
+}
+extern	byte		actorat[MAPSIZE][MAPSIZE];
+
+/* Record actor location.  */
+#define move_actor(o) do { \
+    setactorflag((o)->tilex, (o)->tiley); \
+    actorat[(o)->tilex][(o)->tiley] = obj_id(o); \
+    } while (0)
+
+/* Record Door location.  */
+#define set_door_actor(x, y, doornum) actorat[x][y] = doornum | 0x80
+/* Record wall location.  */
+#define set_wall_at(x, y, tile) actorat[x][y] = tile
+/* Clear location.  */
+#define clear_actor(x, y) do { \
+    actorat[x][y] = 0; \
+    clearactorflag(x, y); \
+    } while (0)
+/* nonzero if something other than a door is at given location.  */
+#define obj_actor_at(x, y) getactorflag(x, y)
+/* nonzero if a wall is at given location.  */
+#define wall_actor_at(x, y) (actorat[x][y] && actorat[x][y] < 128 \
+			    && !getactorflag(x, y))
+/* nonzero if a door or wall is at given location.  */
+#define solid_actor_at(x, y) (actorat[x][y] && !getactorflag(x, y))
+/* zero if given location is empty.  */
+#define any_actor_at(x, y) (actorat[x][y] != 0 || getactorflag(x, y))
+/* The id of the actor at given location.  */
+#define get_actor_at(x, y) \
+  (obj_actor_at(x, y) ? actorat[x][y] & 0xff : actorat[x][y] & 0x7f)
 
 extern	boolean		singlestep,godmode,noclip;
 

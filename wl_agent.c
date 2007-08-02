@@ -733,7 +733,7 @@ boolean TryMove(objtype *ob)
 	for (y=yl;y<=yh;y++)
 		for (x=xl;x<=xh;x++)
 		{
-			if (actorat[x][y] && !(actorat[x][y] & 0x8000))
+			if (solid_actor_at(x, y))
 				return false;
 		}
 
@@ -752,8 +752,8 @@ boolean TryMove(objtype *ob)
 	for (y=yl;y<=yh;y++)
 		for (x=xl;x<=xh;x++)
 		{
-			if (actorat[x][y] & 0x8000) {
-				check = &objlist[actorat[x][y] & ~0x8000]; 
+			if (obj_actor_at(x, y)) {
+				check = &objlist[get_actor_at(x, y)]; 
 
 				if (check->flags & FL_SHOOTABLE)
 				{
