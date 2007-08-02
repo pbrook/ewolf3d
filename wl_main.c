@@ -1279,10 +1279,15 @@ void DemoLoop()
 	{
 		VW_FadeOut();
 
+#if 0
 		if (IN_KeyDown(sc_Tab) && MS_CheckParm("debugmode"))
 			RecordDemo();
 		else
 			US_ControlPanel(0);
+#else
+		NewGame(gd_medium, 0);
+		startgame = 1;
+#endif
 
 		if (startgame || loadedgame)
 		{
