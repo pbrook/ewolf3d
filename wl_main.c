@@ -1242,6 +1242,7 @@ void InitGame()
 
 void DemoLoop()
 {
+#ifdef ENABLE_DEMO
 	static myint LastDemo;
 	
 	myint i;
@@ -1274,6 +1275,7 @@ void DemoLoop()
 		PlayDemo(0);
 	#endif
 	}
+#endif
 	
 	while (1)
 	{

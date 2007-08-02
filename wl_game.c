@@ -668,6 +668,7 @@ void DrawPlayScreen()
 ==================
 */
 
+#ifdef ENABLE_DEMO
 #define MAXDEMOSIZE	8192
 
 void StartDemoRecord(myint levelnumber)
@@ -800,7 +801,6 @@ void RecordDemo()
 
 void PlayDemo(myint demonumber)
 {
-#ifdef ENABLE_DEMO
 	myint length;
 
 #ifndef SPEARDEMO
@@ -845,7 +845,6 @@ void PlayDemo(myint demonumber)
 	StopMusic();
 	VW_FadeOut();
 	ClearMemory();
-#endif
 }
 
 myint PlayDemoFromFile(const char *demoname)
@@ -893,6 +892,7 @@ myint PlayDemoFromFile(const char *demoname)
 
 	return 1;
 }
+#endif
 
 //==========================================================================
 
@@ -1103,8 +1103,10 @@ startplayloop:
 		StopMusic();
 		ingame = false;
 
+#ifdef ENABLE_DEMO
 		if (demorecord && playstate != ex_warped)
 			FinishDemoRecord ();
+#endif
 
 		if (startgame || loadedgame)
 			goto restartgame;

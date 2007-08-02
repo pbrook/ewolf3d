@@ -77,6 +77,7 @@ static void CA_CannotOpen(const char *string)
 	Quit(str);
 }
 
+#ifdef ENABLE_DEMO
 /*
 ==========================
 =
@@ -153,6 +154,7 @@ boolean CA_LoadFile(const char *filename, memptr *ptr)
 	
 	return true;
 }
+#endif
 
 /*
 ============================================================================
