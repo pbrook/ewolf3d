@@ -90,14 +90,16 @@
 //
 // TYPEDEFS
 //
-typedef struct {
-	myshort x,y,amount,curpos,indent;
+typedef const struct {
+	myshort x,y,amount,indent;
+	signed char *curpos;
+	byte *active;
 } CP_iteminfo;
 
 typedef void (* MenuFunc)(myint temp1);
 
-typedef struct {
-	byte active;
+typedef const struct {
+	byte iactive;
 	char string[35];
 	// FIXME: Make this an index.
 	MenuFunc routine;
@@ -108,7 +110,6 @@ typedef struct {
 } CustomCtrls;
 
 extern CP_itemtype MainMenu[], NewEMenu[];
-extern CP_iteminfo MainItems;
 
 //
 // FUNCTION PROTOTYPES
@@ -137,7 +138,7 @@ void BossKey(void);
 void DrawGun(CP_iteminfo *item_i,CP_itemtype *items,myint x,myint *y,myint which,myint basey,void (*routine)(myint w));
 void DrawHalfStep(myint x,myint y);
 void EraseGun(CP_iteminfo *item_i,CP_itemtype *items,myint x,myint y,myint which);
-void SetMenuTextColor(CP_itemtype *items,myint hlight);
+void SetMenuTextColor(byte active,myint hlight);
 void DrawMenuGun(CP_iteminfo *iteminfo);
 void DrawStripes(myint y);
 

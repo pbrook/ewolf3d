@@ -1201,9 +1201,6 @@ startplayloop:
 
 			CheckHighScore(gamestate.score,gamestate.mapon+1);
 
-			strcpy(MainMenu[viewscores].string,STR_VS);
-			MainMenu[viewscores].routine = (MenuFunc)CP_ViewScores;
-
 			return;
 
 		case ex_victorious:
@@ -1220,9 +1217,6 @@ startplayloop:
 			ClearMemory();
 
 			CheckHighScore(gamestate.score,gamestate.mapon+1);
-
-			strcpy(MainMenu[viewscores].string,STR_VS);
-			MainMenu[viewscores].routine = (MenuFunc)CP_ViewScores;
 
 			return;
 

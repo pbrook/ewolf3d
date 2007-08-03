@@ -33,22 +33,40 @@ static const char endStrings[9][80]=
 	ENDSTR9
 };
 
-CP_iteminfo
+static signed char
+	MainPos = STARTITEM,
+#ifdef ENABLE_AUDIO
+	SndPos = 0,
+#endif
+	LSIPos = 0,
+#ifdef ENABLE_CONTROLS
+	CtlPos = -1,
+	CusPos = -1,
+#endif
+	NewEPos = 0,
+	NewIPos = 2;
+
+static byte MainMenuActive[10];
+static byte LSMenuActive[10];
+static byte NewEmenuActive[11];
+static byte NewMenuActive[4];
+
+static CP_iteminfo
 #ifdef UPLOAD
-	MainItems={MENU_X,MENU_Y,10,STARTITEM,24},
+	MainItems={MENU_X,MENU_Y,10,24,&MainPos, MainMenuActive},
 #else
-	MainItems={MENU_X,MENU_Y, 9,STARTITEM,24},
+	MainItems={MENU_X,MENU_Y, 9,24,&MainPos, MainMenuActive},
 #endif
 #ifdef ENABLE_AUDIO
-	SndItems={SM_X,SM_Y1,12,0,52},
+	SndItems={SM_X,SM_Y1,12,52,&SndPos},
 #endif
-	LSItems={LSM_X,LSM_Y,10,0,24},
+	LSItems={LSM_X,LSM_Y,10,24,&LSIPos, LSMenuActive},
 #ifdef ENABLE_CONTROLS
-	CtlItems={CTL_X,CTL_Y,6,-1,56},
-	CusItems={8,CST_Y+13*2,9,-1,0},
+	CtlItems={CTL_X,CTL_Y,6,56,&CtlPos},
+	CusItems={8,CST_Y+13*2,9,0,&CusPos},
 #endif
-	NewEitems={NE_X,NE_Y,11,0,88},
-	NewItems={NM_X,NM_Y,4,2,24};
+	NewEitems={NE_X,NE_Y,11,88,&NewEPos, NewEmenuActive},
+	NewItems={NM_X,NM_Y,4,24,&NewIPos, NewMenuActive};
 
 CP_itemtype 
 MainMenu[]=
@@ -71,7 +89,7 @@ MainMenu[]=
 	{2,"Read This!",(MenuFunc)CP_ReadThis},
 #endif
 	{1,STR_VS,(MenuFunc)CP_ViewScores},
-	{1,STR_BD,0},
+	{2,STR_BD STR_GAME,0},
 	{1,STR_QT,0}
 },
 
@@ -395,15 +413,6 @@ void US_ControlPanel(byte scancode)
 	//
 	CleanupControlPanel();
 
-	//
-	// CHANGE MAINMENU ITEM
-	//
-	if (startgame || loadedgame)
-	{
-		MainMenu[viewscores].routine = NULL;
-		strcpy(MainMenu[viewscores].string,STR_EG);
-	}
-
 	// RETURN/START GAME EXECUTION
 		
 #ifdef SPEAR
@@ -427,6 +436,7 @@ void DrawMainMenu()
 
 	DrawWindow(MENU_X-8,MENU_Y-3,MENU_W,MENU_H,BKGDCOLOR);
 
+#ifdef ENABLE_DEMO
 	//
 	// CHANGE "GAME" AND "DEMO"
 	//
@@ -435,14 +445,15 @@ void DrawMainMenu()
 
 		strcpy(&MainMenu[backtodemo].string[8],STR_GAME);
 
-		MainMenu[backtodemo].active=2;
+		MainMenuActive[backtodemo]=2;
 	}
 	else
 	{
 		strcpy(&MainMenu[backtodemo].string[8],STR_DEMO);
 
-		MainMenu[backtodemo].active=1;
+		MainMenuActive[backtodemo]=1;
 	}
+#endif
 
 	DrawMenu(&MainItems,&MainMenu[0]);
 	VW_UpdateScreen();
@@ -496,14 +507,14 @@ myint CP_CheckQuick(unsigned scancode)
 			DrawPlayBorder();
 			WindowH=200;
 			fontnumber=0;
-			MainMenu[savegame].active = 0;
+			MainMenuActive[savegame] = 0;
 			return 1;
 
 		//
 		// QUICKSAVE
 		//
 		case sc_F8:
-			if ((SaveGamesAvail & (1 << LSItems.curpos))
+			if ((SaveGamesAvail & (1 << *LSItems.curpos))
 			    && pickquick)
 			{
 				CA_CacheGrChunk(STARTFONT+1);
@@ -564,7 +575,7 @@ myint CP_CheckQuick(unsigned scancode)
 
 		/* QUICKLOAD */
 		case sc_F9:
-			if ((SaveGamesAvail & (1 << LSItems.curpos))
+			if ((SaveGamesAvail & (1 << *LSItems.curpos))
 			    && pickquick)
 			{
 				char string[100]=STR_LGC;
@@ -573,7 +584,7 @@ myint CP_CheckQuick(unsigned scancode)
 				fontnumber = 1;
 
 #ifdef ENABLE_SAVENAME
-				strcat(string,SaveGameNames[LSItems.curpos]);
+				strcat(string,SaveGameNames[*LSItems.curpos]);
 #endif
 				strcat(string,"\"?");
 
@@ -675,9 +686,11 @@ myint CP_EndGame()
 	pickquick = gamestate.lives = 0;
 	playstate = ex_died;
 
-	MainMenu[savegame].active = 0;
+	MainMenuActive[savegame] = 0;
+#if 0
 	MainMenu[viewscores].routine = (MenuFunc)CP_ViewScores;
 	strcpy(MainMenu[viewscores].string,STR_VS);
+#endif
 
 	return 1;
 }
@@ -821,7 +834,7 @@ firstpart:
 	// CHANGE "READ THIS!" TO NORMAL COLOR
 	//
 	#ifdef UPLOAD
-	MainMenu[readthis].active=1;
+	MainMenuActive[readthis]=1;
 	#endif
 
 	pickquick = 0;
@@ -885,7 +898,7 @@ void DrawNewGame(void)
 	DrawWindow(NM_X-5,NM_Y-10,NM_W,NM_H,BKGDCOLOR);
 
 	DrawMenu(&NewItems,&NewMenu[0]);
-	DrawNewGameDiff(NewItems.curpos);
+	DrawNewGameDiff(*NewItems.curpos);
 	VW_UpdateScreen();
 	MenuFadeIn();
 	WaitKeyUp();
@@ -1037,16 +1050,16 @@ void DrawSoundMenu(void)
 	//
 	if (!AdLibPresent && !SoundBlasterPresent)
 	{
-		SndMenu[2].active=SndMenu[10].active=SndMenu[11].active=0;
+		SndMenuActive[2]=SndMenuActive[10]=SndMenuActive[11]=0;
 	}
 
-	SndMenu[6].active = 0;
+	SndMenuActive[6] = 0;
 
 	if (!SoundBlasterPresent)
-		SndMenu[7].active=0;
+		SndMenuActive[7]=0;
 
 	if (!SoundBlasterPresent)
-		SndMenu[5].active=0;
+		SndMenuActive[5]=0;
 
 	DrawMenu(&SndItems,&SndMenu[0]);
 	VWB_DrawPic(100,SM_Y1-20,C_FXTITLEPIC);
@@ -1140,7 +1153,7 @@ myint CP_LoadGame(myint quick)
 	//
 	if (quick)
 	{
-		which=LSItems.curpos;
+		which=*LSItems.curpos;
 
 		if (SaveGamesAvail & (1 << which))
 		{
@@ -1183,7 +1196,7 @@ myint CP_LoadGame(myint quick)
 			//
 
 			#ifdef UPLOAD
-			MainMenu[readthis].active=1;
+			MainMenuActive[readthis]=1;
 			#endif
 
 			exit=1;
@@ -1293,7 +1306,7 @@ myint CP_SaveGame(myint quick)
 	//
 	if (quick)
 	{
-		which=LSItems.curpos;
+		which=*LSItems.curpos;
 
 		if (SaveGamesAvail & (1 << which))
 		{
@@ -1505,7 +1518,7 @@ void CP_Control()
 			case MOUSEENABLE:
 				mouseenabled^=1;
 				DrawCtlScreen();
-				CusItems.curpos=-1;
+				*CusItems.curpos=-1;
 				ShootSnd();
 				break;
 
@@ -1513,7 +1526,7 @@ void CP_Control()
 			case JOYENABLE:
 				joystickenabled^=1;
 				DrawCtlScreen();
-				CusItems.curpos=-1;
+				*CusItems.curpos=-1;
 				ShootSnd();
 				break;
 			case USEPORT2:
@@ -1674,21 +1687,21 @@ void DrawCtlScreen()
  SETFONTCOLOR(TEXTCOLOR,BKGDCOLOR);
 
  if (JoysPresent[0])
-   CtlMenu[1].active=
-   CtlMenu[2].active=
-   CtlMenu[3].active=1;
+   CtlMenuActive[1]=
+   CtlMenuActive[2]=
+   CtlMenuActive[3]=1;
 
 #ifdef JOYSTICK_ENABLED
- CtlMenu[2].active=CtlMenu[3].active=joystickenabled;
+ CtlMenuActive[2]=CtlMenuActive[3]=joystickenabled;
 #endif
 
  if (MousePresent)
  {
-  CtlMenu[4].active=
-  CtlMenu[0].active=1;
+  CtlMenuActive[4]=
+  CtlMenuActive[0]=1;
  }
 
- CtlMenu[4].active=mouseenabled;
+ CtlMenuActive[4]=mouseenabled;
 
 
  DrawMenu(&CtlItems,&CtlMenu[0]);
@@ -1728,11 +1741,11 @@ void DrawCtlScreen()
  //
  // PICK FIRST AVAILABLE SPOT
  //
- if (CtlItems.curpos<0 || !CtlMenu[CtlItems.curpos].active)
+ if (*CtlItems.curpos<0 || !CtlMenuActive[*CtlItems.curpos])
    for (i=0;i<6;i++)
-	 if (CtlMenu[i].active)
+	 if (CtlMenuActive[i])
 	 {
-	  CtlItems.curpos=i;
+	  *CtlItems.curpos=i;
 	  break;
 	 }
 
@@ -2244,11 +2257,11 @@ void DrawCustomScreen(void)
 	//
 	// PICK STARTING POINT IN MENU
 	//
-	if (CusItems.curpos<0)
+	if (*CusItems.curpos<0)
 		for (i=0;i<CusItems.amount;i++)
-			if (CusMenu[i].active)
+			if (CusMenuActive[i])
 			{
-				CusItems.curpos=i;
+				*CusItems.curpos=i;
 				break;
 			}
 
@@ -2284,10 +2297,10 @@ void DrawCustMouse(myint hilight)
 	if (!mouseenabled)
 	{
 		SETFONTCOLOR(DEACTIVE,BKGDCOLOR);
-		CusMenu[0].active=0;
+		CusMenuActive[0]=0;
 	}
 	else
-		CusMenu[0].active=1;
+		CusMenuActive[0]=1;
 
 	PrintY=CST_Y+13*2;
 	for (i=0;i<4;i++)
@@ -2324,11 +2337,11 @@ void DrawCustJoy(myint hilight)
 	{
 #endif
 		SETFONTCOLOR(DEACTIVE,BKGDCOLOR);
-		CusMenu[3].active=0;
+		CusMenuActive[3]=0;
 #ifdef JOYSTICK_ENABLED
 	}
 	else
-		CusMenu[3].active=1;
+		CusMenuActive[3]=1;
 #endif
 
 	PrintY=CST_Y+13*5;
@@ -2584,7 +2597,7 @@ void SetupControlPanel()
 	if (!ingame)
 		CA_LoadAllSounds();
 	else
-		MainMenu[savegame].active=1;
+		MainMenuActive[savegame]=1;
 
 	//
 	// SEE WHICH SAVE GAME FILES ARE AVAILABLE & READ STRING IN
@@ -2687,13 +2700,13 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 	ControlInfo ci;
 
 
-	which=item_i->curpos;
+	which=*(item_i->curpos);
 	x=item_i->x&-8;
 	basey=item_i->y-2;
 	y=basey+which*13;
 
 	VWB_DrawPic(x,y,C_CURSOR1PIC);
-	SetMenuTextColor(items+which,1);
+	SetMenuTextColor(item_i->active[which],1);
 	if (redrawitem)
 	{
 		PrintX=item_i->x+item_i->indent;
@@ -2759,7 +2772,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 				key-='a'-'A';
 
 			for (i=which+1;i<item_i->amount;i++)
-				if ((items+i)->active && (items+i)->string[0]==key)
+				if (item_i->active[i] && (items+i)->string[0]==key)
 				{
 					EraseGun(item_i,items,x,y,which);
 					which=i;
@@ -2775,7 +2788,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 			if (!ok)
 			{
 				for (i=0;i<which;i++)
-					if ((items+i)->active && (items+i)->string[0]==key)
+					if (item_i->active[i] && (items+i)->string[0]==key)
 					{
 						EraseGun(item_i,items,x,y,which);
 						which=i;
@@ -2803,7 +2816,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 			//
 			// ANIMATE HALF-STEP
 			//
-			if (which && (items+which-1)->active)
+			if (which && item_i->active[which-1])
 			{
 				y-=6;
 				DrawHalfStep(x,y);
@@ -2818,7 +2831,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 					which=item_i->amount-1;
 				else
 					which--;
-			} while(!(items+which)->active);
+			} while(!item_i->active[which]);
 
 			DrawGun(item_i,items,x,&y,which,basey,routine);
 			//
@@ -2837,7 +2850,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 			//
 			// ANIMATE HALF-STEP
 			//
-			if (which!=item_i->amount-1 && (items+which+1)->active)
+			if (which!=item_i->amount-1 && item_i->active[which+1])
 			{
 				y+=6;
 				DrawHalfStep(x,y);
@@ -2849,7 +2862,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 					which=0;
 				else
 					which++;
-			} while(!(items+which)->active);
+			} while(!item_i->active[which]);
 
 			DrawGun(item_i,items,x,&y,which,basey,routine);
 
@@ -2892,7 +2905,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 		routine(which);
 	VW_UpdateScreen();
 
-	item_i->curpos=which;
+	*(item_i->curpos)=which;
 
 	lastitem=which;
 	switch(exit)
@@ -2924,7 +2937,7 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 void EraseGun(CP_iteminfo *item_i,CP_itemtype *items,myint x,myint y,myint which)
 {
 	VW_Bar(x-1,y,25,16,BKGDCOLOR);
-	SetMenuTextColor(items+which,0);
+	SetMenuTextColor(item_i->active[which],0);
 
 	PrintX=item_i->x+item_i->indent;
 	PrintY=item_i->y+which*13;
@@ -2954,7 +2967,7 @@ void DrawGun(CP_iteminfo *item_i,CP_itemtype *items,myint x,myint *y,myint which
 	VW_Bar(x-1,*y,25,16,BKGDCOLOR);
 	*y=basey+which*13;
 	VWB_DrawPic(x,*y,C_CURSOR1PIC);
-	SetMenuTextColor(items+which,1);
+	SetMenuTextColor(item_i->active[which],1);
 
 	PrintX=item_i->x+item_i->indent;
 	PrintY=item_i->y+which*13;
@@ -2992,7 +3005,7 @@ void TicDelay(myint count)
 ////////////////////////////////////////////////////////////////////
 void DrawMenu(CP_iteminfo *item_i,CP_itemtype *items)
 {
-	myint i,which=item_i->curpos;
+	myint i,which=*(item_i->curpos);
 
 
 	WindowX=PrintX=item_i->x+item_i->indent;
@@ -3002,10 +3015,10 @@ void DrawMenu(CP_iteminfo *item_i,CP_itemtype *items)
 
 	for (i=0;i<item_i->amount;i++)
 	{
-		SetMenuTextColor(items+i,which==i);
+		SetMenuTextColor(item_i->active[i],which==i);
 
 		PrintY=item_i->y+i*13;
-		if ((items+i)->active)
+		if (item_i->active[i])
 			US_Print((items+i)->string);
 		else
 		{
@@ -3024,12 +3037,12 @@ void DrawMenu(CP_iteminfo *item_i,CP_itemtype *items)
 // SET TEXT COLOR (HIGHLIGHT OR NO)
 //
 ////////////////////////////////////////////////////////////////////
-void SetMenuTextColor(CP_itemtype *items,myint hlight)
+void SetMenuTextColor(byte active,myint hlight)
 {
 	if (hlight)
-		{SETFONTCOLOR(color_hlite[items->active],BKGDCOLOR);}
+		{SETFONTCOLOR(color_hlite[active],BKGDCOLOR);}
 	else
-		{SETFONTCOLOR(color_norml[items->active],BKGDCOLOR);}
+		{SETFONTCOLOR(color_norml[active],BKGDCOLOR);}
 }
 
 
@@ -3195,7 +3208,7 @@ void DrawMenuGun(CP_iteminfo *iteminfo)
 	myint x, y;
 
 	x = iteminfo->x;
-	y = iteminfo->y+iteminfo->curpos*13-2;
+	y = iteminfo->y+*(iteminfo->curpos)*13-2;
 	
 	VWB_DrawPic(x,y,C_CURSOR1PIC);
 }
@@ -3223,6 +3236,14 @@ void ShootSnd()
 }
 
 
+static void InitMenu(CP_itemtype *menu, byte *active, int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+      active[i] = menu[i].iactive;
+}
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // CHECK FOR EPISODES
@@ -3230,6 +3251,10 @@ void ShootSnd()
 ///////////////////////////////////////////////////////////////////////////
 void CheckForEpisodes()
 {
+	InitMenu(MainMenu, MainMenuActive, 10);
+	InitMenu(LSMenu, LSMenuActive, 10);
+	InitMenu(NewEmenu, NewEmenuActive, 11);
+	InitMenu(NewMenu, NewMenuActive, 4);
 #if defined(HAVE_FFBLK)
 	struct ffblk f;
 //
@@ -3239,11 +3264,11 @@ void CheckForEpisodes()
 #ifndef SPEAR
 	if (!findfirst("*.wl6", &f, FA_ARCH)) {
 		strcpy(extension, "wl6");
-		NewEmenu[2].active =
-		NewEmenu[4].active =
-		NewEmenu[6].active =
-		NewEmenu[8].active =
-		NewEmenu[10].active =
+		NewEmenuActive[2] =
+		NewEmenuActive[4] =
+		NewEmenuActive[6] =
+		NewEmenuActive[8] =
+		NewEmenuActive[10] =
 		EpisodeSelect[1] =
 		EpisodeSelect[2] =
 		EpisodeSelect[3] =
@@ -3252,8 +3277,8 @@ void CheckForEpisodes()
 	}
 	else if (!findfirst("*.wl3", &f, FA_ARCH)) {
 		strcpy(extension, "wl3");
-		NewEmenu[2].active =
-		NewEmenu[4].active =
+		NewEmenuActive[2] =
+		NewEmenuActive[4] =
 		EpisodeSelect[1] =
 		EpisodeSelect[2] = 1;
 	}
@@ -3293,11 +3318,11 @@ void CheckForEpisodes()
 	if (_findfirst("*.wl6", &f) != -1)
 	{
 		strcpy(extension, "wl6");
-		NewEmenu[2].active =
-		NewEmenu[4].active =
-		NewEmenu[6].active =
-		NewEmenu[8].active =
-		NewEmenu[10].active =
+		NewEmenuActive[2] =
+		NewEmenuActive[4] =
+		NewEmenuActive[6] =
+		NewEmenuActive[8] =
+		NewEmenuActive[10] =
 		EpisodeSelect[1] =
 		EpisodeSelect[2] =
 		EpisodeSelect[3] =
@@ -3305,8 +3330,8 @@ void CheckForEpisodes()
 		EpisodeSelect[5] = 1;
 	} else if (_findfirst("*.wl3",&f) != -1) {
 		strcpy(extension, "wl3");
-		NewEmenu[2].active =
-		NewEmenu[4].active =
+		NewEmenuActive[2] =
+		NewEmenuActive[4] =
 		EpisodeSelect[1] =
 		EpisodeSelect[2] = 1;
 	}
@@ -3335,55 +3360,22 @@ void CheckForEpisodes()
 #endif /* SPEAR */
 
 #else
-	glob_t globbuf;
 //
 // ENGLISH
 //
-#ifndef UPLOAD
-#ifndef SPEAR
-	if (glob("*.wl6", 0, NULL, &globbuf) == 0) {
-		strcpy(extension, "wl6");
-		NewEmenu[2].active =
-		NewEmenu[4].active =
-		NewEmenu[6].active =
-		NewEmenu[8].active =
-		NewEmenu[10].active =
-		EpisodeSelect[1] =
-		EpisodeSelect[2] =
-		EpisodeSelect[3] =
-		EpisodeSelect[4] =
-		EpisodeSelect[5] = 1;
-	} else if (glob("*.wl3", 0, NULL, &globbuf) == 0) {
-		strcpy(extension, "wl3");
-		NewEmenu[2].active =
-		NewEmenu[4].active =
-		EpisodeSelect[1] =
-		EpisodeSelect[2] = 1;
-	} else
-#endif /* SPEAR */
-#endif /* UPLOAD */
+	/* Hardcode release.  */
+	strcpy(extension, "wl6");
+	NewEmenuActive[2] =
+	NewEmenuActive[4] =
+	NewEmenuActive[6] =
+	NewEmenuActive[8] =
+	NewEmenuActive[10] =
+	EpisodeSelect[1] =
+	EpisodeSelect[2] =
+	EpisodeSelect[3] =
+	EpisodeSelect[4] =
+	EpisodeSelect[5] = 1;
 
-#ifdef SPEAR
-#ifndef SPEARDEMO
-	if (glob("*.sod", 0, NULL, &globbuf) == 0) {
-		strcpy(extension, "sod");
-	} else
-		Quit("NO SPEAR OF DESTINY DATA FILES TO BE FOUND!");
-#else /* SPEARDEMO */
-	if (glob("*.sdm", 0, NULL, &globbuf) == 0) {
-		strcpy(extension, "sdm");
-	} else
-		Quit("NO SPEAR OF DESTINY DEMO DATA FILES TO BE FOUND!");
-#endif /* SPEARDEMO */
-
-#else /* SPEAR */
-	if (glob("*.wl1", 0, NULL, &globbuf) == 0) {
-		strcpy(extension, "wl1");
-	} else
-		Quit("NO WOLFENSTEIN 3-D DATA FILES TO BE FOUND!");
-#endif /* SPEAR */
-
-	globfree(&globbuf);
 #endif
 
 	strcat(configname, extension);

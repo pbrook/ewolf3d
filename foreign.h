@@ -21,7 +21,7 @@
 #define	STR_CV	"Change View"
 #define	STR_VS	"View Scores"
 #define STR_EG	"End Game"
-#define	STR_BD	"Back to Demo"
+#define	STR_BD	"Back to "
 #define STR_QT	"Quit"
 
 #define STR_LOADING	"Loading"
