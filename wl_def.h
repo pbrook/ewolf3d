@@ -831,12 +831,17 @@ extern	boolean		singlestep,godmode,noclip;
 //
 // control info
 //
+#ifdef ENABLE_CONTROLS
+#define CONTROL_CONST
+#else
+#define CONTROL_CONST const
+#endif
 extern	boolean		mouseenabled,joystickenabled,joypadenabled;
 extern	myint			joystickport;
-extern	myint			dirscan[4];
-extern	myint			buttonscan[NUMBUTTONS];
-extern	myint			buttonmouse[4];
-extern	myint			buttonjoy[4];
+extern	CONTROL_CONST byte			dirscan[4];
+extern	CONTROL_CONST byte	buttonscan[NUMBUTTONS];
+extern	CONTROL_CONST byte	buttonmouse[4];
+extern	byte			buttonjoy[4];
 
 extern	boolean		buttonheld[NUMBUTTONS];
 

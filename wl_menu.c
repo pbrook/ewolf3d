@@ -189,7 +189,7 @@ static const myint color_hlite[] = { DEACTIVE, HIGHLIGHT, READHCOLOR, 0x67 };
 static const myint color_norml[] = { DEACTIVE, TEXTCOLOR, READCOLOR, 0x6b };
 
 #ifndef SPEAR
-static myint EpisodeSelect[6] = { 1 };
+static const myint EpisodeSelect[6] = { 1, 1, 1, 1, 1, 1 };
 #endif
 
 static word SaveGamesAvail;
@@ -3370,11 +3370,6 @@ void CheckForEpisodes()
 	NewEmenuActive[6] =
 	NewEmenuActive[8] =
 	NewEmenuActive[10] =
-	EpisodeSelect[1] =
-	EpisodeSelect[2] =
-	EpisodeSelect[3] =
-	EpisodeSelect[4] =
-	EpisodeSelect[5] = 1;
 
 #endif
 

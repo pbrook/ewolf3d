@@ -147,7 +147,9 @@ static int32_t CalcFileChecksum(myint fd, myint len)
 
 myint WriteConfig()
 {
+#ifdef ENABLE_CONTROLS
 	myint i;
+#endif
 	myint fd;
 	int32_t cs;
 	
@@ -183,6 +185,7 @@ myint WriteConfig()
 		WriteInt32(fd, 0); /* padding */
 		WriteInt32(fd, 0); /* padding */
 			
+#ifdef ENABLE_CONTROLS
 		/* direction keys */	
 		for (i = 0; i < 4; i++) {
 			WriteInt32(fd, dirscan[i]);
@@ -200,6 +203,7 @@ myint WriteConfig()
 		for (i = 0; i < 4; i++) {
 			WriteInt32(fd, buttonmouse[i]);
 		}
+#endif
 			
 		/* mouse adjustment */
 		WriteInt32(fd, mouseadjustment);
@@ -248,7 +252,9 @@ myint ReadConfig()
 	myint fd, configokay;
 	char buf[8];
 	int32_t version, v;
+#ifdef ENABLE_CONTROLS
 	myint i;
+#endif
 	
 	configokay = 0;
 	
@@ -305,6 +311,7 @@ myint ReadConfig()
 			ReadInt32(fd); /* padding */
 			ReadInt32(fd); /* padding */
 			
+#ifdef ENABLE_CONTROLS
 			/* direction keys */	
 			for (i = 0; i < 4; i++) {
 				dirscan[i] = ReadInt32(fd);
@@ -322,6 +329,7 @@ myint ReadConfig()
 			for (i = 0; i < 4; i++) {
 				buttonmouse[i] = ReadInt32(fd);
 			}
+#endif
 			
 			/* mouse adjustment */
 			mouseadjustment = ReadInt32(fd);
