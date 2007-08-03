@@ -9,7 +9,11 @@ typedef struct
 	myshort width, height;
 } pictabletype;
 
+#ifdef ENABLE_PRECOMPILE
+extern const pictabletype pictable[NUMPICS];
+#else
 extern pictabletype pictable[NUMPICS];
+#endif
 
 extern byte fontcolor, backcolor;
 extern myint fontnumber;

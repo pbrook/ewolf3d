@@ -12,7 +12,8 @@ CFLAGS = -g -Wall -fno-common
 OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
-	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.o grstarts.o
+	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.o \
+	grstarts.o pictable.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
@@ -80,10 +81,15 @@ grstarts.c: build_grstarts.c
 	gcc build_grstarts.c -o build_grstarts -lm
 	./build_grstarts > grstarts.c
 
+pictable.c: build_pictable.c huffman.h grstarts.c
+	gcc build_pictable.c grstarts.c -o build_pictable -lm
+	./build_pictable > pictable.c
+
 clean:
 	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c \
 	  build_huffman huffman.h build_mapheaders mapheaders.c \
-	  build_pagemap pagemap.c build_grstarts grstarts.c
+	  build_pagemap pagemap.c build_grstarts grstarts.c \
+	  build_pictable pictable.c
 
 distclean: clean
 	rm -rf *~ DEADJOE

@@ -328,10 +328,10 @@ void CA_RLEWexpand(const word *source, word *dest, long length, word rlewtag)
 static void CAL_SetupGrFile()
 {
 	char fname[13];
+#ifndef ENABLE_PRECOMPILE
 	byte *grtemp;
 	myint i;
 
-#ifndef ENABLE_PRECOMPILE
 	myint handle;
 /* load vgadict.ext (huffman dictionary for graphics files) */
 	strcpy(fname, gdictname);
@@ -382,6 +382,7 @@ static void CAL_SetupGrFile()
 	if (grhandle == -1)
 		CA_CannotOpen(fname);
 
+#ifndef ENABLE_PRECOMPILE
 /* load the pic headers into pictable */
 	CA_CacheGrChunk(STRUCTPIC);
 	
@@ -392,6 +393,7 @@ static void CAL_SetupGrFile()
 	}
 	
 	CA_UnCacheGrChunk(STRUCTPIC);
+#endif
 }
 
 /* ======================================================================== */

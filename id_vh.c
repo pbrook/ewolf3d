@@ -1,6 +1,8 @@
 #include "wl_def.h"
 
+#ifndef ENABLE_PRECOMPILE
 pictabletype pictable[NUMPICS];
+#endif
 
 myint px, py;
 byte fontcolor, backcolor;
