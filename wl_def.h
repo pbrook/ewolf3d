@@ -1002,7 +1002,15 @@ extern	umyshort	doorposition[MAXDOORS],pwallstate;
 
 extern	byte		areaconnect[NUMAREAS][NUMAREAS];
 
-extern	boolean		areabyplayer[NUMAREAS];
+extern	uint64_t	areabyplayer;
+static inline boolean getareabyplayer(int i)
+{
+  return (areabyplayer & (1ull << i)) != 0;
+}
+static inline void setareabyplayer(int i)
+{
+  areabyplayer |= (1ull << i);
+}
 
 extern umyshort	pwallstate;
 extern umyshort	pwallpos;			// amount a pushable wall has been moved (0-63)

@@ -255,7 +255,7 @@ umyshort	doorposition[MAXDOORS];	// leading edge of door 0=closed
 byte		areaconnect[NUMAREAS][NUMAREAS];
 
 // FIXME: Use an actual bitfield.
-boolean		areabyplayer[NUMAREAS];
+uint64_t	areabyplayer;
 
 
 /*
@@ -274,9 +274,9 @@ void RecursiveConnect(myint areanumber)
 
 	for (i = 0; i < NUMAREAS; i++)
 	{
-		if (areaconnect[areanumber][i] && !areabyplayer[i])
+		if (areaconnect[areanumber][i] && !getareabyplayer(i))
 		{
-			areabyplayer[i] = true;
+			setareabyplayer(i);
 			RecursiveConnect(i);
 		}
 	}
@@ -284,15 +284,15 @@ void RecursiveConnect(myint areanumber)
 
 void ConnectAreas()
 {
-	memset(areabyplayer, 0, sizeof(areabyplayer));
-	areabyplayer[player->areanumber] = true;
+	areabyplayer = 0;
+	setareabyplayer(player->areanumber);
 	RecursiveConnect(player->areanumber);
 }
 
 void InitAreas()
 {
-	memset(areabyplayer, 0, sizeof(areabyplayer));
-	areabyplayer[player->areanumber] = true;
+	areabyplayer = 0;
+	setareabyplayer(player->areanumber);
 }
 
 /*
@@ -305,7 +305,7 @@ void InitAreas()
 
 void InitDoorList()
 {
-	memset(areabyplayer, 0, sizeof(areabyplayer));
+	areabyplayer = 0;
 	memset(areaconnect, 0, sizeof(areaconnect));
 
 	lastdoorobj = &doorobjlist[0];
@@ -459,7 +459,7 @@ void CloseDoor(myint door)
 //
 	area = *(mapseg0 + farmapylookup(doorobjlist[door].tiley)
 			+doorobjlist[door].tilex)-AREATILE;
-	if (areabyplayer[area])
+	if (getareabyplayer(area))
 	{
 		PlaySoundLocTile(CLOSEDOORSND,doorobjlist[door].tilex,doorobjlist[door].tiley);	// JAB
 	}
@@ -564,7 +564,7 @@ void DoorOpening(myint door)
 		areaconnect[area1][area2]++;
 		areaconnect[area2][area1]++;
 		ConnectAreas ();
-		if (areabyplayer[area1])
+		if (getareabyplayer(area1))
 		{
 			PlaySoundLocTile(OPENDOORSND,doorobjlist[door].tilex,doorobjlist[door].tiley);	// JAB
 		}

@@ -432,8 +432,7 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 	
 		DiskFlopAnim(dx, dy);
 	
-		for (i = 0; i < 37; i++)
-			WriteInt8(fd, areabyplayer[i]);
+		WriteBytes(fd, (byte *)&areabyplayer, 8);
 	
 		for (ob = player; ob; ob = obj_next(ob)) {
 			DiskFlopAnim(dx, dy);
@@ -678,8 +677,8 @@ myint LoadTheGame(const char *fn, myint dx, myint dy)
 	
 	DiskFlopAnim(dx, dy);
 	
-	for (i = 0; i < 37; i++)
-		areabyplayer[i] = ReadInt8(fd);
+	//FIXME: This is not endian safe.  */
+	ReadBytes(fd, (byte *)&areabyplayer, 8);
 	
 	DiskFlopAnim(dx, dy);
 	

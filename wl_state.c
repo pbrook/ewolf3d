@@ -658,7 +658,7 @@ void MoveObj (objtype *ob, long move)
 //
 // check to make sure it's not on top of player
 //
-	if (areabyplayer[ob->areanumber])
+	if (getareabyplayer(ob->areanumber))
 	{
 		deltax = ob->x - player->x;
 		if (deltax < -MINACTORDIST || deltax > MINACTORDIST)
@@ -1110,7 +1110,7 @@ boolean CheckSight (objtype *ob)
 //
 // don't bother tracing a line if the area isn't connected to the player's
 //
-	if (!areabyplayer[ob->areanumber])
+	if (!getareabyplayer(ob->areanumber))
 		return false;
 
 //
@@ -1338,7 +1338,7 @@ boolean SightPlayer (objtype *ob)
 	}
 	else
 	{
-		if (!areabyplayer[ob->areanumber])
+		if (!getareabyplayer(ob->areanumber))
 			return false;
 
 		if (ob->flags & FL_AMBUSH)
