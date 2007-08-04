@@ -251,10 +251,6 @@ myint			doornum;
 
 umyshort	doorposition[MAXDOORS];	// leading edge of door 0=closed
 					// 0xffff = fully open
-// FIXME: This could maybe be smaller.
-byte		areaconnect[NUMAREAS][NUMAREAS];
-
-// FIXME: Use an actual bitfield.
 uint64_t	areabyplayer;
 
 
@@ -268,25 +264,46 @@ uint64_t	areabyplayer;
 ==============
 */
 
-void RecursiveConnect(myint areanumber)
+void ConnectAreas(boolean reset)
 {
-	myint i;
+    int door;
+    boolean again;
+    int area1, area2;
+    boolean by1, by2;
+    ms0 *map;
 
-	for (i = 0; i < NUMAREAS; i++)
-	{
-		if (areaconnect[areanumber][i] && !getareabyplayer(i))
-		{
-			setareabyplayer(i);
-			RecursiveConnect(i);
-		}
-	}
-}
-
-void ConnectAreas()
-{
+    if (reset) {
 	areabyplayer = 0;
 	setareabyplayer(player->areanumber);
-	RecursiveConnect(player->areanumber);
+    }
+    do {
+	again = false;
+	for (door = 0; door < doornum; door++) {
+	    if (doorposition[door] == 0)
+		continue;
+	    map = (mapseg0 + farmapylookup(doorobjlist[door].tiley)
+		    +doorobjlist[door].tilex);
+
+	    if (doorobjlist[door].vertical) {
+		area1 =	*(map+1);
+		area2 =	*(map-1);
+	    } else {
+		area1 =	*(map-mapwidth);
+		area2 =	*(map+mapwidth);
+	    }
+	    area1 -= AREATILE;
+	    area2 -= AREATILE;
+	    by1 = getareabyplayer(area1);
+	    by2 = getareabyplayer(area2);
+	    if (by1 ^ by2) {
+		again = true;
+		if (!by1)
+		    setareabyplayer(area1);
+		if (!by2)
+		    setareabyplayer(area2);
+	    }
+	}
+    } while (again);
 }
 
 void InitAreas()
@@ -306,7 +323,6 @@ void InitAreas()
 void InitDoorList()
 {
 	areabyplayer = 0;
-	memset(areaconnect, 0, sizeof(areaconnect));
 
 	lastdoorobj = &doorobjlist[0];
 	doornum = 0;
@@ -536,8 +552,6 @@ void DoorOpen (myint door)
 
 void DoorOpening(myint door)
 {
-	myint		area1,area2;
-	ms0 *map;
 	long	position;
 
 	position = doorposition[door];
@@ -546,28 +560,15 @@ void DoorOpening(myint door)
 	//
 	// door is just starting to open, so connect the areas
 	//
-		map = (mapseg0 + farmapylookup(doorobjlist[door].tiley)
-			+doorobjlist[door].tilex);
-
-		if (doorobjlist[door].vertical)
-		{
-			area1 =	*(map+1);
-			area2 =	*(map-1);
-		}
-		else
-		{
-			area1 =	*(map-mapwidth);
-			area2 =	*(map+mapwidth);
-		}
-		area1 -= AREATILE;
-		area2 -= AREATILE;
-		areaconnect[area1][area2]++;
-		areaconnect[area2][area1]++;
-		ConnectAreas ();
+		// Open the door slightly.
+		doorposition[door] = 1;
+		ConnectAreas (false);
+#ifdef ENABLE_AUDIO
 		if (getareabyplayer(area1))
 		{
 			PlaySoundLocTile(OPENDOORSND,doorobjlist[door].tilex,doorobjlist[door].tiley);	// JAB
 		}
+#endif
 	}
 
 //
@@ -599,8 +600,6 @@ void DoorOpening(myint door)
 
 void DoorClosing(myint door)
 {
-	myint		area1,area2;
-	ms0 *map;
 	long	position;
 	myint		tilex,tiley;
 
@@ -625,32 +624,14 @@ void DoorClosing(myint door)
 	//
 	// door is closed all the way, so disconnect the areas
 	//
-		position = 0;
+		doorposition[door] = 0;
 
 		doorobjlist[door].action = dr_closed;
 
-		map = (mapseg0 + farmapylookup(doorobjlist[door].tiley)
-			+doorobjlist[door].tilex);
-
-		if (doorobjlist[door].vertical)
-		{
-			area1 =	*(map+1);
-			area2 =	*(map-1);
-		}
-		else
-		{
-			area1 =	*(map-mapwidth);
-			area2 =	*(map+mapwidth);
-		}
-		area1 -= AREATILE;
-		area2 -= AREATILE;
-		areaconnect[area1][area2]--;
-		areaconnect[area2][area1]--;
-
-		ConnectAreas ();
+		ConnectAreas (true);
+	} else {
+		doorposition[door] = position;
 	}
-
-	doorposition[door] = position;
 }
 
 /*

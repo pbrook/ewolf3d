@@ -436,10 +436,6 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 	
 		DiskFlopAnim(dx, dy);
 			
-		WriteBytes(fd, (byte *)areaconnect, 37*37); /* NUMAREAS * NUMAREAS */
-	
-		DiskFlopAnim(dx, dy);
-	
 		WriteBytes(fd, (byte *)&areabyplayer, 8);
 	
 		for (ob = player; ob; ob = obj_next(ob)) {
@@ -681,10 +677,6 @@ myint LoadTheGame(const char *fn, myint dx, myint dy)
 	
 	DiskFlopAnim(dx, dy);
 			
-	ReadBytes(fd, (byte *)areaconnect, 37*37); /* NUMAREAS * NUMAREAS */
-	
-	DiskFlopAnim(dx, dy);
-	
 	//FIXME: This is not endian safe.  */
 	ReadBytes(fd, (byte *)&areabyplayer, 8);
 	

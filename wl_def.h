@@ -1030,8 +1030,6 @@ extern	myint			doornum;
 
 extern	umyshort	doorposition[MAXDOORS],pwallstate;
 
-extern	byte		areaconnect[NUMAREAS][NUMAREAS];
-
 extern	uint64_t	areabyplayer;
 static inline boolean getareabyplayer(int i)
 {
