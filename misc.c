@@ -40,6 +40,18 @@ unsigned long get_TimeCount(void)
 	return tc;
 }
 
+unsigned long sleepuntil(unsigned long t)
+{
+    unsigned long now;
+    while (1) {
+	now = get_TimeCount();
+	if (now >= t)
+	    break;
+	usleep(10000);
+    }
+    return now;
+}
+
 long filelength(myint handle)
 {
 	struct stat buf;

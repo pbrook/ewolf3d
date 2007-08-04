@@ -9,6 +9,7 @@ void SavePCXRGBToFile(const unsigned char *buf, myint width, myint height, const
 
 void set_TimeCount(unsigned long t);
 unsigned long get_TimeCount(void);
+unsigned long sleepuntil(unsigned long t);
 
 long filelength(myint handle);
 

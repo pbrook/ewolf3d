@@ -632,6 +632,7 @@ void SetupGameLevel()
 
 void DrawPlayBorderSides()
 {
+#ifndef EMBEDDED
 	myint xl, yl;
 
 	xl = 160-viewwidthwin/2;
@@ -646,6 +647,7 @@ void DrawPlayBorderSides()
 		VW_Vlin(yl-1,yl+viewheightwin,xl-1,0);
 		VW_Vlin(yl-1,yl+viewheightwin,xl+viewwidthwin,125);
 	}
+#endif
 }
 
 /*
@@ -658,6 +660,7 @@ void DrawPlayBorderSides()
 
 void DrawPlayBorder()
 {
+#ifndef EMBEDDED
 	myint xl, yl;
 
 	VW_Bar(0,0,320,200-STATUSLINES+1,127);
@@ -675,6 +678,7 @@ void DrawPlayBorder()
 		VW_Vlin(yl-1,yl+viewheightwin,xl+viewwidthwin,125);
 		VW_Plot(xl-1,yl+viewheightwin,124);
 	}
+#endif
 }
 
 void DrawStatusBar()

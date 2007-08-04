@@ -758,8 +758,8 @@ void CA_CacheMap(myint mapnum, myint plane)
 
 /* ======================================================================== */
 
-#define POOL_SIZE 65536
-static byte *MM_Pool;
+#define POOL_SIZE 13*1024
+static byte MM_Pool[POOL_SIZE];
 unsigned int pool_offset;
 
 typedef struct
@@ -773,7 +773,6 @@ typedef struct
 void MM_Startup()
 {
   pool_header *p;
-  MM_Pool = malloc(POOL_SIZE);
   p = (pool_header *)MM_Pool;
   p->owner = NULL;
   p->size = POOL_SIZE - 8;
@@ -782,8 +781,6 @@ void MM_Startup()
 
 void MM_Shutdown()
 {
-  if (MM_Pool)
-    free(MM_Pool);
 }
 
 memptr MM_AllocPool(pool_id *id, unsigned long size)
@@ -794,7 +791,7 @@ memptr MM_AllocPool(pool_id *id, unsigned long size)
   size = (size + 7) & ~7;
   if (size > POOL_SIZE - 8)
     {
-      fprintf(stderr, "Pool allocation too big\n");
+      fprintf(stderr, "Pool allocation too big (%d)\n", (int)size);
       abort();
     }
   /* Reclaim entries until we have enough space.  */

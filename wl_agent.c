@@ -189,7 +189,9 @@ void ControlMovement(objtype *ob)
 
 void StatusDrawPic(unsigned x, unsigned y, unsigned picnum)
 {
+#ifdef EMBEDDED
 	VWB_DrawPic(x*8, y+160, picnum);
+#endif
 }
 
 

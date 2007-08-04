@@ -1267,6 +1267,7 @@ passhoriz:
 
 void FizzleFade(boolean abortable, myint frames, myint color)
 {
+#if 0
 	myint pixperframe;
 	unsigned x, y, p, frame;
 	myint multiplier;
@@ -1353,5 +1354,6 @@ void FizzleFade(boolean abortable, myint frames, myint color)
 		while (get_TimeCount() < frame);
 	} while (retr == -1);
 
+#endif
 	VW_UpdateScreen();	
 }

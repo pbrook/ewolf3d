@@ -872,6 +872,7 @@ boolean PreloadUpdate(myint current, myint total)
 
 void PreloadGraphics()
 {
+#ifndef EMBEDDED
 	myint i;
 	
 	DrawLevel();
@@ -897,6 +898,7 @@ void PreloadGraphics()
 
 	DrawPlayBorder();
 	VW_UpdateScreen();
+#endif
 }
 
 

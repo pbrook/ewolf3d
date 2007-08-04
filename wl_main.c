@@ -86,10 +86,8 @@ void CalcTics()
 	else
 		ticcount = 0 + 1; /* 35 Hz */
 	
-	do {
-		newtime = get_TimeCount();
-		tics = newtime - lasttimecount;
-	} while (tics <= ticcount);
+	newtime = sleepuntil(lasttimecount + ticcount);
+	tics = newtime - lasttimecount;
 	
 	lasttimecount = newtime;
 	
@@ -938,6 +936,7 @@ void NewViewSize(myint width)
 	if (width < 4)
 		width = 4;	
 	
+#ifndef EMBEDDED
 	width *= vwidth / 320;
 	
 	if ((width*16) > vwidth)
@@ -949,6 +948,9 @@ void NewViewSize(myint width)
 	viewwidthwin = width*16*320/vwidth;
 	viewheightwin = width*16*HEIGHTRATIO*320/vwidth;
 	viewsize = width*320/vwidth;
+#else
+	viewsize = width;
+#endif
 	
 	viewwidth = width*16;
 	viewheight = width*16*HEIGHTRATIO;
@@ -956,8 +958,10 @@ void NewViewSize(myint width)
 	centerx = viewwidth/2-1;
 	shootdelta = viewwidth/10;
 	
+#ifndef EMBEDDED
 	yoffset = (vheight-STATUSLINES*vheight/200-viewheight)/2;
 	xoffset = (vwidth-viewwidth)/2;
+#endif
 	
 //
 // calculate trace angles and projection constants

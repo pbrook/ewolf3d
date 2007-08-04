@@ -167,6 +167,7 @@ void VL_DeModeXize(byte *buf, myint width, myint height)
 
 static void VL_Plot(myint x, myint y, myint color)
 {
+#ifndef EMBEDDED
 	myint xend, yend, xs, ys;
 	
 	xend = x + 1;
@@ -185,6 +186,7 @@ static void VL_Plot(myint x, myint y, myint color)
 	for (xs = x; xs < xend; xs++)
 		for (ys = y; ys < yend; ys++)
 			*(gfxbuf + ys * vwidth + xs) = color;
+#endif
 }
 
 void VW_Plot(myint x, myint y, myint color)
@@ -358,6 +360,7 @@ void VL_Vlin(myint x, myint y, myint height, myint color)
 
 void VW_Bar(myint x, myint y, myint width, myint height, myint color)
 {
+#ifndef EMBEDDED
 	myint w, h;
 	byte *ptr;
 	
@@ -373,6 +376,7 @@ void VW_Bar(myint x, myint y, myint width, myint height, myint color)
 		memset(ptr, color, w);
 		ptr += vwidth;
 	}
+#endif
 }
 
 void VL_Bar(myint x, myint y, myint width, myint height, myint color)

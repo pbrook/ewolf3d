@@ -195,7 +195,7 @@ void VL_Startup()
 		| FocusChangeMask | StructureNotifyMask;
 	attrmask = CWColormap | CWEventMask;
 	
-	win = XCreateWindow(dpy, root, 0, 0, 320, 200, 0, CopyFromParent, 
+	win = XCreateWindow(dpy, root, 0, 0, vwidth, vheight, 0, CopyFromParent, 
 			    InputOutput, vi->visual, attrmask, &attr);
 	
 	if (win == None) {
@@ -207,12 +207,12 @@ void VL_Startup()
 	gcvalues.background = WhitePixel(dpy, screen);
 	gc = XCreateGC(dpy, win, GCForeground | GCBackground, &gcvalues);
 	
-	sizehints.min_width = 320;
-	sizehints.min_height = 200;
-	sizehints.max_width = 320;
-	sizehints.max_height = 200;
-	sizehints.base_width = 320;
-	sizehints.base_height = 200;
+	sizehints.min_width = vwidth;
+	sizehints.min_height = vheight;
+	sizehints.max_width = vwidth;
+	sizehints.max_height = vheight;
+	sizehints.base_width = vwidth;
+	sizehints.base_height = vheight;
 	sizehints.flags = PMinSize | PMaxSize | PBaseSize;
 	
 	XSetWMProperties(dpy, win, NULL, NULL, _argv, _argc, &sizehints, None, None); 
@@ -231,7 +231,7 @@ void VL_Startup()
 	
 	if (!MS_CheckParm("noshm") && (XShmQueryExtension(dpy) == True)) {
 		img = XShmCreateImage(dpy, vi->visual, vi->depth, ZPixmap, 
-				      NULL, &shminfo, 320, 200);
+				      NULL, &shminfo, vwidth, vheight);
 
 		shminfo.shmid = shmget(IPC_PRIVATE, img->bytes_per_line * img->height, IPC_CREAT | 0777);
 		shminfo.shmaddr = img->data = shmat(shminfo.shmid, 0, 0);	
@@ -330,23 +330,25 @@ void VW_UpdateScreen()
 	dword *ptri;
 	word *ptrs;
 	byte *ptrb;
+	int size;
 	
 	myint i;
 
+	size = vwidth * vheight;
 	if (indexmode == 0) {
 		switch(MyDepth) {
 		case 15:
 		case 16:
 			ptrs = (word *)disbuf;
 			
-			for (i = 0; i < 64000; i++) {
+			for (i = 0; i < size; i++) {
 				*ptrs = spal[gfxbuf[i]];
 				ptrs++;
 			}
 			break;
 		case 24: /* Endian Safe? Untested. */
 			ptrb = disbuf;
-			for (i = 0; i < 64000; i++) {
+			for (i = 0; i < size; i++) {
 				*ptrb = cpal[gfxbuf[i]*3+2] << 2; ptrb++;
 				*ptrb = cpal[gfxbuf[i]*3+1] << 2; ptrb++;
 				*ptrb = cpal[gfxbuf[i]*3+0] << 2; ptrb++;
@@ -355,7 +357,7 @@ void VW_UpdateScreen()
 		case 32:
 			ptri = (dword *)disbuf;
 			
-			for (i = 0; i < 64000; i++) {
+			for (i = 0; i < size; i++) {
 				*ptri = ipal[gfxbuf[i]];
 				ptri++;
 			}
@@ -367,9 +369,9 @@ void VW_UpdateScreen()
 	}
 
 	if (shmmode)
-		XShmPutImage(dpy, win, gc, img, 0, 0, 0, 0, 320, 200, False);
+		XShmPutImage(dpy, win, gc, img, 0, 0, 0, 0, vwidth, vheight, False);
 	else
-		XPutImage(dpy, win, gc, img, 0, 0, 0, 0, 320, 200);
+		XPutImage(dpy, win, gc, img, 0, 0, 0, 0, vwidth, vheight);
 }
 
 void keyboard_handler(myint code, myint press);
@@ -485,8 +487,13 @@ void VL_GetPalette(byte *palette)
 
 myint main(myint argc, char *argv[])
 {
+#ifdef EMBEDDED
+	vwidth = 128;
+	vheight = 96;
+#else
 	vwidth = 320;
 	vheight = 200;
+#endif
 	                	                
 	return WolfMain(argc, argv);
 }
