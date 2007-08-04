@@ -1,10 +1,12 @@
 #include "wl_def.h"
 
+#ifdef ENABLE_AUDIO
 boolean AdLibPresent, SoundBlasterPresent;
 
 SDMode SoundMode;
 SMMode MusicMode;
 SDSMode DigiMode;
+#endif
 
 void SD_SetDigiDevice(SDSMode mode)
 {
