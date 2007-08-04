@@ -26,7 +26,6 @@ maptype	*mapheaderseg[NUMMAPS];
 myint mapon;
 
 ms0	mapseg0[MAPSIZE * MAPSIZE];
-ms1	mapseg1[MAPSIZE * MAPSIZE];
 #ifdef ENABLE_AUDIO
 static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
@@ -753,8 +752,7 @@ void CA_CacheMap(myint mapnum, myint plane)
 	CAL_CarmackExpand(source+2, (word *)buffer2seg, expanded);
 	MM_FreePtr((void *)&source);
 
-	CA_RLEWexpand(((word *)buffer2seg)+1, plane ? mapseg1 : mapseg0,
-		      plane ? 16 : 0);
+	CA_RLEWexpand(((word *)buffer2seg)+1, mapseg0, plane ? 16 : 0);
 	MM_FreePtr(&buffer2seg);
 }
 

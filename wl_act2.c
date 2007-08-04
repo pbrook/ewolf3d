@@ -298,8 +298,6 @@ void T_Projectile(objtype *ob)
 
 void SpawnStand (enemy_t which, myint tilex, myint tiley, myint dir)
 {
-	ms0 *map, tile = 0;
-
 	switch (which)
 	{
 	case en_guard:
@@ -331,27 +329,6 @@ void SpawnStand (enemy_t which, myint tilex, myint tiley, myint dir)
 		break;
 	default:
 		break;
-	}
-
-
-	map = mapseg0+farmapylookup(tiley)+tilex;
-	if (*map == AMBUSHTILE)
-	{
-		tilemap[tilex][tiley] = 0;
-
-		if (*(map+1) >= AREATILE)
-			tile = *(map+1);
-		if (*(map-mapwidth) >= AREATILE)
-			tile = *(map-mapwidth);
-		if (*(map+mapwidth) >= AREATILE)
-			tile = *(map+mapwidth);
-		if ( *(map-1) >= AREATILE)
-			tile = *(map-1);
-
-		*map = tile;
-		new->areanumber = tile-AREATILE;
-
-		new->flags |= FL_AMBUSH;
 	}
 
 	new->obclass = guardobj+which;

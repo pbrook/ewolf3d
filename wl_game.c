@@ -51,9 +51,9 @@ void ScanInfoPlane()
 {
 	unsigned x,y;
 	myint tile;
-	ms1 *start;
+	ms0 *start;
 
-	start = mapseg1;
+	start = mapseg0;
 	for (y=0;y<mapheight;y++)
 		for (x=0;x<mapwidth;x++)
 		{
@@ -460,6 +460,39 @@ void ScanInfoPlane()
 
 /* ======================================================================== */
 
+/* The area map is not available when spawning actors, so fill in now.  */
+
+static void FixupActors()
+{
+    objtype *obj;
+    ms0 *map;
+    ms0 tile;
+
+    for (obj = player; obj; obj = obj_next(obj)) {
+	map = mapseg0+farmapylookup(obj->tiley)+obj->tilex;
+	tile = 0;
+	if (*map == AMBUSHTILE)
+	{
+		tilemap[obj->tilex][obj->tiley] = 0;
+		if (*(map+1) >= AREATILE)
+			tile = *(map+1);
+		if (*(map-mapwidth) >= AREATILE)
+			tile = *(map-mapwidth);
+		if (*(map+mapwidth) >= AREATILE)
+			tile = *(map+mapwidth);
+		if (*(map-1) >= AREATILE)
+			tile = *(map-1);
+
+		*map = tile;
+		obj->areanumber = tile-AREATILE;
+
+		obj->flags |= FL_AMBUSH;
+	} else {
+	    obj->areanumber = *map - AREATILE;
+	}
+    }
+}
+
 /*
 ==================
 =
@@ -499,10 +532,19 @@ void SetupGameLevel()
 	memset(actorat, 0, sizeof(actorat));
 	memset(objactor, 0, sizeof(objactor));
 
+	InitActorList();	/* start spawning things with a clean slate */
+	InitDoorList();
+	InitStaticList();
+
 /* spawn actors */
 /* load the level */
 	CA_CacheMap(gamestate.mapon+10*gamestate.episode, 1);
+
+	ScanInfoPlane();
+
 	CA_CacheMap(gamestate.mapon+10*gamestate.episode, 0);
+
+	FixupActors();
 
 /* copy the wall data to a data segment array */	
 	map = mapseg0;
@@ -517,10 +559,6 @@ void SetupGameLevel()
 			}
 		}
 		
-	InitActorList();	/* start spawning things with a clean slate */
-	InitDoorList();
-	InitStaticList();
-
 /* spawn doors */
 	map = mapseg0;
 	for (y = 0; y < mapheight; y++)
@@ -551,9 +589,6 @@ void SetupGameLevel()
 				}
 			}
 		}
-
-	ScanInfoPlane();
-	
 
 /* take out the ambush markers */
 	map = mapseg0;

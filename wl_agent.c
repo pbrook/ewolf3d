@@ -1014,8 +1014,6 @@ void SpawnPlayer (myint tilex, myint tiley, myint dir)
 	player->active = ac_yes;
 	player->tilex = tilex;
 	player->tiley = tiley;
-	player->areanumber =
-		*(mapseg0 + farmapylookup(player->tiley)+player->tilex) - AREATILE;
 	player->x = ((long)tilex<<TILESHIFT)+TILEGLOBAL/2;
 	player->y = ((long)tiley<<TILESHIFT)+TILEGLOBAL/2;
 	player->state = s_player;
@@ -1023,7 +1021,6 @@ void SpawnPlayer (myint tilex, myint tiley, myint dir)
 	if (player->angle<0)
 		player->angle += ANGLES;
 	player->flags = FL_NEVERMARK;
-	Thrust (0,0);				// set some variables
 
 	InitAreas();
 }

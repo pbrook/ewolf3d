@@ -59,8 +59,6 @@ void SpawnNewObj(unsigned tilex, unsigned tiley, myint state) /* stateenum */
 	new->dir = nodir;
 
 	move_actor(new);
-	new->areanumber =
-		*(mapseg0 + farmapylookup(new->tiley)+new->tilex) - AREATILE;
 }
 
 /*
