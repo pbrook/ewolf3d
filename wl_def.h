@@ -402,6 +402,20 @@ enum PACKED {
 =============================================================================
 */
 
+typedef uint64_t mapbitmap[MAPSIZE];
+static inline boolean getmapbit(mapbitmap m, int x, int y)
+{
+  return (m[x] & (1ull << y)) != 0;
+}
+static inline void setmapbit(mapbitmap m, int x, int y)
+{
+  m[x] |= (1ull << y);
+}
+static inline void clearmapbit(mapbitmap m, int x, int y)
+{
+  m[x] &= ~(1ull << y);
+}
+
 typedef enum PACKED {
 	di_north,
 	di_east,
@@ -773,29 +787,15 @@ extern	doorobj_t	doorobjlist[MAXDOORS],*lastdoorobj;
 #define farmapylookup(y) (y << 6)
 extern	byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
 
-extern uint64_t spotvis[MAPSIZE];
-static inline boolean getspotvis(int x, int y)
-{
-  return (spotvis[x] & (1ull << y)) != 0;
-}
-static inline void setspotvis(int x, int y)
-{
-  spotvis[x] |= (1ull << y);
-}
+extern mapbitmap spotvis;
+#define getspotvis(x, y) getmapbit(spotvis, x, y)
+#define setspotvis(x, y) setmapbit(spotvis, x, y)
 
-extern uint64_t objactor[MAPSIZE];
-static inline boolean getactorflag(int x, int y)
-{
-  return (objactor[x] & (1ull << y)) != 0;
-}
-static inline void setactorflag(int x, int y)
-{
-  objactor[x] |= (1ull << y);
-}
-static inline void clearactorflag(int x, int y)
-{
-  objactor[x] &= ~(1ull << y);
-}
+extern mapbitmap objactor;
+#define getactorflag(x, y) getmapbit(objactor, x, y)
+#define setactorflag(x, y) setmapbit(objactor, x, y)
+#define clearactorflag(x, y) clearmapbit(objactor, x, y)
+
 extern	byte		actorat[MAPSIZE][MAPSIZE];
 
 /* Record actor location.  */

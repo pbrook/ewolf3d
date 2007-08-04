@@ -20,8 +20,8 @@ objtype 	objlist[MAXACTORS],*new,*obj,*player,*lastobj,
 boolean		singlestep,godmode,noclip;
 
 byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
-uint64_t		spotvis[MAPSIZE];
-uint64_t		objactor[MAPSIZE];
+mapbitmap		spotvis;
+mapbitmap		objactor;
 byte		actorat[MAPSIZE][MAPSIZE];
 
 myint tics;
