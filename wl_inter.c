@@ -334,8 +334,8 @@ const myshort alpha[]={L_NUM0PIC,L_NUM1PIC,L_NUM2PIC,L_NUM3PIC,L_NUM4PIC,L_NUM5P
 //
 void BJ_Breathe()
 {
-	static myint which=0,max=10;
-	const myint pics[2]={L_GUYPIC,L_GUY2PIC};
+	static byte which=0,max=10;
+	const myshort pics[2]={L_GUYPIC,L_GUY2PIC};
 
 	if (get_TimeCount() > max)
 	{
