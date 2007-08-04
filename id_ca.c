@@ -25,8 +25,8 @@ maptype	*mapheaderseg[NUMMAPS];
 
 myint mapon;
 
-word	mapseg0[MAPSIZE * MAPSIZE];
-word	mapseg1[MAPSIZE * MAPSIZE];
+ms0	mapseg0[MAPSIZE * MAPSIZE];
+ms1	mapseg1[MAPSIZE * MAPSIZE];
 #ifdef ENABLE_AUDIO
 static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
@@ -280,15 +280,15 @@ void CAL_CarmackExpand(const byte *source, word *dest, word length)
 ======================
 =
 = CA_RLEWexpand
-= length is EXPANDED length
 =
 ======================
 */
 
-void CA_RLEWexpand(const word *source, word *dest, long length, word rlewtag)
+void CA_RLEWexpand(const word *source, byte *dest, int offset)
 {
 	word value, count, i;
-	word *end = dest + length / 2;
+	word rlewtag = RLEWtag;
+	byte *end = dest + 64 * 64;
 	
 	/* expand it */
 	do {
@@ -296,12 +296,12 @@ void CA_RLEWexpand(const word *source, word *dest, long length, word rlewtag)
 
 		if (value != rlewtag) {
 			/* uncompressed */
-			*dest++ = value;
+			*dest++ = value - offset;
 		} else {
 			/* compressed string */
 			count = *source++;
 			
-			value = *source++;
+			value = *source++ - offset;
 			for (i = 0; i < count; i++)
 				*dest++ = value;
 		}
@@ -715,52 +715,47 @@ void CA_CacheGrChunk(myint chunk)
 ======================
 */
 
-void CA_CacheMap(myint mapnum)
+void CA_CacheMap(myint mapnum, myint plane)
 {
 	long pos,compressed;
-	myint plane;
 	byte *source;
 	memptr buffer2seg;
 	long expanded;
 	
 	mapon = mapnum;
 
-/* load the planes into the already allocated buffers */
+/* load plane into the already allocated buffers */
 
-	for (plane = 0; plane < MAPPLANES; plane++)
-	{
 #ifdef ENABLE_PRECOMPILE
-		pos = mapheaderseg[mapnum].planestart[plane];
-		compressed = mapheaderseg[mapnum].planelength[plane];
+	pos = mapheaderseg[mapnum].planestart[plane];
+	compressed = mapheaderseg[mapnum].planelength[plane];
 #else
-		pos = mapheaderseg[mapnum]->planestart[plane];
-		compressed = mapheaderseg[mapnum]->planelength[plane];
+	pos = mapheaderseg[mapnum]->planestart[plane];
+	compressed = mapheaderseg[mapnum]->planelength[plane];
 #endif
 
-		ReadSeek(maphandle, pos, SEEK_SET);
-		
-		MM_GetPtr((void *)&source, compressed);
+	ReadSeek(maphandle, pos, SEEK_SET);
+	
+	MM_GetPtr((void *)&source, compressed);
 
-		ReadBytes(maphandle, (byte *)source, compressed);
-		
-		expanded = source[0] | (source[1] << 8);		
-		MM_GetPtr(&buffer2seg, expanded);
+	ReadBytes(maphandle, (byte *)source, compressed);
+	
+	expanded = source[0] | (source[1] << 8);		
+	MM_GetPtr(&buffer2seg, expanded);
 
 /* NOTE: CarmackExpand implicitly fixes endianness, a RLEW'd only map
-         would (likely) need to be swapped in CA_RLEWexpand
-         
-         Wolfenstein 3D/Spear of Destiny maps are always Carmack'd so this
-         case is OK.  CA_RLEWexpand would need to be adjusted for Blake Stone
-         and the like.
+ would (likely) need to be swapped in CA_RLEWexpand
+ 
+ Wolfenstein 3D/Spear of Destiny maps are always Carmack'd so this
+ case is OK.  CA_RLEWexpand would need to be adjusted for Blake Stone
+ and the like.
 */         		
-		CAL_CarmackExpand(source+2, (word *)buffer2seg, expanded);
-		MM_FreePtr((void *)&source);
+	CAL_CarmackExpand(source+2, (word *)buffer2seg, expanded);
+	MM_FreePtr((void *)&source);
 
-		expanded = 64*64*2;
-		CA_RLEWexpand(((word *)buffer2seg)+1,
-			      plane ? mapseg1 : mapseg0, expanded, RLEWtag);
-		MM_FreePtr(&buffer2seg);
-	}
+	CA_RLEWexpand(((word *)buffer2seg)+1, plane ? mapseg1 : mapseg0,
+		      plane ? 16 : 0);
+	MM_FreePtr(&buffer2seg);
 }
 
 /* ======================================================================== */

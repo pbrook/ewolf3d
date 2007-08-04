@@ -298,7 +298,7 @@ void T_Projectile(objtype *ob)
 
 void SpawnStand (enemy_t which, myint tilex, myint tiley, myint dir)
 {
-	word *map, tile = 0;
+	ms0 *map, tile = 0;
 
 	switch (which)
 	{
@@ -592,12 +592,12 @@ void SelectPathDir(objtype *ob)
 {
 	unsigned spot;
 
-	spot = *(mapseg1+farmapylookup(ob->tiley)+ob->tilex)-ICONARROWS;
-
-	if (spot<8)
+	spot = getmapspecial(ob->tilex, ob->tiley);
+ 
+	if (spot & ms_arrow)
 	{
 	// new direction
-		ob->dir = spot;
+		ob->dir = spot & 7;
 	}
 
 	ob->distance = TILEGLOBAL;

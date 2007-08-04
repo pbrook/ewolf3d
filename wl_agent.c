@@ -871,7 +871,7 @@ void Thrust(myint angle, long speed)
 	offset = farmapylookup(player->tiley)+player->tilex;
 	player->areanumber = *(mapseg0 + offset) -AREATILE;
 
-	if (*(mapseg1 + offset) == EXITTILE)
+	if (getmapspecial(player->tilex, player->tiley) == ms_exit)
 		VictoryTile();
 }
 
@@ -956,7 +956,7 @@ void Cmd_Use()
 	}
 
 	doornum = tilemap[checkx][checky];
-	if (*(mapseg1+farmapylookup(checky)+checkx) == PUSHABLETILE)
+	if (getmapspecial(checkx, checky) == ms_pushable)
 	{
 	//
 	// pushable wall
@@ -1015,7 +1015,7 @@ void SpawnPlayer (myint tilex, myint tiley, myint dir)
 	player->tilex = tilex;
 	player->tiley = tiley;
 	player->areanumber =
-		*(mapseg0 + farmapylookup(player->tiley)+player->tilex);
+		*(mapseg0 + farmapylookup(player->tiley)+player->tilex) - AREATILE;
 	player->x = ((long)tilex<<TILESHIFT)+TILEGLOBAL/2;
 	player->y = ((long)tiley<<TILESHIFT)+TILEGLOBAL/2;
 	player->state = s_player;

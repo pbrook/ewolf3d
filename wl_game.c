@@ -15,6 +15,8 @@ long		spearx,speary;
 unsigned	spearangle;
 boolean		spearflag;
 
+byte	mapspecial[(MAPSIZE * MAPSIZE) >> 1];
+
 /* ELEVATOR BACK MAPS - REMEMBER (-1)!! */
 #ifndef SPEAR
 static const myint ElevatorBackTo[]={ 1, 1, 7, 3, 5, 3};
@@ -49,13 +51,13 @@ void ScanInfoPlane()
 {
 	unsigned x,y;
 	myint tile;
-	word *start;
+	ms1 *start;
 
 	start = mapseg1;
 	for (y=0;y<mapheight;y++)
 		for (x=0;x<mapwidth;x++)
 		{
-			tile = *start++;
+			tile = (word)*(start++) + 16;
 			if (!tile)
 				continue;
 
@@ -131,12 +133,27 @@ void ScanInfoPlane()
 				SpawnStatic(x,y,tile-23);
 				break;
 
+			case 90: /* ICONARROWS */
+			case 91:
+			case 92:
+			case 93:
+			case 94:
+			case 95:
+			case 96:
+			case 97:
+				setmapspecial(x, y, (tile - 90) | ms_arrow);
+				break;
 //
 // P wall
 //
-			case 98:
+			case 98: /* PUSHABLETILE */
 				if (!loadedgame)
 				  gamestate.secrettotal++;
+				setmapspecial(x, y, ms_pushable);
+				break;
+
+			case 99: /* EXITTILE */
+				setmapspecial(x, y, ms_exit);
 				break;
 
 //
@@ -454,7 +471,7 @@ void ScanInfoPlane()
 void SetupGameLevel()
 {
 	myint x,y;
-	word *map,tile;
+	ms0 *map,tile;
 
 	if (!loadedgame) {
 		gamestate.TimeCount =
@@ -471,9 +488,6 @@ void SetupGameLevel()
 	else
 		US_InitRndT(true);
 
-/* load the level */
-	CA_CacheMap(gamestate.mapon+10*gamestate.episode);
-	
 #ifndef ENABLE_PRECOMPILE
 	if ((mapheaderseg[mapon]->width != 64) || (mapheaderseg[mapon]->height != 64))
 		Quit("Map not 64*64!");
@@ -485,6 +499,11 @@ void SetupGameLevel()
 	memset(actorat, 0, sizeof(actorat));
 	memset(objactor, 0, sizeof(objactor));
 
+/* spawn actors */
+/* load the level */
+	CA_CacheMap(gamestate.mapon+10*gamestate.episode, 1);
+	CA_CacheMap(gamestate.mapon+10*gamestate.episode, 0);
+
 /* copy the wall data to a data segment array */	
 	map = mapseg0;
 	for (y = 0; y < mapheight; y++)
@@ -495,7 +514,6 @@ void SetupGameLevel()
 				set_wall_at(x, y, tile);
 			} else { /* area floor */
 				tilemap[x][y] = 0;
-				clear_actor(x, y);
 			}
 		}
 		
@@ -534,8 +552,8 @@ void SetupGameLevel()
 			}
 		}
 
-/* spawn actors */
 	ScanInfoPlane();
+	
 
 /* take out the ambush markers */
 	map = mapseg0;

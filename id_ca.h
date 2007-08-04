@@ -22,9 +22,10 @@ typedef	struct
 
 extern	myint	mapon;
 
-typedef word ms0;
+typedef byte ms0;
+typedef byte ms1;
 extern	ms0	mapseg0[64 * 64];
-extern	word	mapseg1[64 * 64];
+extern	ms1	mapseg1[64 * 64];
 #ifdef ENABLE_PRECOMPILE
 extern	const maptype	mapheaderseg[NUMMAPS];
 extern const word RLEWtag;
@@ -49,7 +50,7 @@ void CA_UnCacheAudioChunk(myint chunk);
 #endif
 void CA_LoadAllSounds();
 
-void CA_CacheMap(myint mapnum);
+void CA_CacheMap(myint mapnum, myint plane);
 void CA_CacheGrChunk(myint chunk);
 void CA_UnCacheGrChunk(myint chunk);
 

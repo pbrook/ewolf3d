@@ -322,7 +322,7 @@ void InitDoorList()
 
 void SpawnDoor(myint tilex, myint tiley, boolean vertical, myint lock)
 {
-	word *map;
+	ms0 *map;
 
 	if (doornum == 64)
 		Quit ("64+ doors on level!");
@@ -341,7 +341,7 @@ void SpawnDoor(myint tilex, myint tiley, boolean vertical, myint lock)
 // for door sides
 //
 	tilemap[tilex][tiley] = doornum | 0x80;
-	map = (word *)(mapseg0 + farmapylookup(tiley)+tilex);
+	map = (mapseg0 + farmapylookup(tiley)+tilex);
 	if (vertical)
 	{
 		*map = *(map-1);                        // set area number
@@ -537,7 +537,7 @@ void DoorOpen (myint door)
 void DoorOpening(myint door)
 {
 	myint		area1,area2;
-	word *map;
+	ms0 *map;
 	long	position;
 
 	position = doorposition[door];
@@ -546,7 +546,7 @@ void DoorOpening(myint door)
 	//
 	// door is just starting to open, so connect the areas
 	//
-		map = (word *)(mapseg0 + farmapylookup(doorobjlist[door].tiley)
+		map = (mapseg0 + farmapylookup(doorobjlist[door].tiley)
 			+doorobjlist[door].tilex);
 
 		if (doorobjlist[door].vertical)
@@ -600,7 +600,7 @@ void DoorOpening(myint door)
 void DoorClosing(myint door)
 {
 	myint		area1,area2;
-	word *map;
+	ms0 *map;
 	long	position;
 	myint		tilex,tiley;
 
@@ -629,7 +629,7 @@ void DoorClosing(myint door)
 
 		doorobjlist[door].action = dr_closed;
 
-		map = (word *)(mapseg0 + farmapylookup(doorobjlist[door].tiley)
+		map = (mapseg0 + farmapylookup(doorobjlist[door].tiley)
 			+doorobjlist[door].tilex);
 
 		if (doorobjlist[door].vertical)
@@ -768,7 +768,7 @@ void PushWall(myint checkx, myint checky, myint dir)
 	pwallstate = 1;
 	pwallpos = 0;
 	tilemap[pwallx][pwally] |= 0xc0;
-	*(mapseg1+farmapylookup(pwally)+pwallx) = 0;	// remove P tile info
+	setmapspecial(pwallx, pwally, 0);
 
 	SD_PlaySound(PUSHWALLSND);
 }

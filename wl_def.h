@@ -743,6 +743,31 @@ extern	long		spearx,speary;
 extern	unsigned	spearangle;
 extern	boolean		spearflag;
 
+#define ms_pushable 1
+#define ms_exit 2
+#define ms_arrow 8
+
+extern byte mapspecial[(MAPSIZE * MAPSIZE) >> 1];
+static inline int getmapspecial(int x, int y)
+{
+  int n = (x << 5) + (y >> 1);
+  if (y & 1)
+    return mapspecial[n] & 0xf;
+  else
+    return mapspecial[n] >> 4;
+}
+
+static inline void setmapspecial(int x, int y, int newval)
+{
+  int n = (x << 5) + (y >> 1);
+  uint8_t val;
+  val = mapspecial[n];
+  if (y & 1)
+    val = (val & 0xf0) | newval;
+  else
+    val = (val & 0xf) | (newval << 4);
+  mapspecial[n] = val;
+}
 
 void 	ScanInfoPlane (void);
 void	SetupGameLevel (void);
