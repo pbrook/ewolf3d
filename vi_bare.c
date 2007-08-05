@@ -1,8 +1,12 @@
 #include "wl_def.h"
 
-#define INTEGRATOR 1
-
 #define FIXME abort
+
+#ifdef INTEGRATOR
+/* Memory mapped peripherals.  */
+#define clcdc	((volatile uint32_t *)0xc0000000)
+#define kmi0	((volatile uint32_t *)0x18000000)
+#endif
 
 /* Input.  */
 
@@ -17,15 +21,42 @@ void IN_GetMouseDelta(myint *dx, myint *dy)
 
 void INL_Update()
 {
-    /* Read input here.  */
+#ifdef INTEGRATOR
+    int scancode;
+    while (kmi0[1] & 0x10) {
+	int press = 1;
+	scancode = kmi0[2];
+#if 0
+	printf ("scancode %x\n", scancode);
+#else
+	if (scancode == 0xe0) {
+	    scancode = kmi0[2] | 0x100;
+	}
+	if ((scancode & 0xff) == 0xf0) {
+	    press = 0;
+	    scancode = (scancode & 0x100) | kmi0[2];
+	}
+	switch (scancode) {
+	case 0x29: scancode = sc_Space; break;
+	case 0x14: scancode = sc_Control; break;
+	case 0x175: scancode = sc_UpArrow; break;
+	case 0x172: scancode = sc_DownArrow; break;
+	case 0x16b: scancode = sc_LeftArrow; break;
+	case 0x174: scancode = sc_RightArrow; break;
+	default: scancode = 0; break;
+	}
+	if (scancode == 0)
+	    continue;
+	keyboard_handler(scancode, press);
+#endif
+    }
+#endif
 }
 
 /* Graphics bits.  */
 
 byte *gfxbuf;
-byte framebuffer[128 * 96];
-
-#define clcdc ((volatile uint32_t *)0xc0000000)
+byte framebuffer[128 * 64];
 
 void VL_Startup()
 {
@@ -34,8 +65,8 @@ void VL_Startup()
 #ifdef INTEGRATOR
     /* Initialize CLCDC.  */
     clcdc[0] = 0x1c; // Horizontal timing (128 pixels)
-    clcdc[1] = 0x95; // Vertical timing (96 rows)
-    clcdc[4] = (uint32_t)framebuffer; // Vertical timing (96 rows)
+    clcdc[1] = 0x3f; // Vertical timing (64 rows)
+    clcdc[4] = (uint32_t)framebuffer; // base address
     clcdc[7] = 0x827; // 8-bit TFT
 #endif
 }
@@ -81,10 +112,13 @@ void Quit(const char *error)
     FIXME();
 }
 
+void TimerInit();
+
 int main(int argc, char **argv)
 {
     vwidth = 128;
     vheight = 96;
+    TimerInit();
     return WolfMain(argc, argv);
 }
 

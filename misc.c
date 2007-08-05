@@ -9,6 +9,60 @@
 #define O_BINARY 0
 #endif
 
+#ifdef INTEGRATOR
+volatile unsigned long tcount;
+static volatile int tlock;
+
+void set_TimeCount(unsigned long t)
+{
+    tlock = 1;
+    tcount = t;
+    tlock = 0;
+}
+
+unsigned long get_TimeCount(void)
+{
+    return tcount;
+}
+
+#define pic ((volatile uint32_t *)0x14000000)
+#define pit ((volatile uint32_t *)0x13000100)
+
+static uint32_t irqstack[4];
+
+static void __attribute__((interrupt("irq"))) 
+irqhandler (void)
+{
+    if (!tlock)
+	tcount++;
+    /* Clear interrupt.  */
+    pit[3] = 1;
+}
+
+void TimerInit()
+{
+    register uint32_t r1 asm("r1");
+    (*(volatile uint32_t *)0x18) = 0xe59ff018; /* ldr pc, 0x38 */
+    (*(volatile uint32_t *)0x38) = (uint32_t)irqhandler;
+    /* Enable IRQ 6.  */
+    pic[2] = 1 << 6;
+    /* Setup timer.  */
+    pit[0] = 1000000 / 70; /* 70Hz.  */
+    pit[2] = 0xe2; /* Enable periodic 32-bit timer.  */
+    /* Set the IRQ stack and unmask interrupts.  */
+    r1 = (uint32_t)(irqstack + 4);
+    asm volatile ("mrs r0, cpsr\n\t"
+		  "bic r0, r0, #0x0f\n\t"
+		  "orr r0, r0, #0x02\n\t"
+		  "msr cpsr_cxsf, r0\n\t"
+		  "mov sp, r1\n\t"
+		  "bic r0, r0, #0x8f\n\t"
+		  "orr r0, r0, #0x03\n\t"
+		  "msr cpsr_cxsf, r0"
+		  ::"r"(r1): "r0");
+}
+
+#else /* !INTEGRATOR */
 static struct timeval t0;
 static unsigned long tc0;
 
@@ -39,6 +93,7 @@ unsigned long get_TimeCount(void)
 		
 	return tc;
 }
+#endif
 
 unsigned long sleepuntil(unsigned long t)
 {
@@ -47,8 +102,12 @@ unsigned long sleepuntil(unsigned long t)
 	now = get_TimeCount();
 	if (now >= t)
 	    break;
-#ifndef __arm__
+#if defined(__linux__)
 	usleep(10000);
+#elif defined(__thumb2__)
+	asm volatile ("wfi");
+#elif defined(__arm__)
+	asm volatile ("mcr p15, 0, r1, c7, c0, 4 @ wait for interrupt");
 #endif
     }
     return now;
