@@ -1647,8 +1647,10 @@ void MouseSensitivity()
 				break;
 		}
 
+#ifndef EMBEDDED
 		if (IN_KeyDown(sc_Tab) && IN_KeyDown(sc_P) && MS_CheckParm("debugmode"))
 			PicturePause();
+#endif
 
 		if (ci.button0 || IN_KeyDown(sc_Space) || IN_KeyDown(sc_Enter))
 			exit = 1;
@@ -2439,8 +2441,10 @@ void CP_ChangeView()
 			break;
 		}
 
+#ifndef EMBEDDED
 		if (IN_KeyDown(sc_Tab) && IN_KeyDown(sc_P) && MS_CheckParm("debugmode"))
 			PicturePause();
+#endif
 
 		if (ci.button0 || IN_KeyDown(sc_Enter))
 			exit = 1;
@@ -2766,8 +2770,10 @@ myint HandleMenu(CP_iteminfo *item_i,CP_itemtype *items,void (*routine)(myint w)
 			//
 			// CHECK FOR SCREEN CAPTURE
 			//
+#ifndef EMBEDDED
 			if (IN_KeyDown(sc_Tab) && IN_KeyDown(sc_P) && MS_CheckParm("debugmode"))
 				PicturePause();
+#endif
 
 
 			if (key>='a')
@@ -3122,8 +3128,10 @@ myint Confirm(const char *string)
 			set_TimeCount(0);
 		}
 
+#ifndef EMBEDDED
 		if (IN_KeyDown(sc_Tab) && IN_KeyDown(sc_P) && MS_CheckParm("debugmode"))
 			PicturePause();
+#endif
 
 	} while(!IN_KeyDown(sc_Y) && !IN_KeyDown(sc_N) && !IN_KeyDown(sc_Escape));
 

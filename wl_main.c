@@ -351,7 +351,6 @@ configend:
 		CloseRead(fd);
 	
 	if (!configokay) {
-		printf("Config: Setting defaults..\n");
 		SetDefaults();
 	}
 	
@@ -814,6 +813,7 @@ loadfail:
 
 /* ======================================================================== */
 
+#if !defined(EMBEDDED) || defined(ENABLE_DEMO)
 /*
 =================
 =
@@ -839,6 +839,7 @@ myint MS_CheckParm(const char *check)
 	}
 	return 0;
 }
+#endif
 
 /* ======================================================================== */
 
@@ -1322,16 +1323,17 @@ myint WolfMain(myint argc, char *argv[])
 
 	if (SPR_TOTAL >= 512) {
 	    /* statstruct:shapenum is a 10-bit signed field.  */
-	    printf ("Too many sprites\n");
-	    exit (1);
+	    Quit("Too many sprites\n");
 	}
 
+#ifndef EMBEDDED
 	if (MS_CheckParm("version")) {
 		printf("Game: %s\n", GAMENAME);
 		Quit(NULL);
 	}
 		
 	printf("Now Loading %s\n", GAMENAME);
+#endif
 		
 	CheckForEpisodes();
 

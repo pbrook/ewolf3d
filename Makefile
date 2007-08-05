@@ -10,6 +10,7 @@ CFLAGS = -g -Wall -fno-common -DINTEGRATOR
 #CFLAGS = -Os -Wall -pedantic
 #CFLAGS = -Os -Wall -fomit-frame-pointer -ffast-math -march=pentiumpro
 #CFLAGS=-O3 -xiMK -tpp6 -c99 -wp_ipo -g
+
 OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
@@ -19,7 +20,7 @@ ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
 DOBJS = $(OBJS) $(ROBJS) vi_sdl.o
-EOBJS = $(OBJS) $(ROBJS) vi_bare.o
+EOBJS = $(OBJS) $(ROBJS) vi_bare.o arm_support.o
 
 #LDLIBS = -lm -wp_ipo
 LDLIBS = -lm
@@ -36,7 +37,7 @@ OBJS += sd_null.o
 SLDLIBS = $(LDLIBS) -lvga
 XLDLIBS = $(LDLIBS) -L/usr/X11R6/lib -lX11 -lXext
 DLDLIBS = $(LDLIBS) $(shell sdl-config --libs)
-ELDLIBS = $(LDLIBS) -T rdimon-ram.ld
+ELDLIBS = $(LDLIBS) -T integrator.ld -nodefaultlibs
 
 NASM = nasm
 
@@ -62,7 +63,7 @@ xwolf3d: $(XOBJS)
 sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
 
-ewolf3d: $(EOBJS)
+ewolf3d: $(EOBJS) integrator-crt0.o
 	$(CC) -o ewolf3d $(EOBJS) $(ELDLIBS)
 
 tables.o: tables.c

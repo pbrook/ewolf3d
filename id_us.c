@@ -69,6 +69,7 @@ void US_Shutdown()
 ///////////////////////////////////////////////////////////////////////////
 void US_Print(const char *str)
 {
+#ifndef EMBEDDED
 	char c, *se, *s, *sz = strdup(str);
 	word w, h;
 	s = sz;
@@ -102,6 +103,7 @@ void US_Print(const char *str)
 	py = PrintY;
 	
 	free(sz);
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -179,6 +181,7 @@ void US_CPrintLine(const char *s)
 ///////////////////////////////////////////////////////////////////////////
 void US_CPrint(const char *str)
 {
+#ifndef EMBEDDED
 	/* Functions like to pass a string constant */
 	
 	char c, *se, *s, *sz = strdup(str);
@@ -202,6 +205,7 @@ void US_CPrint(const char *str)
 	}
 	
 	free(sz);
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -402,7 +406,11 @@ boolean US_LineInput(myint x,myint y,char *buf,const char *def,boolean escok,
 
 			if
 			(
+#ifndef EMBEDDED
 				isprint(c)
+#else
+				c
+#endif
 			&&	(len < MaxString - 1)
 			&&	((!maxchars) || (len < maxchars))
 			&&	((!maxwidth) || (w < maxwidth))

@@ -588,6 +588,7 @@ void CheckKeys()
 	//
 	// OPEN UP DEBUG KEYS
 	//
+#ifndef EMBEDDED
 	if (IN_KeyDown(sc_BackSpace) && IN_KeyDown(sc_LShift) &&
 		IN_KeyDown(sc_Alt) && MS_CheckParm("debugmode")) {
 	 ClearMemory();
@@ -603,6 +604,7 @@ void CheckKeys()
 	 DrawPlayBorderSides();
 	 DebugOk=1;
 	}
+#endif
 
 	//
 	// TRYING THE KEEN CHEAT CODE!

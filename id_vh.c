@@ -131,6 +131,7 @@ void VL_CacheScreen(myint chunk)
 
 void VL_DeModeXize(byte *buf, myint width, myint height)
 {
+#ifndef EMBEDDED
 	byte *mem, *ptr, *destline;
 	myint plane, x, y;
 	
@@ -155,6 +156,7 @@ void VL_DeModeXize(byte *buf, myint width, myint height)
 	memcpy(buf, mem, width * height);
 	
 	MM_FreePtr((memptr)&mem);
+#endif
 }
 
 /*

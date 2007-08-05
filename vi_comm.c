@@ -208,6 +208,7 @@ void IN_Startup(void)
 	if (IN_Started)
 		return;
 
+#ifndef EMBEDDED
 	checkjoys = true;
 	
 	if (MS_CheckParm("nojoy"))
@@ -216,6 +217,7 @@ void IN_Startup(void)
 		MousePresent = false;
 	else
 		MousePresent = true;
+#endif
 
 	INL_StartKbd();
 

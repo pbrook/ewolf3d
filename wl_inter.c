@@ -221,10 +221,12 @@ void Victory()
 
 	IN_Ack();
 
+#ifndef EMBEDDED
 	#ifndef SPEAR
 	if (IN_KeyDown(sc_P) && MS_CheckParm("debugmode"))
 		PicturePause();
 	#endif
+#endif
 
 	VW_FadeOut ();
 
@@ -831,10 +833,12 @@ void LevelCompleted()
 	}
 #endif
 
+#ifndef EMBEDDED
 	#ifndef SPEAR
 	if (IN_KeyDown(sc_P) && MS_CheckParm("debugmode"))
 		PicturePause();
 	#endif
+#endif
 
 	VW_FadeOut ();
 	DrawPlayBorder ();

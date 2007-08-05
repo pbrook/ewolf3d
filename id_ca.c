@@ -455,7 +455,6 @@ static void CAL_SetupMapFile()
 		mapheaderseg[i]->planelength[2] = ReadInt16(maphandle);
 		mapheaderseg[i]->width = ReadInt16(maphandle);
 		mapheaderseg[i]->height = ReadInt16(maphandle);
-		ReadSeek(maphandle, 16, SEEK_CUR);
 	}
 
 	CloseRead(handle);
@@ -688,12 +687,13 @@ memptr CA_GetChunk(myint chunk)
 
 	ReadSeek(grhandle, pos, SEEK_SET);
 
-	MM_GetPtr((memptr)&source, compressed);
+	source = MM_AllocPool(NULL, compressed);
+	//MM_GetPtr((memptr)&source, compressed);
 	ReadBytes(grhandle, source, compressed);
 
 	dest = CAL_ExpandGrChunk(chunk, source);
 	
-	MM_FreePtr((memptr)&source);
+	//MM_FreePtr((memptr)&source);
 	return dest;
 }
 
@@ -735,12 +735,14 @@ void CA_CacheMap(myint mapnum, myint plane)
 
 	ReadSeek(maphandle, pos, SEEK_SET);
 	
-	MM_GetPtr((void *)&source, compressed);
+	source = MM_AllocPool(NULL, compressed);
+	//MM_GetPtr((void *)&source, compressed);
 
 	ReadBytes(maphandle, (byte *)source, compressed);
 	
 	expanded = source[0] | (source[1] << 8);		
-	MM_GetPtr(&buffer2seg, expanded);
+	buffer2seg = MM_AllocPool(NULL, expanded);
+	//MM_GetPtr(&buffer2seg, expanded);
 
 /* NOTE: CarmackExpand implicitly fixes endianness, a RLEW'd only map
  would (likely) need to be swapped in CA_RLEWexpand
@@ -750,10 +752,10 @@ void CA_CacheMap(myint mapnum, myint plane)
  and the like.
 */         		
 	CAL_CarmackExpand(source+2, (word *)buffer2seg, expanded);
-	MM_FreePtr((void *)&source);
+	//MM_FreePtr((void *)&source);
 
 	CA_RLEWexpand(((word *)buffer2seg)+1, mapseg0, plane ? 16 : 0);
-	MM_FreePtr(&buffer2seg);
+	//MM_FreePtr(&buffer2seg);
 }
 
 /* ======================================================================== */
@@ -785,59 +787,55 @@ void MM_Shutdown()
 
 memptr MM_AllocPool(pool_id *id, unsigned long size)
 {
-  pool_header *h;
-  pool_header *next;
-  h = (pool_header *)(MM_Pool + pool_offset);
-  size = (size + 7) & ~7;
-  if (size > POOL_SIZE - 8)
-    {
-      fprintf(stderr, "Pool allocation too big (%d)\n", (int)size);
-      abort();
+    pool_header *h;
+    pool_header *next;
+    h = (pool_header *)(MM_Pool + pool_offset);
+    size = (size + 7) & ~7;
+    if (size > POOL_SIZE - 8)
+	Quit("Pool allocation too big\n");
+    /* Reclaim entries until we have enough space.  */
+    while (h->size < size)
+      {
+	/* Wrap back to the start of the pool.  */
+	if (pool_offset + h->size + 8 == POOL_SIZE)
+	  {
+	    pool_offset = 0;
+	    h = (pool_header *)MM_Pool;
+	    continue;
+	  }
+	next = (pool_header *)(MM_Pool + pool_offset + h->size + 8);
+	if (next->owner)
+	  *next->owner = 0;
+	h->size += next->size + 8;
+      }
+    /* Make sure this entry is free.  */
+    if (h->owner)
+      {
+	*h->owner = 0;
+      }
+    if (size < h->size - 8) {
+	next = (pool_header *)(MM_Pool + pool_offset + size + 8);
+	next->owner = NULL;
+	next->size = h->size - (size + 8);
+	h->size = size;
     }
-  /* Reclaim entries until we have enough space.  */
-  while (h->size < size)
-    {
-      /* Wrap back to the start of the pool.  */
-      if (pool_offset + h->size + 8 == POOL_SIZE)
-	{
-	  pool_offset = 0;
-	  h = (pool_header *)MM_Pool;
-	  continue;
-	}
-      next = (pool_header *)(MM_Pool + pool_offset + h->size + 8);
-      if (next->owner)
-	*next->owner = 0;
-      h->size += next->size + 8;
-    }
-  /* Make sure this entry is free.  */
-  if (h->owner)
-    {
-      *h->owner = 0;
-    }
-  if (size < h->size - 8) {
-      next = (pool_header *)(MM_Pool + pool_offset + size + 8);
-      next->owner = NULL;
-      next->size = h->size - (size + 8);
-      h->size = size;
-  }
-  h->owner = id;
-  *id = pool_offset + 8;
-  pool_offset += h->size + 8;
-  if (pool_offset == POOL_SIZE)
-    pool_offset = 0;
-  return (memptr)(h + 1);
+    h->owner = id;
+    if (id)
+	*id = pool_offset + 8;
+    pool_offset += h->size + 8;
+    if (pool_offset == POOL_SIZE)
+      pool_offset = 0;
+    return (memptr)(h + 1);
 }
 
 memptr MM_PoolPtr(pool_id id)
 {
-  if (!id)
-    {
-      fprintf(stderr, "Pool entry absent\n");
-      abort();
-    }
-  return (memptr)(MM_Pool + id);
+    if (!id)
+	Quit("Pool entry absent\n");
+    return (memptr)(MM_Pool + id);
 }
 
+#ifndef EMBEDDED
 static int total_size = 0;
 static int lastmalloc;
 void MM_GetPtr(memptr *baseptr, unsigned long size)
@@ -869,6 +867,7 @@ void MM_SetLock(memptr *baseptr, boolean locked)
   total_locked += lastmalloc;
 #endif
 }
+#endif
 
 void MM_SortMem()
 {

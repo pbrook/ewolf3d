@@ -630,9 +630,13 @@ void T_Path (objtype *ob)
 
 		if (ob->tilex>MAPSIZE || ob->tiley>MAPSIZE)
 		{
+#ifdef EMBEDDED
+			Quit("T_Path hit a wall");
+#else
 			sprintf(str,"T_Path hit a wall at %u,%u, dir %u"
 			,ob->tilex,ob->tiley,ob->dir);
 			Quit(str);
+#endif
 		}
 
 

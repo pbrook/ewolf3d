@@ -47,7 +47,7 @@ void TimerInit()
     /* Enable IRQ 6.  */
     pic[2] = 1 << 6;
     /* Setup timer.  */
-    pit[0] = 1000000 / 70; /* 70Hz.  */
+    pit[0] = 1000000 / 65; /* 70Hz.  */
     pit[2] = 0xe2; /* Enable periodic 32-bit timer.  */
     /* Set the IRQ stack and unmask interrupts.  */
     r1 = (uint32_t)(irqstack + 4);
@@ -115,6 +115,7 @@ unsigned long sleepuntil(unsigned long t)
 
 long filelength(myint handle)
 {
+#ifdef __linux__
 	struct stat buf;
 	
 	if (fstat(handle, &buf) == -1) {
@@ -123,6 +124,9 @@ long filelength(myint handle)
 	}
 	
 	return buf.st_size;
+#else
+	return 0;
+#endif
 }
 
 char *strlwr(char *s)
@@ -130,7 +134,8 @@ char *strlwr(char *s)
 	char *p = s;
 	
 	while (*p) {
-		*p = tolower(*p);
+		if (*p >= 'A' && *p <= 'Z')
+			*p += 'a' - 'A';
 		p++;
 	}
 	
@@ -139,28 +144,38 @@ char *strlwr(char *s)
 	
 char *itoa(myint value, char *string, myint radix)
 {
-	(void) radix;
-	
-	/* wolf3d only uses radix 10 */
-	sprintf(string, "%d", value);
-	return string;
+	return ltoa(value, string, radix);
 }
 
 char *ltoa(long value, char *string, myint radix)
 {
-	(void) radix;
-	
-	/* wolf3d only uses radix 10 */
-	sprintf(string, "%ld", value);
-	return string;
+	if (value < 0) {
+	    string[0] = '-';
+	    ultoa(-value, string + 1, radix);
+	    return string;
+	}
+	return ultoa(-value, string + 1, radix);
 }
 
 char *ultoa(unsigned long value, char *string, myint radix)
 {
-	(void) radix;
-	
-	/* wolf3d only uses radix 10 */
-	sprintf(string, "%lu", value);
+	unsigned long tmp;
+	char *p;
+	if (value == 0) {
+	    string[0] = '0';
+	    string[1] = 0;
+	    return string;
+	}
+	p = string;
+	for (tmp = value; tmp != 0; tmp = tmp / 10) {
+	    p++;
+	}
+	*p = 0;
+	while (value != 0) {
+	    p--;
+	    *p = (value % 10) + '0';
+	    value /= 10;
+	}
 	return string;
 }
 
@@ -236,14 +251,11 @@ static void put_dos2ansi(byte attrib)
 			back=47;
 			break;
 	}
-	if (blink)
-		printf ("%c[%d;5;%dm%c[%dm", 27, intens, fore, 27, back);
-	else
-		printf ("%c[%d;25;%dm%c[%dm", 27, intens, fore, 27, back);
 }
 
 void DisplayTextSplash(const byte *text, myint l)
 {
+#ifndef EMBEDDED
 	myint i, x;
 	
 	//printf("%02X %02X %02X %02X\n", text[0], text[1], text[2], text[3]);
@@ -262,6 +274,7 @@ void DisplayTextSplash(const byte *text, myint l)
 		printf("%c[m", 27);
 		printf("\n");
 	}
+#endif
 }
 
 /* ** */
