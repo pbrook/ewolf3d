@@ -2643,6 +2643,7 @@ void SetupControlPanel()
 			}
 		} while(_findnext(hand, &f) != -1);
 #else
+#ifndef __arm__
 	glob_t globbuf;
 	myint x;
 	
@@ -2664,6 +2665,7 @@ void SetupControlPanel()
 	}
 
 	globfree(&globbuf);
+#endif
 #endif
 }
 

@@ -1,5 +1,6 @@
-CC = gcc -m32
-#CC = arm-linux-gnueabi-gcc
+PROGS=ewolf3d
+#CC = gcc -m32
+CC = arm-unknown-eabi-gcc
 #CC=/opt/intel/compiler60/ia32/bin/icc
 
 #CFLAGS = -g -Wall
@@ -18,6 +19,7 @@ ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
 DOBJS = $(OBJS) $(ROBJS) vi_sdl.o
+EOBJS = $(OBJS) $(ROBJS) vi_bare.o
 
 #LDLIBS = -lm -wp_ipo
 LDLIBS = -lm
@@ -34,13 +36,14 @@ OBJS += sd_null.o
 SLDLIBS = $(LDLIBS) -lvga
 XLDLIBS = $(LDLIBS) -L/usr/X11R6/lib -lX11 -lXext
 DLDLIBS = $(LDLIBS) $(shell sdl-config --libs)
+ELDLIBS = $(LDLIBS) -T rdimon-ram.ld
 
 NASM = nasm
 
 .SUFFIXES: .asm
 
 #all:	swolf3d xwolf3d sdlwolf3d
-all:	xwolf3d
+all:	$(PROGS)
 
 $(SOBJS): version.h id_heads.h wl_def.h
 $(XOBJS): version.h id_heads.h wl_def.h
@@ -58,6 +61,9 @@ xwolf3d: $(XOBJS)
 
 sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
+
+ewolf3d: $(EOBJS)
+	$(CC) -o ewolf3d $(EOBJS) $(ELDLIBS)
 
 tables.o: tables.c
 

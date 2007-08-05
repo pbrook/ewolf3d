@@ -645,6 +645,7 @@ void IN_GetMouseDelta(myint *dx, myint *dy)
 {
 }
 
+#ifdef ENABLE_JOYSTICK
 /*
 ===================
 =
@@ -701,6 +702,7 @@ word INL_GetJoyButtons(word joy)
 void IN_SetupJoy(word joy,word minx,word maxx,word miny,word maxy)
 {
 }
+#endif
 
 void INL_Update()
 {

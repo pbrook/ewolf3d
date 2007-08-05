@@ -7,7 +7,9 @@
 #include <sys/types.h>
 #include <time.h>
 #include <inttypes.h>
+#ifndef __arm__
 #include <glob.h>
+#endif
 #include <ctype.h>
 #include <math.h>
 

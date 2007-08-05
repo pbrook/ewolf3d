@@ -166,8 +166,12 @@ extern boolean IN_UserInput(longword delay);
 extern const char *IN_GetScanName(ScanCode);
 
 byte IN_MouseButtons();
+#ifdef ENABLE_JOYSTICK
 byte IN_JoyButtons();
 word INL_GetJoyButtons(word joy);
+#else
+#define IN_JoyButtons() 0
+#endif
 
 void IN_GetMouseDelta(myint *dx, myint *dy);
 void INL_GetJoyDelta(word joy,myint *dx,myint *dy);

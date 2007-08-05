@@ -310,9 +310,11 @@ IN_CheckAck();
 			break;
 		case ctrl_Joystick1:
 		case ctrl_Joystick2:
+#ifdef ENABLE_JOYSTICK
 			INL_GetJoyDelta(type - ctrl_Joystick,&dx,&dy);
 			buttons = INL_GetJoyButtons(type - ctrl_Joystick);
 			realdelta = true;
+#endif
 			break;
 		case ctrl_Mouse:
 			IN_GetMouseDelta(&dx,&dy);

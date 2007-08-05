@@ -47,7 +47,9 @@ unsigned long sleepuntil(unsigned long t)
 	now = get_TimeCount();
 	if (now >= t)
 	    break;
+#ifndef __arm__
 	usleep(10000);
+#endif
     }
     return now;
 }
