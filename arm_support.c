@@ -132,8 +132,16 @@ ssize_t read(int fd, void *buf, size_t count)
 
 ssize_t write(int fd, const void *buf, size_t count)
 {
-    Quit("Can't write\n");
-    return 0;
+    uint32_t block[3];
+    int rc;
+
+    block[0] = fd;
+    block[1] = (uint32_t)buf;
+    block[2] = count;
+    rc = angel(5, block);
+    if (rc)
+	Quit("Write Failed\n");
+    return count - rc;
 }
 
 int close(int fd)
