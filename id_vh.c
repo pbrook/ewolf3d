@@ -18,6 +18,7 @@ myint xfrac, yfrac;
 
 /* ======================================================================== */
 
+#ifndef SKIPFADE
 void VL_FillPalette(myint red, myint green, myint blue)
 {
 	byte pal[768];
@@ -31,6 +32,7 @@ void VL_FillPalette(myint red, myint green, myint blue)
 	VL_SetPalette(pal);
 	VW_UpdateScreen();
 }
+#endif
 
 /*
 =================
@@ -44,9 +46,7 @@ void VL_FillPalette(myint red, myint green, myint blue)
 
 void VL_FadeOut(myint start, myint end, myint red, myint green, myint blue, myint steps)
 {
-#ifdef SKIPFADE
-	VL_FillPalette(red, green, blue);
-#else
+#ifndef SKIPFADE
 	myint i,j,orig,delta;
 	byte *origptr, *newptr;
 
