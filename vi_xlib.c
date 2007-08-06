@@ -229,7 +229,11 @@ void VL_Startup()
 	
 	shmmode = 0;
 	
-	if (!MS_CheckParm("noshm") && (XShmQueryExtension(dpy) == True)) {
+	if (
+#ifndef EMBEDDED
+	    !MS_CheckParm("noshm") &&
+#endif
+	    (XShmQueryExtension(dpy) == True)) {
 		img = XShmCreateImage(dpy, vi->visual, vi->depth, ZPixmap, 
 				      NULL, &shminfo, vwidth, vheight);
 
