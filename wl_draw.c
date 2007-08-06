@@ -685,16 +685,6 @@ static void ScaledDraw(byte *gfx, myint count, byte *vid, unsigned myint frac, u
 	}
 }
 
-static void ScaledDrawTrans(byte *gfx, myint count, byte *vid, unsigned myint frac, unsigned myint delta)
-{
-	while (count--) {
-		if (gfx[frac >> 16] != 255)
-			*vid = gfx[frac >> 16];
-		vid += vwidth;
-		frac += delta;
-	}
-}
-
 static void ScaleLine(unsigned myint height, byte *source, myint x)
 {
 	unsigned myint y, frac, delta;
@@ -720,134 +710,136 @@ static void ScaleLine(unsigned myint height, byte *source, myint x)
 	}
 }
 
-static void ScaleLineTrans(unsigned myint height, byte *source, myint x)
+/* Render a single vertical stripe of a sprite.  */
+static void RenderLine(unsigned myint height, byte * row, byte *sprite, int cmd)
 {
-	unsigned myint y, frac, delta;
-	
-	if (height) {
-		frac = (64 << 16) / height;
-		delta = (64 << 16) - frac*height;
-		
-		if (height < viewheight) {
-			y = yoffset + (viewheight - height) / 2;
-			
-			ScaledDrawTrans(source, height, gfxbuf + (y * vwidth) + x + xoffset, 
-			delta, frac);
-			
-			return;	
-		} 
-		
-		y = (height - viewheight) / 2;
-		y *= frac;
-		
-		ScaledDrawTrans(&source[y >> 24], viewheight, gfxbuf + (yoffset * vwidth) + x + xoffset, 
-		y+delta, frac);
+    fixed delta;
+    fixed yfrac;
+    fixed yclip;
+    int ytop;
+    int y0;
+    int y1;
+    int texoff;
+    int pstart;
+    int pend;
+    byte *post;
+
+    // FIXME: Cache delta and yclip across lines.
+    delta = (64 << 16) / height;
+
+    if (height < viewheight) {
+	while (sprite[cmd+0]) {
+	    y1 = sprite[cmd+0] / 2;
+	    texoff = (int16_t)(sprite[cmd+2] | (sprite[cmd+3] << 8));
+	    /* y0 = (sprite[cmd+4] | (sprite[cmd+5] << 8)) / 2; */
+	    y0 = sprite[cmd+4] / 2;
+
+	    post = sprite + y0 + texoff;
+
+	    pstart = (y0 * height) >> 6;
+	    pend = (y1 * height) >> 6;
+
+	    ScaledDraw(post, pend - pstart, row + (pstart * vwidth),
+		       0/*frac*/, delta);
+	    cmd += 6;
 	}
+    } else {
+	yclip = (height - viewheight) / 2;
+	yclip *= delta;
+	ytop = yclip >> 16;
+	while (sprite[cmd+0]) {
+	    y1 = sprite[cmd+0] / 2;
+	    texoff = (int16_t)(sprite[cmd+2] | (sprite[cmd+3] << 8));
+	    /* y0 = (sprite[cmd+4] | (sprite[cmd+5] << 8)) / 2; */
+	    y0 = sprite[cmd+4] / 2;
+
+	    post = sprite + y0 + texoff;
+
+	    if (y0 < ytop) {
+		yfrac = yclip - (y0 << 16);
+		pstart = 0;
+	    } else {
+		pstart = ((y0 - ytop) * height) >> 6;
+		yfrac = 0;
+	    }
+	    if (y1 <= ytop) {
+		pend = 0;
+	    } else {
+		pend = ((y1 - ytop) * height) >> 6;
+	    }
+
+	    if (pend > viewheight)
+		pend = viewheight;
+
+	    if (pstart < viewheight)
+		ScaledDraw(post, pend - pstart, row + (pstart * vwidth),
+			   yfrac, delta);
+	    cmd += 6;
+	}
+    }
+
 }
 
-static pool_id spritegfx[SPR_TOTAL];
-
-static void DeCompileSprite(myint shapenum)
+static void RenderShape(myint xcenter, myint shapenum, unsigned height,
+			unsigned z)
 {
-	byte *ptr;
-	byte *buf;
-	byte *cmdptr;
-	byte *pixels;
-	myint yoff;
-	myint y, y0, y1;
-	myint x, left, right;
-	myint cmd;
-	
-	buf = MM_AllocPool(&spritegfx[shapenum], 64 * 64);
-	
-	memset(buf, 255, 64 * 64);
-	
-	ptr = PM_GetSpritePage(shapenum);
-
-	/* left = ptr[0] | (ptr[1] << 8); */
-	left = ptr[0];
-	/* right = ptr[2] | (ptr[3] << 8); */
-	right = ptr[2];
-	
-	cmdptr = &ptr[4];
-	
-	for (x = left; x <= right; x++) {
-		cmd = cmdptr[0] | (cmdptr[1] << 8);
-		cmdptr += 2;
-					
-		/* while (ptr[cmd+0] | (ptr[cmd+1] << 8)) { */
-		while (ptr[cmd+0]) {
-			/* y1 = (ptr[cmd+0] | (ptr[cmd+1] << 8)) / 2; */
-			y1 = ptr[cmd+0] / 2;
-			yoff = (int16_t)(ptr[cmd+2] | (ptr[cmd+3] << 8));
-			/* y0 = (ptr[cmd+4] | (ptr[cmd+5] << 8)) / 2; */
-			y0 = ptr[cmd+4] / 2;
-			
-			pixels = &ptr[y0 + yoff];
-			
-			for (y = y0; y < y1; y++) {
-				/* *(buf + x + (y*64)) = *pixels; */
-				*(buf + (x*64) + y) = *pixels;
-				pixels++;
-			}
-			
-			cmd += 6;
-		}
-	}
-}
-
-void ScaleShape(myint xcenter, myint shapenum, unsigned height)
-{
-	unsigned myint scaler = (64 << 16) / (height >> 2);
+	unsigned myint scaler;
 	unsigned myint x;
 	myint p;
-	byte *source;
+	byte *row;
+	byte *sprite;
+	fixed left;
+	fixed right;
+	int cmd;
 
-	if (!spritegfx[shapenum])
-		DeCompileSprite(shapenum);
-	source = MM_PoolPtr(spritegfx[shapenum]);
-	
-	p = xcenter - (height >> 3);
+	sprite = PM_GetSpritePage(shapenum);
+	left = sprite[0];
+	right = sprite[2];
+	left <<= 16;
+	right = (right + 1) << 16;
+
+	scaler = (64 << 16) / height;
+	p = xcenter - (height >> 1);
 	if (p < 0) {
 		x = (-p)*scaler;
 		p = 0;
 	} else {
 		x = 0;
 	}
-	for (; x < (64 << 16); x += scaler, p++) {
+	/* Shift to the real start of the texture.  */
+	if (x < left) {
+	    int n = ((left - x) * height) >> 22;
+	    p += n;
+	    x = 0;
+	} else {
+	    x -= left;
+	}
+	right -= left;
+	if (height < viewheight)
+	    row = gfxbuf + (yoffset + (viewheight - height) / 2) * vwidth;
+	else
+	    row = gfxbuf + yoffset * vwidth;
+	row += xoffset;
+	for (; x < right; x += scaler, p++) {
+		int n;
 		if (p >= viewwidth)
 			break;
-		if (wallheight[p] >= height)
+		if (wallheight[p] >= z)
 			continue;
 
-		ScaleLineTrans(height >> 2, source + ((x >> 16) << 6), p);
+		n = ((x >> 16) << 1) + 4;
+		cmd = sprite[n] | (sprite[n + 1] << 8);
+		RenderLine(height, row + p, sprite, cmd);
 	}	
+}
+void ScaleShape(myint xcenter, myint shapenum, unsigned height)
+{
+    RenderShape(xcenter, shapenum, height >> 2, height);
 }
 
 void SimpleScaleShape(myint xcenter, myint shapenum, unsigned height)
 {
-	unsigned myint scaler = (64 << 16) / height;
-	unsigned myint x;
-	myint p;
-	byte *source;
-	
-	if (!spritegfx[shapenum])
-		DeCompileSprite(shapenum);
-	source = MM_PoolPtr(spritegfx[shapenum]);
-	
-	p = xcenter - (height / 2);
-	if (p < 0) {
-		x = (-p)*scaler;
-		p = 0;
-	} else {
-		x = 0;
-	}
-	for (; x < (64 << 16); x += scaler, p++) {
-		if (p >= viewwidth)
-			break;	
-
-		ScaleLineTrans(height, source + ((x >> 16) << 6), p);
-	}
+    RenderShape(xcenter, shapenum, height, 32000);
 }
 
 /* ======================================================================== */
