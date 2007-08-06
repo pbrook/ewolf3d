@@ -154,7 +154,7 @@ char *ltoa(long value, char *string, myint radix)
 	    ultoa(-value, string + 1, radix);
 	    return string;
 	}
-	return ultoa(-value, string + 1, radix);
+	return ultoa(value, string, radix);
 }
 
 char *ultoa(unsigned long value, char *string, myint radix)
