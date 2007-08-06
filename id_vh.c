@@ -124,9 +124,11 @@ void VL_FadeIn(myint start, myint end, const byte *palette, myint steps)
 
 void VL_CacheScreen(myint chunk)
 {
+#ifndef EMBEDDED
 	CA_CacheGrChunk(chunk);
 	VL_MemToScreen(CA_GetChunk(chunk), 320, 200, 0, 0);
 	CA_UnCacheGrChunk(chunk);
+#endif
 }
 
 void VL_DeModeXize(byte *buf, myint width, myint height)
@@ -258,11 +260,14 @@ void VW_MeasurePropString(const char *string, word *width, word *height)
 
 void VWB_DrawTile8(myint x, myint y, myint tile)
 {
+#ifndef EMBEDDED
 	VL_MemToScreen(CA_GetChunk(STARTTILE8)+(tile*64), 8, 8, x, y);
+#endif
 }
 
 void VWB_DrawPic(myint x, myint y, myint chunknum)
 {
+#ifndef EMBEDDED
 	myint picnum = chunknum - STARTPICS;
 	myint width, height;
 
@@ -270,6 +275,7 @@ void VWB_DrawPic(myint x, myint y, myint chunknum)
 	height = pictable[picnum].height;
 
 	VL_MemToScreen(CA_GetChunk(chunknum), width, height, x, y);
+#endif
 }
 
 /*

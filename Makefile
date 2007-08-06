@@ -4,7 +4,7 @@ CC = arm-unknown-eabi-gcc
 #CC=/opt/intel/compiler60/ia32/bin/icc
 
 #CFLAGS = -g -Wall
-CFLAGS = -g -Wall -fno-common -DINTEGRATOR
+CFLAGS = -g -Wall -fno-common -DINTEGRATOR -O2
 #CFLAGS = -Wall -O6 -fomit-frame-pointer -ffast-math -funroll-loops -march=pentiumpro
 #CFLAGS = -g -Wall -W -pedantic -std=c99
 #CFLAGS = -Os -Wall -pedantic
