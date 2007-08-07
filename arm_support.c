@@ -3,7 +3,15 @@
 #include <stdint.h>
 #include <fcntl.h>
 
-int __errno;
+#ifdef __thumb2__
+#define SEMI_SWI "bkpt 0xab"
+#else
+#define SEMI_SWI "swi 0x123456"
+#endif
+
+void __errno()
+{
+}
 
 int atoi(const char *p)
 {
@@ -93,7 +101,7 @@ static uint32_t angel(int reason, uint32_t *args)
 
     r0 = reason;
     r1 = (uint32_t)args;
-    asm volatile ("swi 0x123456"
+    asm volatile (SEMI_SWI
 		  : "=r" (r0), "=r"(r1)
 		  : "0"(r0), "1"(r1)
 		  : "r2", "r3", "lr", "ip", "cc", "memory");

@@ -5,6 +5,8 @@
 
 extern byte *gfxbuf;
 
+extern const byte pal4bit[256];
+
 void VL_Startup();
 void VL_Shutdown();
 
@@ -15,6 +17,8 @@ void VL_SetPalette(const byte *palette);
 void VL_GetPalette(byte *palette);
 
 void VL_MemToScreen(const byte *source, myint width, myint height, myint x, myint y);
+
+void VL_ScreenSaver();
 
 /* ======================================================================== */
 
@@ -148,6 +152,7 @@ extern boolean MousePresent, JoysPresent[];
 extern	boolean		Paused;
 extern	char		LastASCII;
 extern	ScanCode	LastScan;
+extern	unsigned long	LastEventTime;
 extern	KeyboardDef	KbdDefs;
 extern	ControlType	Controls[MaxPlayers];
 

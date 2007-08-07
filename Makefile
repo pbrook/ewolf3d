@@ -4,7 +4,7 @@ CC = arm-unknown-eabi-gcc
 #CC=/opt/intel/compiler60/ia32/bin/icc
 
 #CFLAGS = -g -Wall
-CFLAGS = -g -Wall -fno-common -DINTEGRATOR -O2
+CFLAGS = -g -Wall -fno-common -DLUMINARY -O2 -mthumb -march=armv7-m
 #CFLAGS = -Wall -O6 -fomit-frame-pointer -ffast-math -funroll-loops -march=pentiumpro
 #CFLAGS = -g -Wall -W -pedantic -std=c99
 #CFLAGS = -Os -Wall -pedantic
@@ -15,7 +15,7 @@ OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
 	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.o \
-	grstarts.o pictable.o
+	grstarts.o pictable.o pal4bit.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
@@ -37,7 +37,7 @@ OBJS += sd_null.o
 SLDLIBS = $(LDLIBS) -lvga
 XLDLIBS = $(LDLIBS) -L/usr/X11R6/lib -lX11 -lXext
 DLDLIBS = $(LDLIBS) $(shell sdl-config --libs)
-ELDLIBS = $(LDLIBS) -T integrator.ld -nodefaultlibs
+ELDLIBS = $(LDLIBS) -T luminary.ld -nostdlib
 
 NASM = nasm
 
@@ -63,8 +63,8 @@ xwolf3d: $(XOBJS)
 sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
 
-ewolf3d: $(EOBJS) integrator-crt0.o
-	$(CC) -o ewolf3d $(EOBJS) $(ELDLIBS)
+ewolf3d: $(EOBJS) luminary-crt0.o
+	$(CC) $(CFLAGS) -o ewolf3d $(EOBJS) $(ELDLIBS)
 
 tables.o: tables.c
 
@@ -92,11 +92,15 @@ pictable.c: build_pictable.c huffman.h grstarts.c
 	gcc build_pictable.c grstarts.c -o build_pictable -lm
 	./build_pictable > pictable.c
 
+pal4bit.c: build_pal4bit.c huffman.h grstarts.c
+	gcc build_pal4bit.c grstarts.c -o build_pal4bit -lm
+	./build_pal4bit > pal4bit.c
+
 clean:
 	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c \
 	  build_huffman huffman.h build_mapheaders mapheaders.c \
 	  build_pagemap pagemap.c build_grstarts grstarts.c \
-	  build_pictable pictable.c
+	  build_pictable pictable.c build_pal4bit pal4bit.c
 
 distclean: clean
 	rm -rf *~ DEADJOE

@@ -95,6 +95,13 @@ void CalcTics()
 		tics = DEMOTICS;
 	else if (tics > MAXTICS)
 		tics = MAXTICS;
+
+#ifdef LUMINARY
+	/* Start screensaver after 30 seconds.  */
+	if (newtime - LastEventTime > 70 * 30) {
+	    VL_ScreenSaver();
+	}
+#endif
 }
 
 /* ======================================================================== */

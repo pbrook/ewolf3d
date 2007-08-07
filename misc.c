@@ -62,7 +62,48 @@ void TimerInit()
 		  ::"r"(r1): "r0");
 }
 
-#else /* !INTEGRATOR */
+#elif defined (LUMINARY)
+
+volatile unsigned long tcount;
+static volatile int tlock;
+
+void set_TimeCount(unsigned long t)
+{
+    tlock = 1;
+    tcount = t;
+    tlock = 0;
+}
+
+unsigned long get_TimeCount(void)
+{
+    return tcount;
+}
+
+#define treg ((volatile int *)0x40030000)
+#define NVIC ((volatile int *)0xe000e000)
+
+void timer_isr()
+{
+    /* Clear interrupt.   */
+    treg[9] = 1;
+    if (!tlock)
+	tcount++;
+}
+
+void TimerInit()
+{
+    /* Setup and enable timer.  */
+    treg[0] = 0;
+    treg[1] = 2;
+    treg[10] = 50000000 / 70;
+    treg[6] = 1;
+    treg[3] = 1;
+
+    /* Enable interrupt.  */
+    NVIC[0x40] |= 1 << 19;
+}
+
+#else
 static struct timeval t0;
 static unsigned long tc0;
 

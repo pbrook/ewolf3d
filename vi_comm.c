@@ -19,6 +19,7 @@ uint32_t	Keyboard[NumCodes >> 5];
 boolean		Paused;
 char		LastASCII;
 ScanCode	LastScan;
+unsigned long	LastEventTime;
 
 KeyboardDef KbdDefs = {sc_Control, sc_Alt, sc_Home, sc_UpArrow, sc_PgUp, sc_LeftArrow, sc_RightArrow, sc_End, sc_DownArrow, sc_PgDn};
 
@@ -78,6 +79,8 @@ static boolean btnstate[8];
 void keyboard_handler(myint code, myint press)
 {
 	byte k, c = 0;
+
+	LastEventTime = get_TimeCount();
 
  	k = code;
 
