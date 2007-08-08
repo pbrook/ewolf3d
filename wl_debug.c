@@ -90,6 +90,7 @@ void ShapeTest()
 {
 }
 
+#ifndef EMBEDDED
 /*
 ================
 =
@@ -233,3 +234,4 @@ myint DebugKeys()
 	
 	return 0;
 }
+#endif

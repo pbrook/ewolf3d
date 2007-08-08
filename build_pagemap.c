@@ -15,8 +15,12 @@ int main()
     printf("#include \"wl_def.h\"\n");
     printf("const myint ChunksInFile = %d;\n", header[0]);
     printf("const myint PMSpriteStart = %d;\n", header[1]);
+    printf("#ifdef ENABLE_AUDIO\n");
     printf("const myint PMSoundStart = %d;\n", header[2]);
     printf("pool_id PageAddr[%d];\n", header[0]);
+    printf("#else\n");
+    printf("pool_id PageAddr[%d];\n", header[2]);
+    printf("#endif\n");
     printf("const PageListStruct PMPages[%d] = {\n", header[0]);
     for (i = 0; i < header[0]; i++)
       {

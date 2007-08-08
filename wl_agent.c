@@ -205,6 +205,7 @@ void StatusDrawPic(unsigned x, unsigned y, unsigned picnum)
 
 void DrawFace()
 {
+#ifndef EMBEDDED
 	if (gamestate.health) {
 		#ifdef SPEAR
 		if (godmode)
@@ -220,6 +221,7 @@ void DrawFace()
 #endif
 		StatusDrawPic (17,4,FACE8APIC);
 	}
+#endif
 }
 
 
@@ -320,8 +322,10 @@ void TakeDamage(myint points, objtype *attacker)
 	if (gamestate.difficulty==gd_baby)
 	  points>>=2;
 
+#ifndef EMBEDDED
 	if (!godmode)
 		gamestate.health -= points;
+#endif
 
 	if (gamestate.health<=0)
 	{
@@ -337,6 +341,7 @@ void TakeDamage(myint points, objtype *attacker)
 	DrawHealth();
 	DrawFace();
 
+#ifndef EMBEDDED
 	//
 	// MAKE BJ'S EYES BUG IF MAJOR DAMAGE!
 	//
@@ -347,6 +352,7 @@ void TakeDamage(myint points, objtype *attacker)
 		facecount = 0;
 	}
 	#endif
+#endif
 
 }
 
@@ -794,10 +800,12 @@ void ClipMove(objtype *ob, long xmove, long ymove)
 	if (TryMove(ob))
 		return;
 
+#ifndef EMBEDDED
 	if (noclip && ob->x > 2*TILEGLOBAL && ob->y > 2*TILEGLOBAL &&
 	ob->x < (((long)(mapwidth-1))<<TILESHIFT)
 	&& ob->y < (((long)(mapheight-1))<<TILESHIFT) )
 		return;		// walk through walls
+#endif
 
 	if (!SD_SoundPlaying())
 		SD_PlaySound (HITWALLSND);

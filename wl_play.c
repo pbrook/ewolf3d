@@ -12,12 +12,13 @@ boolean		madenoise;		// true when shooting or screaming
 
 exit_t		playstate;
 
-myint		DebugOk;
-
 objtype 	objlist[MAXACTORS],*new,*obj,*player,*lastobj,
 			*objfreelist,*killerobj;
 
+#ifndef EMBEDDED
+myint		DebugOk;
 boolean		singlestep,godmode,noclip;
+#endif
 
 byte		tilemap[MAPSIZE][MAPSIZE];	// wall values only
 mapbitmap		spotvis;
@@ -45,9 +46,11 @@ byte			buttonmouse[4]={bt_attack,bt_strafe,bt_use,bt_nobutton};
 
 boolean		buttonheld[NUMBUTTONS];
 
+#ifndef ENABLE_DEMO
 boolean		demorecord,demoplayback;
 byte		*demoptr, *lastdemoptr;
 memptr		demobuffer;
+#endif
 
 //
 // curent user input
@@ -544,6 +547,7 @@ void CheckKeys()
 
 	scan = LastScan;
 
+#ifndef EMBEDDED
 	//
 	// SECRET CHEAT CODE: TAB-G-F10
 	//
@@ -566,6 +570,7 @@ void CheckKeys()
 		IN_ClearKeysDown();
 		return;
 	}
+#endif
 
 	//
 	// SECRET CHEAT CODE: 'MLI'
@@ -616,7 +621,6 @@ void CheckKeys()
 	 DrawPlayBorderSides();
 	 DebugOk=1;
 	}
-#endif
 
 	//
 	// TRYING THE KEEN CHEAT CODE!
@@ -719,6 +723,7 @@ void CheckKeys()
 		
 		return;
 	}
+#endif
 
 }
 
@@ -1311,11 +1316,13 @@ void PlayLoop()
 //
 // debug aids
 //
+#ifndef EMBEDDED
 		if (singlestep)
 		{
 			VW_WaitVBL(14);
 			lasttimecount = get_TimeCount();
 		}
+#endif
 
 		if (demoplayback)
 		{
