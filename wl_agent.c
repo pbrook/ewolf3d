@@ -982,13 +982,22 @@ void Cmd_Use()
 		SD_PlaySound(LEVELDONESND);
 		SD_WaitSoundDone();
 	}
-	else if (!buttonheld[bt_use] && doornum & 0x80)
+	else if (!buttonheld[bt_use] && (doornum & 0x80)
+#ifdef EMBEDDED
+	    && (doorobjlist[doornum &~0x80].action == dr_closed || 
+	        doorobjlist[doornum &~0x80].action == dr_closing) 
+#endif
+	    )
 	{
 		buttonheld[bt_use] = true;
 		OperateDoor(doornum & ~0x80);
 	}
 	else
+#ifdef EMBEDDED
+	  if (!buttonheld[bt_use]) buttonstate[bt_attack] = true;
+#else
 		SD_PlaySound(DONOTHINGSND);
+#endif
 
 }
 

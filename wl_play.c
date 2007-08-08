@@ -413,9 +413,12 @@ void PollControls()
 {
 	myint max, min, i;
 	byte buttonbits;
+	static boolean shoothack;
 
 	controlx = 0;
 	controly = 0;
+	if (buttonstate[bt_attack])
+	    shoothack = true;
 	memcpy(buttonheld, buttonstate, sizeof(buttonstate));
 	memset(buttonstate, 0, sizeof(buttonstate));
 
@@ -447,6 +450,15 @@ void PollControls()
 	
 	UpdateInput();
 	
+#ifdef EMBEDDED
+	if (shoothack) {
+	    if (buttonstate[bt_use]) {
+		buttonstate[bt_attack] = true;
+	    } else {
+		shoothack = false;
+	    }
+	}
+#endif
 //
 // bound movement to a maximum
 //
