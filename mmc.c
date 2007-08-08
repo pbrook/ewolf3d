@@ -4,6 +4,7 @@
 /* Only rcvr_spi(), xmit_spi(), disk_timerproc() and some macros         */
 /* are platform dependent.                                               */
 /*-----------------------------------------------------------------------*/
+#ifdef LUMINARY
 
 /*
  * This file was modified from a sample available from the FatFs
@@ -628,3 +629,4 @@ DWORD get_fattime ()
             ;
 
 }
+#endif

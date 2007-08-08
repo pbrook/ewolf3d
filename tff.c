@@ -1,3 +1,4 @@
+#ifdef LUMINARY
 /*--------------------------------------------------------------------------/
 /  FatFs - Tiny FAT file system module  R0.04b                (C)ChaN, 2007
 /---------------------------------------------------------------------------/
@@ -1578,3 +1579,4 @@ FRESULT f_rename (
 #endif /* _FS_MINIMIZE <= 1 */
 #endif /* _FS_MINIMIZE <= 2 */
 
+#endif
