@@ -4,7 +4,7 @@ CC = arm-unknown-eabi-gcc
 #CC=/opt/intel/compiler60/ia32/bin/icc
 
 #CFLAGS = -g -Wall
-CFLAGS = -g -Wall -fno-common -DLUMINARY -O2 -mthumb -march=armv7-m
+CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -O2
 #CFLAGS = -Wall -O6 -fomit-frame-pointer -ffast-math -funroll-loops -march=pentiumpro
 #CFLAGS = -g -Wall -W -pedantic -std=c99
 #CFLAGS = -Os -Wall -pedantic
@@ -15,7 +15,7 @@ OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
 	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.o \
-	grstarts.o pictable.o pal4bit.o
+	grstarts.o pictable.o pal4bit.o tff.o mmc.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o

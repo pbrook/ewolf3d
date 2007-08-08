@@ -9,16 +9,7 @@
 #endif
 
 #ifdef LUMINARY
-#define SYSCTL 0x400fe000
-#define HWREG(x) (*((volatile uint32_t *)(x)))
-#define GPIOA 0x40004000
-#define GPIOB 0x40005000
-#define GPIOC 0x40006000
-#define GPIOD 0x40007000
-#define GPIOE 0x40024000
-#define GPIOF 0x40025000
-#define GPIOG 0x40026000
-#define SSI0  0x40008000
+#include "luminary.h"
 
 int read_buttons()
 {
@@ -30,6 +21,43 @@ int read_buttons()
     /* Buttons are active low.  */
     buttons ^= 0x1f;
     return buttons;
+}
+
+/* Switch between OLED and SD card.  */
+void ssi_select(int dev)
+{
+    static int curdev = 2;
+    if (dev == curdev)
+	return;
+    curdev = dev;
+    if (dev) {
+	/* SD card.  */
+	//HWREG(GPIOA + 0x504) |= 0x3c; /* 4mA drive strength.  */
+	HWREG(SSI0 + 0x004) = 0; /* Disable.  */
+	/* Force fss device select high.  */
+	HWREG(GPIOA + 0x020) = 1;
+	HWREG(GPIOA + 0x420) &= ~0x08;
+	HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
+	/* Initial config is done at 400kHz, then switch to full speed.  */
+	/* 50MHz / 400kbit = 125 cycles/bit.  */
+	/* SCR=62 (+1), SPI polarity=0, 8bit */
+	if (dev == 2)
+	    HWREG(SSI0 + 0x000) = 0x3e07;
+	else
+	    HWREG(SSI0 + 0x000) = 0x0007;
+	HWREG(SSI0 + 0x04) = 2; /* Enable.  */
+    } else {
+	/* OLED */
+	HWREG(SSI0 + 0x004) = 0; /* Disable.  */
+	/* Enable fss device select.  */
+	HWREG(GPIOA + 0x420) |= 0x08;
+	HWREG(GPIOA + 0x020) = 0;
+	/* 50MHz / 3.5Mbit = 14.2 cycles/bit.  */
+	HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
+	HWREG(SSI0 + 0x000) = 0x0647; /* SCR=6 (+1), SPI polarity=1, 8bit */
+	HWREG(SSI0 + 0x04) = 2; /* Enable.  */
+    }
+
 }
 
 #define OSRAM_INIT_REMAP    0x52
@@ -175,6 +203,7 @@ static void oled_init()
     int i;
     const uint8_t *p;
 
+    ssi_select(0);
     p = oled_init_strings;
     while (*p) {
 	i = *(p++);
@@ -184,6 +213,25 @@ static void oled_init()
 
 }
 
+void oled_clear()
+{
+    uint8_t buf[4];
+    int i;
+    ssi_select(0);
+    buf[0] = 0x15;
+    buf[1] = 0;
+    buf[2] = 63;
+    oled_write(buf, 3, 1);
+    buf[0] = 0x75;
+    buf[1] = 0;
+    buf[2] = 63;
+    oled_write(buf, 3, 1);
+    memset(buf, 0, 4);
+    for (i = 0; i < 128 * 64 / 8; i++) {
+	oled_write(buf, 4, 0);
+    }
+}
+
 void oled_render()
 {
     uint8_t buf[16];
@@ -191,6 +239,7 @@ void oled_render()
     int j;
     byte *p;
 
+    ssi_select(0);
     buf[0] = 0x15;
     buf[1] = 0;
     buf[2] = 63;
@@ -219,6 +268,7 @@ void oled_render()
 void VL_ScreenSaver()
 {
     static const byte offcmd[] = {0xAE, 0xAD, 0x02};
+    ssi_select(0);
     oled_write(offcmd, 3, 1);
     while (read_buttons() == 0)
 	asm volatile ("wfi");
@@ -356,41 +406,40 @@ void TimerInit();
 static void sys_init()
 {
 #ifdef LUMINARY
-    /* Bump LDO voltage to workaround silicon bugs.  */
-    HWREG(SYSCTL + 0x034) = 0x1b;
-    /* Clock thePLL to 50MHz.  */
-    HWREG(SYSCTL + 0x060) = 0x01d40b80;
-    /* Wait for PLL to sync, then enable.  */
-    while ((HWREG(SYSCTL + 0x050) & 0x40) == 0)
-	/* no-op */ ;
-    HWREG(SYSCTL + 0x060) &= ~0x0800;
-
     /* Enable peripherals.  */
     /* Timer0, SSI0.  */
     HWREG(SYSCTL + 0x104) |= 0x00010010;
     /* GPIO[A-G] */
     HWREG(SYSCTL + 0x108) |= 0x0000007f;
 
-    /* Enable SSI output pins (GPIOA 2, 3, 5).  */
-    HWREG(GPIOA + 0x420) |= 0x2c; /* HW fn. */
-    HWREG(GPIOA + 0x400) |= 0x2c; /* Output.  */
-    HWREG(GPIOA + 0x51c) |= 0x2c; /* Digital.  */
-    HWREG(GPIOA + 0x508) |= 0x2c; /* 8mA drive strength.  */
-    HWREG(GPIOA + 0x510) |= 0x2c; /* Pull-up.  */
+    /* Bump LDO voltage to workaround silicon bugs.  */
+    HWREG(SYSCTL + 0x034) = 0x1b;
+    /* Clock the PLL to 50MHz.  */
+    HWREG(SYSCTL + 0x060) = 0x01d40b80;
+    /* Wait for PLL to sync, then enable.  */
+    while ((HWREG(SYSCTL + 0x050) & 0x40) == 0)
+	/* no-op */ ;
+    HWREG(SYSCTL + 0x060) &= ~0x0800;
+
+    /* Enable SSI pins (GPIOA 2, 3, 4, 5).  */
+    HWREG(GPIOA + 0x420) |= 0x3c; /* HW fn. */
+    HWREG(GPIOA + 0x508) |= 0x3c; /* 8mA drive strength.  */
+    HWREG(GPIOA + 0x51c) |= 0x3c; /* Digital.  */
+    HWREG(GPIOA + 0x510) |= 0x3c; /* Pull-up.  */
 
     /* D/Cn output for OLED.  */
     HWREG(GPIOC + 0x400) |= 0x80; /* Output */
     HWREG(GPIOC + 0x51c) |= 0x80; /* Digital */
     HWREG(GPIOC + 0x508) |= 0x80; /* 8mA drive strength. */
-    HWREG(GPIOC + 0x000) |= 0x80; /* Active.  */
     HWREG(GPIOC + 0x510) |= 0x80; /* Pull-up.  */
+    HWREG(GPIOC + 0x200) |= 0x00;
 
-    /* Initialize SSI controller.  */
-    HWREG(SSI0 + 0x004) = 0; /* Disable.  */
-    /* 50MHz / 3.5Mbit = 14.2 cycles/bit.  */
-    HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
-    HWREG(SSI0 + 0x000) = 0x0647; /* SCR=6 (+1), SPI polarity=1, 8bit */
-    HWREG(SSI0 + 0x04) = 2; /* Enable.  */
+    /* SD card select.  */
+    HWREG(GPIOD + 0x400) |= 0x01; /* Output */
+    HWREG(GPIOD + 0x51c) |= 0x01; /* Digital */
+    HWREG(GPIOD + 0x504) |= 0x01; /* 4mA drive strength. */
+    HWREG(GPIOD + 0x510) |= 0x01; /* Pull-up.  */
+    HWREG(GPIOD + 0x004) |= 0x01;
 
     /* User pushbutton input.  */
     HWREG(GPIOF + 0x51c) |= 0x02; /* Digital */
@@ -402,6 +451,7 @@ static void sys_init()
 
     ssi_flush_rx();
 
+    oled_clear();
     oled_init();
 #endif
 }
