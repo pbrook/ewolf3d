@@ -973,11 +973,16 @@ memptr PM_GetPage(myint pagenum)
 	if (pagenum >= ChunksInFile)
 		Quit("PM_GetPage: Invalid page request");
 
+#ifdef EMBEDDED
+	if (RomChunks[pagenum]) {
+	    return (memptr)RomChunks[pagenum];
+	}
+#endif
 	if (PageAddr[pagenum]) {
 		addr = MM_PoolPtr(PageAddr[pagenum]);
 	} else {
 		const PageListStruct *page = &PMPages[pagenum];
-		addr = MM_AllocPool(&PageAddr[pagenum], PMPageSize);
+		addr = MM_AllocPool(&PageAddr[pagenum], page->length);
 		PML_ReadFromFile(addr, (int32_t)page->offset << 8,
 				 page->length);
 	}

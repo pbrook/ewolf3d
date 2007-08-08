@@ -15,7 +15,7 @@ OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
 	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.o \
-	grstarts.o pictable.o pal4bit.o tff.o mmc.o
+	grstarts.o pictable.o pal4bit.o romchunk.o tff.o mmc.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
@@ -92,15 +92,20 @@ pictable.c: build_pictable.c huffman.h grstarts.c
 	gcc build_pictable.c grstarts.c -o build_pictable -lm
 	./build_pictable > pictable.c
 
-pal4bit.c: build_pal4bit.c huffman.h grstarts.c
+pal4bit.c: build_pal4bit.c grstarts.c
 	gcc build_pal4bit.c grstarts.c -o build_pal4bit -lm
 	./build_pal4bit > pal4bit.c
+
+romchunk.c: build_romchunk.c grstarts.c pagemap.c
+	gcc build_romchunk.c grstarts.c pagemap.c -o build_romchunk -lm
+	./build_romchunk > romchunk.c
 
 clean:
 	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c \
 	  build_huffman huffman.h build_mapheaders mapheaders.c \
 	  build_pagemap pagemap.c build_grstarts grstarts.c \
-	  build_pictable pictable.c build_pal4bit pal4bit.c
+	  build_pictable pictable.c build_pal4bit pal4bit.c \
+	  build_romchunk romchunk.c
 
 distclean: clean
 	rm -rf *~ DEADJOE
