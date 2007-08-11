@@ -171,6 +171,32 @@ static void ssi_flush_rx()
 	HWREG(SSI0 + 0x008);
 }
 
+static volatile byte *ssi_data;
+static volatile int ssi_tosend;
+static volatile int ssi_left;
+
+void ssi_isr()
+{
+    uint32_t status;
+    uint32_t mask;
+    while (1) {
+	status = HWREG(SSI0 + 0x00c);
+	mask = ssi_tosend ? 0x06 : 0x04;
+	if ((status & mask) == 0)
+	  break;
+	/* Send data if TX FIFO not full.  */
+	if (ssi_tosend && (status & 0x02)) {
+	    HWREG(SSI0 + 0x008) = *(ssi_data++);
+	    ssi_tosend--;
+	}
+	/* Pull data out of the RX fifo.  */
+	if (status & 0x04) {
+	    HWREG(SSI0 + 0x008);
+	    ssi_left--;
+	}
+    }
+}
+
 static void oled_write(const uint8_t *p, int n, int command)
 {
     int left;
@@ -254,7 +280,33 @@ void oled_render()
     buf[1] = 0x52;
     oled_write(buf, 2, 1);
 
-    oled_write(gfxbuf, 128 * 64 / 2, 0);
+
+    ssi_data = gfxbuf;
+    ssi_tosend = ssi_left = 128 * 64 / 2;
+    HWREG(GPIOC + 0x200) = 0x80;
+    /* Enable SSI interrupts.  */
+    HWREG(SSI0 + 0x014) = 0xc;
+    /* Wait for transfer to complete.  */
+    asm volatile ("1:\n\t"
+		  "cpsid i\n\t"
+		  "ldr r0, [%0]\n\t"
+		  "cmp r0, #0\n\t"
+		  "it ne\n\t"
+		  "wfine\n\t"
+		  "cpsie i\n\t"
+		  "bne 1b\n\t"
+		  : : "r" (&ssi_tosend) : "r0");
+    /* Mask SSI interrupts.  */
+    HWREG(SSI0 + 0x014) = 0x0;
+    /* Pull remaining bytes out of FIFO.  */
+    while (ssi_left) {
+	uint32_t status;
+	status = HWREG(SSI0 + 0x00c);
+	if (status & 0x04) {
+	    HWREG(SSI0 + 0x008);
+	    ssi_left--;
+	}
+    }
 #if 0
     p = gfxbuf;
     for (i = 0; i < 128 * 64 / 32; i++) {

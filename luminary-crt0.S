@@ -60,7 +60,7 @@ isr_handler:
 .word isr_handler /* 4*/
 .word isr_handler /* 5*/
 .word isr_handler /* 6*/
-.word isr_handler /* 7*/
+.word ssi_isr /* 7*/
 .word isr_handler /* 8*/
 .word isr_handler /* 9*/
 .word isr_handler /*10*/

@@ -99,8 +99,8 @@ void TimerInit()
     treg[6] = 1;
     treg[3] = 1;
 
-    /* Enable interrupt.  */
-    NVIC[0x40] |= 1 << 19;
+    /* Enable Timer and SSI interrupts.  */
+    NVIC[0x40] |= (1 << 19) | (1 << 7);
 }
 
 #else
