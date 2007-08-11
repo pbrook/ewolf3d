@@ -760,7 +760,7 @@ void CA_CacheMap(myint mapnum, myint plane)
 
 /* ======================================================================== */
 
-#define POOL_SIZE 27*1024
+#define POOL_SIZE 31*1024
 static byte MM_Pool[POOL_SIZE];
 unsigned int pool_offset;
 

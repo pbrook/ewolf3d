@@ -389,11 +389,23 @@ void VW_Bar(myint x, myint y, myint width, myint height, myint color)
 
 void VL_Bar(myint x, myint y, myint width, myint height, myint color)
 {
-	byte *ptr = gfxbuf + vwidth * y + x;
+#ifdef LUMINARY
+	byte *ptr = gfxbuf + vpitch * y + (x >> 1);
+	byte c;
+
+	c = pal4bit[color];
+	c |= c << 4;
+	while (height--) {
+		memset(ptr, c, width >> 1);
+		ptr += vpitch;
+	}
+#else
+	byte *ptr = gfxbuf + vpitch * y + x;
 	while (height--) {
 		memset(ptr, color, width);
-		ptr += vwidth;
+		ptr += vpitch;
 	}
+#endif
 }
 
 /*

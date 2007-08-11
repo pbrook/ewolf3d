@@ -676,13 +676,32 @@ void ThreeDRefresh()
 
 /* ======================================================================== */
 
-static void ScaledDraw(byte *gfx, myint count, byte *vid, unsigned myint frac, unsigned myint delta)
+static void ScaledDraw(byte *gfx, myint count, byte *vid, int x,
+		       unsigned myint frac, unsigned myint delta)
 {
+#ifdef LUMINARY
+    vid += x >> 1;
+    if (x & 1) {
 	while (count--) {
-		*vid = gfx[frac >> 16];
-		vid += vwidth;
+		*vid = (*vid & 0xf0) | pal4bit[gfx[frac >> 16]];
+		vid += vpitch;
 		frac += delta;
 	}
+    } else {
+	while (count--) {
+		*vid = (*vid & 0x0f) | (pal4bit[gfx[frac >> 16]] << 4);
+		vid += vpitch;
+		frac += delta;
+	}
+    }
+#else
+    vid += x;
+    while (count--) {
+	    *vid = gfx[frac >> 16];
+	    vid += vpitch;
+	    frac += delta;
+    }
+#endif
 }
 
 static void ScaleLine(unsigned myint height, byte *source, myint x)
@@ -696,8 +715,8 @@ static void ScaleLine(unsigned myint height, byte *source, myint x)
 		if (height < viewheight) {
 			y = yoffset + (viewheight - height) / 2;
 			
-			ScaledDraw(source, height, gfxbuf + (y * vwidth) + x + xoffset, 
-			delta, frac);
+			ScaledDraw(source, height, gfxbuf + (y * vpitch) + xoffset, 
+			x, delta, frac);
 			
 			return;	
 		} 
@@ -705,13 +724,13 @@ static void ScaleLine(unsigned myint height, byte *source, myint x)
 		y = (height - viewheight) / 2;
 		y *= frac;
 
-		ScaledDraw(source, viewheight, gfxbuf + (yoffset * vwidth) + x + xoffset, 
-		y+delta, frac);
+		ScaledDraw(source, viewheight, gfxbuf + (yoffset * vpitch) + xoffset, 
+		x, y+delta, frac);
 	}
 }
 
 /* Render a single vertical stripe of a sprite.  */
-static void RenderLine(unsigned myint height, byte * row, byte *sprite, int cmd)
+static void RenderLine(unsigned myint height, byte *row, int x, byte *sprite, int cmd)
 {
     fixed delta;
     fixed yfrac;
@@ -739,8 +758,8 @@ static void RenderLine(unsigned myint height, byte * row, byte *sprite, int cmd)
 	    pstart = (y0 * height) >> 6;
 	    pend = (y1 * height) >> 6;
 
-	    ScaledDraw(post, pend - pstart, row + (pstart * vwidth),
-		       0/*frac*/, delta);
+	    ScaledDraw(post, pend - pstart, row + (pstart * vpitch),
+		       x, 0/*frac*/, delta);
 	    cmd += 6;
 	}
     } else {
@@ -772,8 +791,8 @@ static void RenderLine(unsigned myint height, byte * row, byte *sprite, int cmd)
 		pend = viewheight;
 
 	    if (pstart < viewheight)
-		ScaledDraw(post, pend - pstart, row + (pstart * vwidth),
-			   yfrac, delta);
+		ScaledDraw(post, pend - pstart, row + (pstart * vpitch),
+			   x, yfrac, delta);
 	    cmd += 6;
 	}
     }
@@ -816,9 +835,9 @@ static void RenderShape(myint xcenter, myint shapenum, unsigned height,
 	}
 	right -= left;
 	if (height < viewheight)
-	    row = gfxbuf + (yoffset + (viewheight - height) / 2) * vwidth;
+	    row = gfxbuf + (yoffset + (viewheight - height) / 2) * vpitch;
 	else
-	    row = gfxbuf + yoffset * vwidth;
+	    row = gfxbuf + yoffset * vpitch;
 	row += xoffset;
 	for (; x < right; x += scaler, p++) {
 		int n;
@@ -829,7 +848,7 @@ static void RenderShape(myint xcenter, myint shapenum, unsigned height,
 
 		n = ((x >> 16) << 1) + 4;
 		cmd = sprite[n] | (sprite[n + 1] << 8);
-		RenderLine(height, row + p, sprite, cmd);
+		RenderLine(height, row, p, sprite, cmd);
 	}	
 }
 void ScaleShape(myint xcenter, myint shapenum, unsigned height)

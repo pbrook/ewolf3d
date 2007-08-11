@@ -19,7 +19,9 @@ char str[80], str2[20];
 myint viewwidth, viewheight;
 myint viewwidthwin, viewheightwin; /* for borders */
 myint xoffset, yoffset;
-myint vwidth, vheight; /* size of screen */
+#ifndef LUMINARY
+myint vwidth, vheight, vpitch; /* size of screen */
+#endif
 myint viewsize;
 
 myint centerx;
@@ -969,6 +971,9 @@ void NewViewSize(myint width)
 #ifndef EMBEDDED
 	yoffset = (vheight-STATUSLINES*vheight/200-viewheight)/2;
 	xoffset = (vwidth-viewwidth)/2;
+#endif
+#ifndef LUMINARY
+	vpitch = vwidth;
 #endif
 	
 //

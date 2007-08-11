@@ -6,7 +6,13 @@
 #include "wl_menu.h"
 #include "foreign.h"
 
-extern myint vwidth, vheight; /* size of screen */
+#ifdef LUMINARY
+#define vwidth 128
+#define vpitch 64
+#define vheight 64
+#else
+extern myint vwidth, vheight, vpitch; /* size of screen */
+#endif
 
 #define NOASM
 

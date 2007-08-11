@@ -235,9 +235,11 @@ void oled_clear()
 void oled_render()
 {
     uint8_t buf[16];
+#ifndef EMBEDDED
     int i;
     int j;
     byte *p;
+#endif
 
     ssi_select(0);
     buf[0] = 0x15;
@@ -252,6 +254,8 @@ void oled_render()
     buf[1] = 0x52;
     oled_write(buf, 2, 1);
 
+    oled_write(gfxbuf, 128 * 64 / 2, 0);
+#if 0
     p = gfxbuf;
     for (i = 0; i < 128 * 64 / 32; i++) {
 	// FIXME: Translate and stream to OLED on the fly.
@@ -262,6 +266,7 @@ void oled_render()
 	}
 	oled_write(buf, 16, 0);
     }
+#endif
 }
 
 /* Turn off screen to prevernt burn-in.  */
@@ -342,7 +347,7 @@ void INL_Update()
 /* Graphics bits.  */
 
 byte *gfxbuf;
-byte framebuffer[128 * 64];
+byte framebuffer[128 * 64 / 2];
 
 void VL_Startup()
 {
@@ -413,7 +418,7 @@ static void sys_init()
     HWREG(SYSCTL + 0x108) |= 0x0000007f;
 
     /* Bump LDO voltage to workaround silicon bugs.  */
-    HWREG(SYSCTL + 0x034) = 0x1b;
+    //HWREG(SYSCTL + 0x034) = 0x1b;
     /* Clock the PLL to 50MHz.  */
     HWREG(SYSCTL + 0x060) = 0x01d40b80;
     /* Wait for PLL to sync, then enable.  */
@@ -458,8 +463,10 @@ static void sys_init()
 
 int main(int argc, char **argv)
 {
+#ifndef LUMINARY
     vwidth = 128;
     vheight = 96;
+#endif
     sys_init();
     TimerInit();
     return WolfMain(argc, argv);
