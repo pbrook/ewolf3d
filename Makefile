@@ -104,12 +104,16 @@ romchunk.c: build_romchunk.c grstarts.c pagemap.c
 	gcc build_romchunk.c grstarts.c pagemap.c -o build_romchunk -lm
 	./build_romchunk > romchunk.c
 
+sprites.h: build_sprites.c pagemap.c pal4bit.c
+	gcc build_sprites.c pagemap.c pal4bit.c -o build_sprites
+	./build_sprites > sprites.h
+
 clean:
 	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c \
 	  build_huffman huffman.h build_mapheaders mapheaders.c \
 	  build_pagemap pagemap.c build_grstarts grstarts.c \
 	  build_pictable pictable.c build_pal4bit pal4bit.c \
-	  build_romchunk romchunk.c
+	  build_romchunk romchunk.c build_sprites sprites.h
 
 distclean: clean
 	rm -rf *~ DEADJOE

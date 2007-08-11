@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdint.h>
+#include "wl_def.h"
 
 int main()
 {
@@ -7,7 +6,7 @@ int main()
     uint32_t offsets[1024];
     uint32_t size;
     int i;
-    FILE *f = fopen("vswap.wl6", "rb");
+    FILE *f = fopen("vswap." GAMEEXT, "rb");
     if (!f)
       return 1;
     fread(header, 2, 3, f);

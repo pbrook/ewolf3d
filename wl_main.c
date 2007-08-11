@@ -346,9 +346,11 @@ myint ReadConfig()
 			if (v != 0xFFFFFFFF) {
 			}
 		}
+#ifndef EMBEDDED
 #ifdef UPLOAD		
 		MainMenu[readthis].active = 1;
 		MainItems.curpos = 0;
+#endif
 #endif
 
 		configokay = 1;

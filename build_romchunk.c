@@ -76,7 +76,7 @@ int main()
     int i;
     int j;
     byte buf[4096];
-    FILE *f = fopen ("vswap.wl6", "rb");
+    FILE *f = fopen ("vswap." GAMEEXT, "rb");
     if (!f)
       return 1;
 

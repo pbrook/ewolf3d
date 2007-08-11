@@ -224,8 +224,10 @@ void IN_Startup(void)
 
 	INL_StartKbd();
 
+#ifdef ENABLE_JOYSTICK
 	for (i = 0;i < MaxJoys;i++)
 		JoysPresent[i] = checkjoys ? INL_StartJoy(i) : false;
+#endif
 
 	IN_Started = true;
 }

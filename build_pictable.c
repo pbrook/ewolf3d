@@ -42,7 +42,7 @@ int main()
     int i;
     int size;
     int compressed;
-    FILE *f = fopen("vgagraph.wl6", "rb");
+    FILE *f = fopen("vgagraph." GAMEEXT, "rb");
     if (!f)
       return 1;
 
@@ -59,8 +59,10 @@ int main()
     CAL_HuffExpand(source, p, size, grhuffman);
 
     printf("#include \"wl_def.h\"\n");
-    printf("const pictabletype pictable[%d] = {\n", size / 4);
-    for (i = 0; i < size / 4; i++)
+    printf("const pictabletype pictable[NUMPICS] = {\n", NUMPICS);
+    if (size / 4 < NUMPICS)
+      printf("#error NUMPICS > %d\n", size / 4);
+    for (i = 0; i < NUMPICS; i++)
       {
 	printf("{%d,%d},\n", p[0] | (p[1] << 8), p[2] | (p[3] << 8));
 	p += 4;

@@ -4,7 +4,7 @@ int main()
 {
     byte d[(NUMCHUNKS + 1) * 3];
     int i;
-    FILE *f = fopen("vgahead.wl6", "rb");
+    FILE *f = fopen("vgahead." GAMEEXT, "rb");
     if (!f)
       return 1;
     fread(d, 3, NUMCHUNKS + 1, f);

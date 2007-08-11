@@ -1,11 +1,11 @@
-#include <stdio.h>
+#include "wl_def.h"
 
 int main()
 {
     unsigned char data[1024];
     int i;
     unsigned char *p;
-    FILE *f = fopen("vgadict.wl6", "rb");
+    FILE *f = fopen("vgadict." GAMEEXT, "rb");
     if (!f)
       return 1;
     fread(data, 4, 256, f);

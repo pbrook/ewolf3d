@@ -2582,7 +2582,9 @@ void DrawOutline(myint x,myint y,myint w,myint h,myint color1,myint color2)
 ////////////////////////////////////////////////////////////////////
 void SetupControlPanel()
 {
+#ifndef EMBEDDED
 	myint which;
+#endif
 
 	//
 	// CACHE GRAPHICS & SOUNDS
@@ -2647,7 +2649,7 @@ void SetupControlPanel()
 			}
 		} while(_findnext(hand, &f) != -1);
 #else
-#ifndef __arm__
+#ifndef EMBEDDED
 	glob_t globbuf;
 	myint x;
 	
@@ -3374,12 +3376,14 @@ void CheckForEpisodes()
 // ENGLISH
 //
 	/* Hardcode release.  */
-	strcpy(extension, "wl6");
+	strcpy(extension, GAMEEXT);
+#ifndef UPLOAD
 	NewEmenuActive[2] =
 	NewEmenuActive[4] =
 	NewEmenuActive[6] =
 	NewEmenuActive[8] =
-	NewEmenuActive[10] =
+	NewEmenuActive[10] = 1;
+#endif
 
 #endif
 

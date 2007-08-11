@@ -17,7 +17,7 @@
 */
    
 #ifndef WMODE
-#define WMODE 1
+#define WMODE 0
 #endif
 
 /* define WOLF92 if you have full version of Wolfenstein 3D dated 1992 */
@@ -54,7 +54,9 @@
 #if WMODE == 0
 /* #define SPEAR */
 /* #define SPEARDEMO */
+#ifndef EMBEDDED
 #define UPLOAD
+#endif
 #define GAMENAME	"Wolfenstein 3D Shareware"
 #define GAMEEXT		"wl1"
 #define GAMETYPE	"WL1\0"

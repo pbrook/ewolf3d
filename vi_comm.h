@@ -5,8 +5,8 @@
 
 extern byte *gfxbuf;
 
-#ifdef LUMINARY
 extern const byte pal4bit[256];
+#ifdef LUMINARY
 #define ROMAREA __attribute__((section(".romchunk")))
 #else
 #define ROMAREA

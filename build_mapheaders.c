@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdint.h>
+#include "wl_def.h"
 
 int main()
 {
@@ -13,7 +12,7 @@ int main()
     int i;
     uint16_t rlew;
     unsigned char *p;
-    FILE *f = fopen("maphead.wl6", "rb");
+    FILE *f = fopen("maphead." GAMEEXT, "rb");
     fread(&rlew, 2, 1, f);
     if (!f)
       return 1;
@@ -23,9 +22,13 @@ int main()
     printf("#include \"wl_def.h\"\n");
     printf("const word RLEWtag = 0x%x;\n", rlew);
     printf("const maptype mapheaderseg[60] = {\n");
-    f = fopen("gamemaps.wl6", "rb");
+    f = fopen("gamemaps." GAMEEXT, "rb");
     for (i = 0; i < 60; i++)
       {
+	if (!offsets[i]) {
+	    printf ("{{0, 0}, {0,0}},\n");
+	    continue;
+	}
 	fseek(f, offsets[i], SEEK_SET);
 	fread(&data, 2, 11, f);
 	printf("{{%d, %d}, {%d, %d}},\n",
