@@ -87,7 +87,7 @@ int main()
 	size = PMPages[cc[i]].length;
 	fseek (f, start, SEEK_SET);
 	fread (buf, size, 1, f);
-	printf ("static const byte RomChunk%d[]= {\n", cc[i]);
+	printf ("static const byte ROMAREA RomChunk%d[]= {\n", cc[i]);
 	for (j = 0; j < size; j++)
 	  {
 	    printf (" 0x%x,", buf[j]);
@@ -97,7 +97,7 @@ int main()
 	printf("};\n");
       }
     fclose(f);
-    printf("const byte * const RomChunks[%d] = {\n", ChunksInFile);
+    printf("const byte * const ROMAREA RomChunks[%d] = {\n", ChunksInFile);
     for (i = 0; i < cc_num; i++)
       {
 	printf("[%d] = RomChunk%d,\n", cc[i], cc[i]);
