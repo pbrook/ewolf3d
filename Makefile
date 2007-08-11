@@ -1,10 +1,14 @@
 PROGS=ewolf3d
-#CC = gcc -m32
-CC = arm-unknown-eabi-gcc
-#CC=/opt/intel/compiler60/ia32/bin/icc
 
-#CFLAGS = -g -Wall
+ifeq ($(PROGS),ewolf3d)
+CC = arm-unknown-eabi-gcc
 CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -O2
+else
+CC = gcc -m32
+CFLAGS = -g -Wall
+endif
+
+#CC=/opt/intel/compiler60/ia32/bin/icc
 #CFLAGS = -Wall -O6 -fomit-frame-pointer -ffast-math -funroll-loops -march=pentiumpro
 #CFLAGS = -g -Wall -W -pedantic -std=c99
 #CFLAGS = -Os -Wall -pedantic
