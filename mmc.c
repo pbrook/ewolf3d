@@ -159,7 +159,6 @@ static
 void power_on (void)
 {
     unsigned int i;
-    DWORD dat;
 
     /*
      * This doesnt really turn the power on, but initializes the
