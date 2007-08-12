@@ -42,22 +42,12 @@ int main()
 
 	angle = 0.0;
 	anglestep = PI/2.0/ANGLEQUAD;
-	for (i = 0; i <= ANGLEQUAD; i++) {
-		value = GLOBAL1*sin(angle);
-		
-		sintable[i] = 
-		sintable[i+ANGLES] =  
-		sintable[ANGLES/2-i] = value;
-		
-		sintable[ANGLES-i] =
-		sintable[ANGLES/2+i] = -value;
-		
-		angle += anglestep;
-	}
-	printf ("const fixed sintable[] = {\n");
+	printf ("const uint16_t sintable[] = {\n");
 	printf ("  0");
-	for (i = 0; i <= ANGLES/4; i++) {
-	    printf (",\n  0x%x", sintable[i]);
+	for (i = 0; i < ANGLEQUAD; i++) {
+	    value = GLOBAL1*sin(angle);
+	    printf (",\n  0x%x", value);
+	    angle += anglestep;
 	}
 	printf ("\n};\n");
 	return 0;

@@ -711,7 +711,7 @@ extern	myint		mouseadjustment;
 /* math tables */
 extern myshort pixelangle[MAXVIEWWIDTH];
 extern const fixed finetangent[FINEANGLES/4];
-extern const fixed sintable[];
+extern const uint16_t sintable[];
 
 static inline fixed sinfix(int a)
 {
@@ -719,11 +719,15 @@ static inline fixed sinfix(int a)
 	a -= ANGLES / 2;
 	if (a > ANGLES / 4)
 	  a = (ANGLES / 2) - a;
-	return -sintable[a];
+	if (a == ANGLES / 4)
+	  return -GLOBAL1;
+	return -(fixed)sintable[a];
     } else {
 	if (a > ANGLES / 4)
 	  a = (ANGLES / 2) - a;
-	return sintable[a];
+	if (a == ANGLES / 4)
+	  return GLOBAL1;
+	return (fixed)sintable[a];
     }
 }
 
