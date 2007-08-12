@@ -25,13 +25,10 @@ int main()
     printf("pool_id PageAddr[%d];\n", header[2]);
 #else
     printf("pool_id PageAddr[%d];\n", header[1]);
+    printf("#ifdef HOST\n");
 #endif
     last = header[2];
-    printf("#ifdef HOST\n");
     printf("const PageListStruct PMPages[%d] = {\n", last);
-    printf("#else\n");
-    printf("const PageListStruct PMPages[%d] = {\n", header[1]);
-    printf("#endif\n");
 #endif
     for (i = 0; i < last; i++)
       {
@@ -45,17 +42,13 @@ int main()
     fseek(f, (header[0] - last) * 4, SEEK_CUR);
     for (i = 0; i < last; i++)
       {
-#ifndef ENABLE_COLOR
-	if (i == header[1])
-	  printf("#ifdef HOST\n");
-#endif
 	fread(&size, 2, 1, f);
 	printf("{%d, %d},\n", offsets[i] >> 8, size);
       }
-#ifndef ENABLE_COLOR
+    printf("};\n");
+#ifndef ENABLE_OLOR
     printf("#endif\n");
 #endif
-    printf("};\n");
     return 0;
 }
 

@@ -489,6 +489,7 @@ myshort atan2fix(fixed x, fixed y)
 	int low = 0;
 	int high = FINEANGLES / 4 - 1;
 
+	res = 0;
 	while (low + 1 < high) {
 	    res = (low + high) >> 1;
 	    if (finetangent[res] < tang)

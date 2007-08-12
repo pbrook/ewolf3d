@@ -84,7 +84,11 @@ typedef unsigned short umyshort;
 extern const byte gamepal[];
 
 myint MS_CheckParm(const char *string);
+#ifdef DEBUG
 void Quit(const char *error);
+#else
+#define Quit(msg) do {} while (0)
+#endif
 
 #define TickBase	70	/* 70Hz per tick */
 

@@ -19,9 +19,10 @@ HOSTCFLAGS = -DHOST -g
 OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
-	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.o \
-	grstarts.o pictable.o pal4bit.o romchunk.o tff.o mmc.o \
-	sprites.o
+	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.c \
+	grstarts.o pictable.o pal4bit.o tff.o mmc.o \
+	sprites.o walls.o
+# romchunk.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
 XOBJS = $(OBJS) $(ROBJS) vi_xlib.o
@@ -112,9 +113,13 @@ sprites.c: build_sprites.c pagemap.c pal4bit.c
 	gcc $(HOSTCFLAGS) build_sprites.c pagemap.c pal4bit.c -o build_sprites
 	./build_sprites > sprites.c
 
+walls.c: build_walls.c pagemap.c pal4bit.c
+	gcc $(HOSTCFLAGS) build_walls.c pagemap.c pal4bit.c -o build_walls
+	./build_walls > walls.c
+
 clean:
 	rm -rf swolf3d xwolf3d sdlwolf3d ewolf3d *.o *.il \
-	  build_tables tables.c \
+	  build_tables tables.c build_walls walls.c \
 	  build_huffman huffman.h build_mapheaders mapheaders.c \
 	  build_pagemap pagemap.c build_grstarts grstarts.c \
 	  build_pictable pictable.c build_pal4bit pal4bit.c \

@@ -126,8 +126,6 @@ int open(const char *filename, int flags, ...)
 {
     FIL *f;
 
-    if (flags & O_CREAT)
-	Quit("Can't creat\n");
 #ifdef O_BINARY
     flags &= ~O_BINARY;
 #endif
@@ -138,9 +136,6 @@ int open(const char *filename, int flags, ...)
 	f_mount(0, &fat);
 	numfiles = 0;
     }
-
-    if (numfiles == MAX_FILES)
-	Quit("Too many files\n");
 
     f = &files[numfiles];
     if (f_open(f, filename, FA_READ))

@@ -866,6 +866,7 @@ myint ChunksInFile, PMSpriteStart, PMSoundStart;
 PageListStruct *PMPages;
 #endif
 
+#ifdef ENABLE_COLOR
 static void PML_ReadFromFile(byte *buf, long offset, word length)
 {
 	if (!buf)
@@ -947,6 +948,7 @@ static void PML_ClosePageFile()
 	}
 #endif
 }
+#endif
 
 memptr PM_GetPage(myint pagenum)
 {
@@ -954,6 +956,41 @@ memptr PM_GetPage(myint pagenum)
 	if (pagenum >= ChunksInFile)
 		Quit("PM_GetPage: Invalid page request");
 
+#ifndef ENABLE_COLOR
+	if (pagenum < PMSpriteStart) {
+	    byte pal[4];
+	    int x;
+	    int y;
+	    byte *p;
+	    const byte *src;
+	    byte c;
+
+	    addr = MM_AllocPool(&PageAddr[pagenum], 64 * 64);
+	    p = (byte *)addr;
+	    src = WallChunks[pagenum];
+	    for (x = 0; x < 64; x++) {
+		pal[0] = 0x1f - (src[0] >> 4);
+		pal[1] = 0x1f - (src[0] & 0x0f);
+		pal[2] = 0x1f - (src[1] >> 4);
+		pal[3] = 0x1f - (src[1] & 0x0f);
+		src += 2;
+		for (y = 0; y < 16; y++) {
+		    c = *(src++);
+		    *(p++) = pal[c & 3];
+		    c >>= 2;
+		    *(p++) = pal[c & 3];
+		    c >>= 2;
+		    *(p++) = pal[c & 3];
+		    c >>= 2;
+		    *(p++) = pal[c & 3];
+		    c >>= 2;
+		}
+	    }
+	    return addr;
+	}
+	Quit("Chunk not cached\n");
+	return NULL;
+#else
 #ifdef EMBEDDED
 #if 0
 	if (RomChunks[pagenum]) {
@@ -970,8 +1007,10 @@ memptr PM_GetPage(myint pagenum)
 				 page->length);
 	}
 	return addr;
+#endif
 }
 
+#ifdef ENABLE_COLOR
 void PM_Startup()
 {
 	if (PMStarted)
@@ -989,3 +1028,4 @@ void PM_Shutdown()
 
 	PML_ClosePageFile();
 }
+#endif

@@ -1129,7 +1129,9 @@ void ShutdownId()
 	IN_Shutdown();
 	VW_Shutdown();
 	CA_Shutdown();
+#ifdef ENABLE_COLOR
 	PM_Shutdown();
+#endif
 	MM_Shutdown();
 }
 
@@ -1174,7 +1176,9 @@ void InitGame()
 	myint i;
 
 	MM_Startup(); 
+#ifdef ENABLE_COLOR
 	PM_Startup();
+#endif
 	CA_Startup();
 	VW_Startup();
 	IN_Startup();

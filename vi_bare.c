@@ -453,10 +453,12 @@ void VL_GetPalette(byte *palette)
     FIXME();
 }
 
+#ifdef DEBUG
 void Quit(const char *error)
 {
     FIXME();
 }
+#endif
 
 void TimerInit();
 

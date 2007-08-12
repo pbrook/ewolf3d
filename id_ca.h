@@ -81,6 +81,7 @@ extern const PageListStruct PMPages[];
 extern pool_id PageAddr[];
 extern const uint32_t grstarts[NUMCHUNKS + 1];
 extern const byte *const RomChunks[];
+extern const byte *const WallChunks[];
 #else
 extern myint ChunksInFile, PMSpriteStart, PMSoundStart;
 extern PageListStruct *PMPages;
