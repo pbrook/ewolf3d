@@ -52,9 +52,10 @@ NASM = nasm
 #all:	swolf3d xwolf3d sdlwolf3d
 all:	$(PROGS)
 
-$(SOBJS): version.h id_heads.h wl_def.h
-$(XOBJS): version.h id_heads.h wl_def.h
-$(DOBJS): version.h id_heads.h wl_def.h
+$(SOBJS): version.h id_heads.h wl_def.h Makefile
+$(XOBJS): version.h id_heads.h wl_def.h Makefile
+$(DOBJS): version.h id_heads.h wl_def.h Makefile
+$(EOBJS): version.h id_heads.h wl_def.h Makefile
 $(PROGS): Makefile
 id_ca.o: huffman.h
 
