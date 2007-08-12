@@ -1021,15 +1021,11 @@ void SpawnDeath(myint tilex, myint tiley)
 void T_Launch(objtype *ob)
 {
 	long deltax, deltay;
-	float angle;
 	myint iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
-	angle = atan2 (deltay,deltax);
-	if (angle<0)
-		angle = PI*2+angle;
-	iangle = angle/(PI*2)*ANGLES;
+	iangle = atan2fix (deltay,deltax);
 	if (ob->obclass == deathobj)
 	{
 		T_Shoot (ob);
@@ -1413,15 +1409,11 @@ void SpawnFat (myint tilex, myint tiley)
 void T_SchabbThrow (objtype *ob)
 {
 	long	deltax,deltay;
-	float	angle;
 	myint		iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
-	angle = atan2 (deltay,deltax);
-	if (angle<0)
-		angle = PI*2+angle;
-	iangle = angle/(PI*2)*ANGLES;
+	iangle = atan2fix (deltay,deltax);
 
 	GetNewActor ();
 	new->state = s_needle1;
@@ -1453,15 +1445,11 @@ void T_SchabbThrow (objtype *ob)
 void T_GiftThrow(objtype *ob)
 {
 	long deltax,deltay;
-	float angle;
 	myint iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
-	angle = atan2 (deltay,deltax);
-	if (angle<0)
-		angle = PI*2+angle;
-	iangle = angle/(PI*2)*ANGLES;
+	iangle = atan2fix (deltay,deltax);
 
 	GetNewActor ();
 	new->state = s_rocket;
@@ -1881,15 +1869,11 @@ void A_Slurpie(objtype *ob)
 void T_FakeFire (objtype *ob)
 {
 	long	deltax,deltay;
-	float	angle;
 	myint		iangle;
 
 	deltax = player->x - ob->x;
 	deltay = ob->y - player->y;
-	angle = atan2 (deltay,deltax);
-	if (angle<0)
-		angle = PI*2+angle;
-	iangle = angle/(PI*2)*ANGLES;
+	iangle = atan2fix (deltay,deltax);
 
 	GetNewActor ();
 	new->state = s_fire1;
@@ -2426,7 +2410,6 @@ boolean	CheckPosition(objtype *ob)
 void A_StartDeathCam(objtype *ob)
 {
 	long	dx,dy;
-	float	fangle;
 	long    xmove,ymove;
 	long	dist;
 
@@ -2461,11 +2444,7 @@ void A_StartDeathCam(objtype *ob)
 	dx = ob->x - player->x;
 	dy = player->y - ob->y;
 
-	fangle = atan2(dy, dx);			/* returns -pi to pi */
-	if (fangle<0)
-		fangle = PI*2+fangle;
-
-	player->angle = fangle/(PI*2)*ANGLES;
+	player->angle = atan2fix(dy, dx);
 
 /* try to position as close as possible without being in a wall */
 	dist = 0x14000l;

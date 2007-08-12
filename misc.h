@@ -53,6 +53,7 @@ extern int16_t ReadInt16(myint fp);
 extern int32_t ReadInt32(myint fp);
 extern myint ReadBytes(myint fp, byte *d, myint len);
 
+extern myshort atan2fix(fixed x, fixed y);
 
 static __inline__ uint16_t SwapInt16(uint16_t i)
 {

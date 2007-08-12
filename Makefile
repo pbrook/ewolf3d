@@ -29,7 +29,7 @@ DOBJS = $(OBJS) $(ROBJS) vi_sdl.o
 EOBJS = $(OBJS) $(ROBJS) vi_bare.o arm_support.o
 
 #LDLIBS = -lm -wp_ipo
-LDLIBS = -lm
+LDLIBS =
 
 # no sound
 OBJS += sd_null.o

@@ -11,7 +11,9 @@
 #include <glob.h>
 #endif
 #include <ctype.h>
+#ifndef EMBEDDED
 #include <math.h>
+#endif
 
 #ifdef __cplusplus
 typedef bool boolean;
@@ -87,7 +89,7 @@ void Quit(const char *error);
 #define TickBase	70	/* 70Hz per tick */
 
 #undef PI
-#define PI		3.1415926535897932384626433832795028841971693993751058209749445920
+#define PI		3.1415926535897932384626433832795028841971693993751058209749445920f
 
 #define	MAXTICS		10
 #define DEMOTICS	4

@@ -965,7 +965,6 @@ myint PlayDemoFromFile(const char *demoname)
 
 void Died()
 {
-	float	fangle;
 	long	dx,dy;
 	myint	iangle,curangle,clockwise,counter,change;
 
@@ -980,12 +979,8 @@ void Died()
 		dx = -player->x;
 		dy = player->y;
 	}
-	
-	fangle = atan2(dy,dx);			// returns -pi to pi
-	if (fangle < 0)
-		fangle = PI*2+fangle;
 
-	iangle = fangle/(PI*2)*ANGLES;
+	iangle = atan2fix(dy,dx);
 
 	if (player->angle > iangle) {
 		counter = player->angle - iangle;

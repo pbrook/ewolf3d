@@ -901,7 +901,7 @@ void ShowViewSize(myint width)
 	oldheight = viewheightwin;
 
 	viewwidthwin = width*16;
-	viewheightwin = width*16*HEIGHTRATIO;
+	viewheightwin = width_to_height(width*16);
 	DrawPlayBorder();
 
 	viewheightwin = oldheight;
@@ -921,18 +921,18 @@ void NewViewSize(myint width)
 	if ((width*16) > vwidth)
 		width = vwidth / 16;
 	
-	if ((width*16*HEIGHTRATIO) > (vheight - 40*vheight/200))
+	if ((width_to_height(width*16) > (vheight - 40*vheight/200))
 		width = (vheight - 40*vheight/200)/8;
 	
 	viewwidthwin = width*16*320/vwidth;
-	viewheightwin = width*16*HEIGHTRATIO*320/vwidth;
+	viewheightwin = width_to_height(width*16)*320/vwidth;
 	viewsize = width*320/vwidth;
 #else
 	viewsize = width;
 #endif
 	
 	viewwidth = width*16;
-	viewheight = width*16*HEIGHTRATIO;
+	viewheight = width_to_height(width*16);
 	
 	centerx = viewwidth/2-1;
 	shootdelta = viewwidth/10;

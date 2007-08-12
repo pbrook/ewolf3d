@@ -42,7 +42,7 @@ extern myint vwidth, vheight, vpitch; /* size of screen */
 #define AMBUSHTILE		106
 #define	ALTELEVATORTILE		107
 
-#define HEIGHTRATIO		0.50
+#define width_to_height(x)	(x >> 1)
 
 //----------------
 

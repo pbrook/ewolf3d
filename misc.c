@@ -454,3 +454,52 @@ myint ReadBytes(myint fp, byte *d, myint len)
 {
 	return read(fp, d, len);
 }
+
+myshort atan2fix(fixed x, fixed y)
+{
+    boolean negative;
+    long long quot;
+    fixed tang;
+    int offset;
+    int res;
+    if (x < 0) {
+	x = -x;
+	negative = true;
+	offset = 180;
+    } else {
+	negative = false;
+	offset = 0;
+    }
+    if (y < 0) {
+	y = -y;
+	negative = !negative;
+	if (negative)
+	    offset = 360;
+    }
+    if (x == 0)
+      return negative ? 270 : 90;
+    if (y == 0)
+      return offset;
+    quot = ((long long)y << 32) / x;
+    tang = (fixed)quot;
+    if (quot != tang) {
+	/* Overflow.  */
+	res = 90;
+    } else {
+	int low = 0;
+	int high = FINEANGLES / 4 - 1;
+
+	while (low + 1 < high) {
+	    res = (low + high) >> 1;
+	    if (finetangent[res] < tang)
+		high = res;
+	    else
+		low = res;
+	}
+	res = res / (FINEANGLES / ANGLES);
+    }
+    if (negative)
+	res = -res;
+    return res + offset;
+}
+
