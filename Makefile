@@ -55,6 +55,7 @@ all:	$(PROGS)
 $(SOBJS): version.h id_heads.h wl_def.h
 $(XOBJS): version.h id_heads.h wl_def.h
 $(DOBJS): version.h id_heads.h wl_def.h
+$(PROGS): Makefile
 id_ca.o: huffman.h
 
 .asm.o:
