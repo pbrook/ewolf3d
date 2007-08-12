@@ -729,8 +729,52 @@ static void ScaleLine(unsigned myint height, byte *source, myint x)
 	}
 }
 
+#ifdef ENABLE_COLOR
+#define ScaledDraw4 ScaledDraw
+#else
+static void ScaledDraw4(const byte *gfx, myint count, byte *vid, int x,
+		        unsigned myint frac, unsigned myint delta)
+{
+    byte c;
+#ifdef LUMINARY
+    vid += x >> 1;
+    if (x & 1) {
+	while (count--) {
+		*vid = (*vid & 0xf0) | pal4bit[gfx[frac >> 16]];
+		vid += vpitch;
+		frac += delta;
+	}
+    } else {
+	while (count--) {
+		*vid = (*vid & 0x0f) | (pal4bit[gfx[frac >> 16]] << 4);
+		vid += vpitch;
+		frac += delta;
+	}
+    }
+#else
+    vid += x;
+    while (count--) {
+	    c = gfx[frac >> 17];
+	    if (frac & (1 << 16))
+	      c &= 0xf;
+	    else
+	      c >>= 4;
+	    c = 0x1f - c;
+	    *vid = c;
+	    vid += vpitch;
+	    frac += delta;
+    }
+#endif
+}
+#endif
+
 /* Render a single vertical stripe of a sprite.  */
-static void RenderLine(unsigned myint height, byte *row, int x, byte *sprite, int cmd)
+static void RenderLine(unsigned myint height, byte *row, int x,
+		       const byte *sprite, int cmd
+#ifndef ENABLE_COLOR
+		       , int cmdend
+#endif
+		       )
 {
     fixed delta;
     fixed yfrac;
@@ -738,41 +782,64 @@ static void RenderLine(unsigned myint height, byte *row, int x, byte *sprite, in
     int ytop;
     int y0;
     int y1;
-    int texoff;
     int pstart;
     int pend;
-    byte *post;
+    const byte *post;
+    int texoff;
 
     // FIXME: Cache delta and yclip across lines.
     delta = (64 << 16) / height;
 
     if (height < viewheight) {
+#ifdef ENABLE_COLOR
 	while (sprite[cmd+0]) {
 	    y1 = sprite[cmd+0] / 2;
-	    texoff = (int16_t)(sprite[cmd+2] | (sprite[cmd+3] << 8));
 	    /* y0 = (sprite[cmd+4] | (sprite[cmd+5] << 8)) / 2; */
 	    y0 = sprite[cmd+4] / 2;
-
+	    texoff = (int16_t)(sprite[cmd+2] | (sprite[cmd+3] << 8));
 	    post = sprite + y0 + texoff;
+	    cmd += 6;
+#else
+	while (cmd < cmdend) {
+	    y1 = sprite[cmd];
+	    y0 = sprite[cmd + 1];
+	    texoff = sprite[cmd+2];
+	    post = sprite + cmd + texoff + 3;
+	    cmd += 3;
+	    if (texoff == 0)
+		cmd += (y1 + 1) >> 1;
+	    y1 += y0;
+#endif
 
 	    pstart = (y0 * height) >> 6;
 	    pend = (y1 * height) >> 6;
 
-	    ScaledDraw(post, pend - pstart, row + (pstart * vpitch),
-		       x, 0/*frac*/, delta);
-	    cmd += 6;
+	    ScaledDraw4(post, pend - pstart, row + (pstart * vpitch),
+		        x, 0/*frac*/, delta);
 	}
     } else {
 	yclip = (height - viewheight) / 2;
 	yclip *= delta;
 	ytop = yclip >> 16;
+#ifdef ENABLE_COLOR
 	while (sprite[cmd+0]) {
 	    y1 = sprite[cmd+0] / 2;
-	    texoff = (int16_t)(sprite[cmd+2] | (sprite[cmd+3] << 8));
 	    /* y0 = (sprite[cmd+4] | (sprite[cmd+5] << 8)) / 2; */
 	    y0 = sprite[cmd+4] / 2;
-
+	    texoff = (int16_t)(sprite[cmd+2] | (sprite[cmd+3] << 8));
 	    post = sprite + y0 + texoff;
+	    cmd += 6;
+#else
+	while (cmd < cmdend) {
+	    y1 = sprite[cmd];
+	    y0 = sprite[cmd + 1];
+	    texoff = sprite[cmd+2];
+	    post = sprite + cmd + texoff + 3;
+	    cmd += 3;
+	    if (texoff == 0)
+		cmd += (y1 + 1) >> 1;
+	    y1 += y0;
+#endif
 
 	    if (y0 < ytop) {
 		yfrac = yclip - (y0 << 16);
@@ -791,9 +858,8 @@ static void RenderLine(unsigned myint height, byte *row, int x, byte *sprite, in
 		pend = viewheight;
 
 	    if (pstart < viewheight)
-		ScaledDraw(post, pend - pstart, row + (pstart * vpitch),
-			   x, yfrac, delta);
-	    cmd += 6;
+		ScaledDraw4(post, pend - pstart, row + (pstart * vpitch),
+			    x, yfrac, delta);
 	}
     }
 
@@ -806,14 +872,22 @@ static void RenderShape(myint xcenter, myint shapenum, unsigned height,
 	unsigned myint x;
 	myint p;
 	byte *row;
-	byte *sprite;
+	const byte *sprite;
 	fixed left;
 	fixed right;
 	int cmd;
+#ifndef ENABLE_COLOR
+	int cmdend;
+#endif
 
 	sprite = PM_GetSpritePage(shapenum);
+#ifdef ENABLE_COLOR
 	left = sprite[0];
 	right = sprite[2];
+#else
+	left = sprite[0];
+	right = sprite[1];
+#endif
 	left <<= 16;
 	right = (right + 1) << 16;
 
@@ -846,11 +920,19 @@ static void RenderShape(myint xcenter, myint shapenum, unsigned height,
 		if (wallheight[p] >= z)
 			continue;
 
+#ifdef ENABLE_COLOR
 		n = ((x >> 16) << 1) + 4;
 		cmd = sprite[n] | (sprite[n + 1] << 8);
 		RenderLine(height, row, p, sprite, cmd);
+#else
+		n = ((x >> 16) << 1) + 2;
+		cmd = sprite[n] | (sprite[n + 1] << 8);
+		cmdend = sprite[n + 2] | (sprite[n + 3] << 8);
+		RenderLine(height, row, p, sprite, cmd, cmdend);
+#endif
 	}	
 }
+
 void ScaleShape(myint xcenter, myint shapenum, unsigned height)
 {
     RenderShape(xcenter, shapenum, height >> 2, height);

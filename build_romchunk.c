@@ -5,6 +5,7 @@
 int cc[] = 
 {
   /* Doors.  */
+#if 0
   S-8, S-7, S-6, S-5, S-4, S-3, S-2, S-1,
   /* Static sprites.  */
   S+SPR_STAT_0,
@@ -65,6 +66,7 @@ int cc[] =
   S+SPR_CHAINATK2,
   S+SPR_CHAINATK3,
   S+SPR_CHAINATK4,
+#endif
 };
 
 #define cc_num (sizeof(cc) / 4)

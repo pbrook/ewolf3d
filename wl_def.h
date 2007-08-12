@@ -713,6 +713,8 @@ extern myshort pixelangle[MAXVIEWWIDTH];
 extern const fixed finetangent[FINEANGLES/4];
 extern const fixed sintable[];
 extern const fixed *const costable;
+#define sinfix(a) sintable[a]
+#define cosfix(a) costable[a]
 
 extern char configname[13];
 

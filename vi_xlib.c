@@ -338,6 +338,31 @@ void VW_UpdateScreen()
 	
 	myint i;
 
+#if 0
+for (i = 0; i < 64; i++) {
+    gfxbuf[i] = i;
+    gfxbuf[i*128 + 1] = i;
+    gfxbuf[i*128 + 2] = i;
+    gfxbuf[i*128 + 3] = i;
+    gfxbuf[i*128 + 4] = i + 0x40;
+    gfxbuf[i*128 + 5] = i + 0x40;
+    gfxbuf[i*128 + 6] = i + 0x40;
+    gfxbuf[i*128 + 7] = i + 0x40;
+    gfxbuf[i*128 + 8] = i + 0x80;
+    gfxbuf[i*128 + 9] = i + 0x80;
+    gfxbuf[i*128 + 10] = i + 0x80;
+    gfxbuf[i*128 + 11] = i + 0x80;
+    gfxbuf[i*128 + 12] = i + 0xc0;
+    gfxbuf[i*128 + 13] = i + 0xc0;
+    gfxbuf[i*128 + 14] = i + 0xc0;
+    gfxbuf[i*128 + 15] = i + 0xc0;
+}
+#endif
+#if 0
+for (i = 0; i < 128 * 64; i++) {
+    gfxbuf[i] = 0x1f - pal4bit[gfxbuf[i]];
+}
+#endif
 	size = vwidth * vheight;
 	if (indexmode == 0) {
 		switch(MyDepth) {

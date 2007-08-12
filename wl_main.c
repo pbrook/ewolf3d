@@ -40,8 +40,6 @@ myshort horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
 
 char configname[13] = "config.";
 
-//fixed sintable[ANGLES+ANGLES/4+1], *costable = sintable+(ANGLES/4);
-
 myint _argc;
 char **_argv;
 
@@ -862,49 +860,6 @@ myint MS_CheckParm(const char *check)
 ==================
 */
 
-static const double radtoint = (double)FINEANGLES/2.0/PI;
-
-void BuildTables()
-{
-#if 0
-	myint i;
-	double tang, angle, anglestep;
-	fixed value;
-
-/* calculate fine tangents */
-
-	finetangent[0] = 0;
-	for (i = 1; i < FINEANGLES/8; i++) {
-		tang = tan((double)i/radtoint);
-		finetangent[i] = tang*TILEGLOBAL;
-		finetangent[FINEANGLES/4-1-i] = TILEGLOBAL/tang;
-	}
-	
-	/* fight off asymptotic behaviour at 90 degrees */
-	finetangent[FINEANGLES/4-1] = finetangent[FINEANGLES/4-2]+1;
-	
-//
-// costable overlays sintable with a quarter phase shift
-// ANGLES is assumed to be divisable by four
-//
-
-	angle = 0.0;
-	anglestep = PI/2.0/ANGLEQUAD;
-	for (i = 0; i <= ANGLEQUAD; i++) {
-		value = GLOBAL1*sin(angle);
-		
-		sintable[i] = 
-		sintable[i+ANGLES] =  
-		sintable[ANGLES/2-i] = value;
-		
-		sintable[ANGLES-i] =
-		sintable[ANGLES/2+i] = -value;
-		
-		angle += anglestep;
-	}
-#endif
-}
-
 /*
 ===================
 =
@@ -1227,7 +1182,6 @@ void InitGame()
 	for (i = LATCHPICS_LUMP_START; i <= LATCHPICS_LUMP_END; i++)
 		CA_CacheGrChunk(i);
 			
-	BuildTables();
 	SetupWalls();
 
 	NewViewSize(viewsize);

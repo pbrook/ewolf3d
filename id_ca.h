@@ -90,7 +90,12 @@ extern pool_id *PageAddr;
 #endif
 
 #define	PM_GetSoundPage(v)	PM_GetPage(PMSoundStart + (v))
+#ifdef ENABLE_COLOR
 #define	PM_GetSpritePage(v)	PM_GetPage(PMSpriteStart + (v))
+#else
+extern const byte *const SpriteChunks[];
+#define PM_GetSpritePage(v) SpriteChunks[v]
+#endif
 memptr PM_GetPage(myint pagenum);
 
 void PM_Startup();

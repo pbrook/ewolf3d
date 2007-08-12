@@ -47,6 +47,8 @@
 
 //#define ENABLE_QUITMSG 1
 
+//#define ENABLE_COLOR
+
 // FIXME: Remove the rest of the demo code.
 //#define ENABLE_DEMO 1
 /* --- End of User-Modifiable Variables --- */
