@@ -606,8 +606,8 @@ typedef struct objstruct
 
 typedef struct statestruct
 {
-	boolean	rotate;
-	myshort shapenum; /* a shapenum of -1 means get from ob->temp1 */
+	boolean	rotate:2;
+	myshort shapenum:10; /* a shapenum of -1 means get from ob->temp1 */
 	myshort tictime;
 	/* FIXME: Make these lookups instead of pointers.  */
 	void (*think)(objtype *ob);
