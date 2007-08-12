@@ -8,6 +8,7 @@ CC = gcc -m32
 CFLAGS = -g -Wall
 endif
 
+HOSTCFLAGS = -DHOST -g
 #CC=/opt/intel/compiler60/ia32/bin/icc
 #CFLAGS = -Wall -O6 -fomit-frame-pointer -ffast-math -funroll-loops -march=pentiumpro
 #CFLAGS = -g -Wall -W -pedantic -std=c99
@@ -74,39 +75,39 @@ ewolf3d: $(EOBJS) luminary-crt0.o
 tables.o: tables.c
 
 tables.c: build_tables.c
-	gcc build_tables.c -o build_tables -lm
+	gcc $(HOSTCFLAGS) build_tables.c -o build_tables -lm
 	./build_tables > tables.c
 
 huffman.h: build_huffman.c
-	gcc build_huffman.c -o build_huffman -lm
+	gcc $(HOSTCFLAGS) build_huffman.c -o build_huffman -lm
 	./build_huffman > huffman.h
 
 mapheaders.c: build_mapheaders.c
-	gcc build_mapheaders.c -o build_mapheaders -lm
+	gcc $(HOSTCFLAGS) build_mapheaders.c -o build_mapheaders -lm
 	./build_mapheaders > mapheaders.c
 
 pagemap.c: build_pagemap.c
-	gcc build_pagemap.c -o build_pagemap -lm
+	gcc $(HOSTCFLAGS) build_pagemap.c -o build_pagemap -lm
 	./build_pagemap > pagemap.c
 
 grstarts.c: build_grstarts.c
-	gcc build_grstarts.c -o build_grstarts -lm
+	gcc $(HOSTCFLAGS) build_grstarts.c -o build_grstarts -lm
 	./build_grstarts > grstarts.c
 
 pictable.c: build_pictable.c huffman.h grstarts.c
-	gcc build_pictable.c grstarts.c -o build_pictable -lm
+	gcc $(HOSTCFLAGS) build_pictable.c grstarts.c -o build_pictable -lm
 	./build_pictable > pictable.c
 
 pal4bit.c: build_pal4bit.c grstarts.c
-	gcc build_pal4bit.c grstarts.c -o build_pal4bit -lm
+	gcc $(HOSTCFLAGS) build_pal4bit.c grstarts.c -o build_pal4bit -lm
 	./build_pal4bit > pal4bit.c
 
 romchunk.c: build_romchunk.c grstarts.c pagemap.c
-	gcc build_romchunk.c grstarts.c pagemap.c -o build_romchunk -lm
+	gcc $(HOSTCFLAGS) build_romchunk.c grstarts.c pagemap.c -o build_romchunk -lm
 	./build_romchunk > romchunk.c
 
 sprites.c: build_sprites.c pagemap.c pal4bit.c
-	gcc build_sprites.c pagemap.c pal4bit.c -o build_sprites
+	gcc $(HOSTCFLAGS) build_sprites.c pagemap.c pal4bit.c -o build_sprites
 	./build_sprites > sprites.c
 
 clean:

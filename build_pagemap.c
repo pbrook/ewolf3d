@@ -5,6 +5,7 @@ int main()
     uint16_t header[3];
     uint32_t offsets[1024];
     uint32_t size;
+    uint32_t last;
     int i;
     FILE *f = fopen("vswap." GAMEEXT, "rb");
     if (!f)
@@ -14,14 +15,20 @@ int main()
     printf("#include \"wl_def.h\"\n");
     printf("const myint ChunksInFile = %d;\n", header[0]);
     printf("const myint PMSpriteStart = %d;\n", header[1]);
-    printf("#ifdef ENABLE_AUDIO\n");
+#ifdef ENABLE_AUDIO
     printf("const myint PMSoundStart = %d;\n", header[2]);
     printf("pool_id PageAddr[%d];\n", header[0]);
-    printf("#else\n");
+    last = header[0];
+#else
+#ifdef ENABLE_COLOR
     printf("pool_id PageAddr[%d];\n", header[2]);
-    printf("#endif\n");
-    printf("const PageListStruct PMPages[%d] = {\n", header[0]);
-    for (i = 0; i < header[0]; i++)
+#else
+    printf("pool_id PageAddr[%d];\n", header[1]);
+#endif
+    last = header[2];
+#endif
+    printf("const PageListStruct PMPages[%d] = {\n", last);
+    for (i = 0; i < last; i++)
       {
 	fread(&offsets[i], 4, 1, f);
 	if (offsets[i] & 0xff0000ffu)
@@ -30,7 +37,8 @@ int main()
 	    return 1;
 	  }
       }
-    for (i = 0; i < header[0]; i++)
+    fseek(f, (header[0] - last) * 4, SEEK_CUR);
+    for (i = 0; i < last; i++)
       {
 	fread(&size, 2, 1, f);
 	printf("{%d, %d},\n", offsets[i] >> 8, size);
