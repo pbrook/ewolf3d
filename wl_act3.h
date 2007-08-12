@@ -619,4 +619,7 @@ typedef enum {
 
 extern const statetype gamestates[MAXSTATES];
 
+extern const action_fn AllThinks[];
+extern const action_fn AllActions[];
+
 #endif

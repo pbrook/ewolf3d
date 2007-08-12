@@ -1157,7 +1157,7 @@ void DoActor(objtype *ob)
 
 	if (!ob->ticcount)
 	{
-		think =	gamestates[ob->state].think;
+		think =	THINK_FN(ob);
 		if (think)
 		{
 			think(ob);
@@ -1184,7 +1184,7 @@ void DoActor(objtype *ob)
 	ob->ticcount-=tics;
 	while (ob->ticcount <= 0)
 	{
-		think = gamestates[ob->state].action;	// end of state action
+		think = ACTION_FN(ob);	// end of state action
 		if (think)
 		{
 			think(ob);
@@ -1216,7 +1216,7 @@ think:
 	//
 	// think
 	//
-	think =	gamestates[ob->state].think;
+	think =	THINK_FN(ob);
 	if (think)
 	{
 		think(ob);

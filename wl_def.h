@@ -604,16 +604,20 @@ typedef struct objstruct
 	byte prev;
 } objtype;
 
+typedef void (*action_fn)(objtype *ob);
+
 typedef struct statestruct
 {
 	boolean	rotate:2;
 	myshort shapenum:10; /* a shapenum of -1 means get from ob->temp1 */
-	myshort tictime;
-	/* FIXME: Make these lookups instead of pointers.  */
-	void (*think)(objtype *ob);
-	void (*action)(objtype *ob);
-	myshort next; /* stateenum */
-} statetype/* PACKME */;
+	myshort tictime:10;
+	byte think:6;
+	byte action:6;
+	myshort next:10; /* stateenum */
+} statetype;
+
+#define THINK_FN(ob) AllActions[gamestates[ob->state].think]
+#define ACTION_FN(ob) AllActions[gamestates[ob->state].action]
 
 #define NUMBUTTONS	8
 enum PACKED {
