@@ -557,9 +557,11 @@ void Quit(const char *error)
 	
 	ShutdownId();
 	
+#ifndef EMBEDDED
 	if (screen) {
 		DisplayTextSplash(screen, l);
 	}
+#endif
 	
 	if (error && *error) {
 		fprintf(stderr, "Quit: %s\n", error);

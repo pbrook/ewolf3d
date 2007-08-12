@@ -32,8 +32,6 @@ extern	maptype	*mapheaderseg[NUMMAPS];
 #endif
 extern	byte	*audiosegs[NUMSNDCHUNKS];
 
-extern char extension[5];
-
 /* ======================================================================== */
 
 boolean CA_LoadFile(const char *filename, memptr *ptr);

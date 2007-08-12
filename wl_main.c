@@ -38,7 +38,7 @@ myshort pixelangle[MAXVIEWWIDTH];
 //int32_t finetangent[FINEANGLES/4];
 myshort horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
 
-char configname[13] = "config.";
+char configname[13] = "config." GAMEEXT;
 
 myint _argc;
 char **_argv;

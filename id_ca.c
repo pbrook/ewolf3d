@@ -31,17 +31,18 @@ static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
 static pool_id grsegs[NUMCHUNKS];
 
-char extension[5];
-#define gfilename "vgagraph."
+#define gfilename "vgagraph." GAMEEXT
 #ifndef ENABLE_PRECOMPILE
 #define gdictname "vgadict."
 #define mheadname "maphead."
 #define gheadname "vgahead."
 #endif
-#define gmapsname "gamemaps."
+#define gmapsname "gamemaps." GAMEEXT
+#ifndef ENABLE_AUTIO
 #define aheadname "audiohed."
 #define afilename "audiot."
-#define pfilename "vswap."
+#endif
+#define pfilename "vswap." GAMEEXT
 
 #ifdef ENABLE_AUDIO
 static int32_t *audiostarts; /* array of offsets in audiot */
@@ -326,19 +327,15 @@ void CA_RLEWexpand(const word *source, byte *dest, int offset)
 /* TODO: build huffman table into flash.  */
 static void CAL_SetupGrFile()
 {
-	char fname[13];
 #ifndef ENABLE_PRECOMPILE
 	byte *grtemp;
 	myint i;
 
 	myint handle;
 /* load vgadict.ext (huffman dictionary for graphics files) */
-	strcpy(fname, gdictname);
-	strcat(fname, extension);
-
-	handle = OpenRead(fname);
+	handle = OpenRead(gdictname);
 	if (handle == -1)
-		CA_CannotOpen(fname);
+		CA_CannotOpen(gdictname);
 
 	for (i = 0; i < 256; i++) {
 	/* 0-255 is a character, > is a pointer to a node */
@@ -356,12 +353,9 @@ static void CAL_SetupGrFile()
 /* load the data offsets from vgahead.ext */
 	MM_GetPtr((memptr)&grtemp, (NUMCHUNKS+1)*3);
 	
-	strcpy(fname, gheadname);
-	strcat(fname, extension);
-
-	handle = OpenRead(fname);
+	handle = OpenRead(gheadname);
 	if (handle == -1)
-		CA_CannotOpen(fname);
+		CA_CannotOpen(gheadname);
 	
 	ReadBytes(handle, grtemp, (NUMCHUNKS+1)*3);
 
@@ -374,12 +368,9 @@ static void CAL_SetupGrFile()
 #endif
 	
 /* Open the graphics file, leaving it open until the game is finished */
-	strcpy(fname, gfilename);
-	strcat(fname, extension);
-
-	grhandle = OpenRead(fname);
+	grhandle = OpenRead(gfilename);
 	if (grhandle == -1)
-		CA_CannotOpen(fname);
+		CA_CannotOpen(gfilename);
 
 #ifndef ENABLE_PRECOMPILE
 /* load the pic headers into pictable */
@@ -412,23 +403,16 @@ static void CAL_SetupMapFile()
 	myint handle;
 	long pos;
 #endif
-	char fname[13];
 	
 /* open the data file */
-	strcpy(fname, gmapsname);
-	strcat(fname, extension);
-
-	maphandle = OpenRead(fname);
+	maphandle = OpenRead(gmapsname);
 	if (maphandle == -1)
-		CA_CannotOpen(fname);
+		CA_CannotOpen(gmapsname);
 
 #ifndef ENABLE_PRECOMPILE
-	strcpy(fname, mheadname);
-	strcat(fname, extension);
-
-	handle = OpenRead(fname);
+	handle = OpenRead(mheadname);
 	if (handle == -1)
-		CA_CannotOpen(fname);
+		CA_CannotOpen(mheadname);
 
 	RLEWtag = ReadInt16(handle);
 
@@ -478,15 +462,11 @@ static void CAL_SetupAudioFile()
 #ifdef ENABLE_AUDIO
 	myint handle;
 	long length;
-	char fname[13];
 	myint i;
 	
-	strcpy(fname, aheadname);
-	strcat(fname, extension);
-
-	handle = OpenRead(fname);
+	handle = OpenRead(aheadname);
 	if (handle == -1)
-		CA_CannotOpen(fname);
+		CA_CannotOpen(aheadname);
 	
 	length = ReadLength(handle);
 	
@@ -499,12 +479,9 @@ static void CAL_SetupAudioFile()
 
 /* open the data file */
 
-	strcpy(fname, afilename);
-	strcat(fname, extension);
-
-	audiohandle = OpenRead(fname);
+	audiohandle = OpenRead(afilename);
 	if (audiohandle == -1)
-		CA_CannotOpen(fname);
+		CA_CannotOpen(afilename);
 #endif
 }
 
@@ -895,17 +872,13 @@ static void PML_ReadFromFile(byte *buf, long offset, word length)
 
 static void PML_OpenPageFile()
 {
-	char fname[13];
 #ifndef ENABLE_PRECOMPILE
 	myint i;
 	PageListStruct *page;
 	int offset;
 #endif
 	
-	strcpy(fname, pfilename);
-	strcat(fname, extension);
-	
-	PageFile = OpenRead(fname);
+	PageFile = OpenRead(pfilename);
 	if (PageFile == -1)
 		Quit("PML_OpenPageFile: Unable to open page file");
 

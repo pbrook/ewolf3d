@@ -204,7 +204,7 @@ static myint pickquick;
 #ifdef ENABLE_SAVENAME
 static char SaveGameNames[10][32];
 #endif
-static char SaveName[13]="savegam?.";
+static char SaveName[13]="savegam?." GAMEEXT;
 
 
 #ifdef ENABLE_CONTROLS
@@ -3380,8 +3380,6 @@ void CheckForEpisodes()
 //
 // ENGLISH
 //
-	/* Hardcode release.  */
-	strcpy(extension, GAMEEXT);
 #ifndef UPLOAD
 	NewEmenuActive[2] =
 	NewEmenuActive[4] =
@@ -3391,8 +3389,5 @@ void CheckForEpisodes()
 #endif
 
 #endif
-
-	strcat(configname, extension);
-	strcat(SaveName, extension);
 }
 #endif
