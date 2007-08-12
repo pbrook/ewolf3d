@@ -709,7 +709,12 @@ extern	boolean         startgame,loadedgame;
 extern	myint		mouseadjustment;
 
 /* math tables */
+#ifdef EMBEDDED
+// FIXME:  This only needs to be half size.
+extern const myshort pixelangle[MAXVIEWWIDTH];
+#else
 extern myshort pixelangle[MAXVIEWWIDTH];
+#endif
 extern const fixed finetangent[FINEANGLES/4];
 extern const uint16_t sintable[];
 

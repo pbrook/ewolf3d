@@ -34,7 +34,9 @@ long frameon;
 long lasttimecount;
 fixed viewsin, viewcos;
 fixed viewx, viewy;		/* the focal point */
+#ifndef EMBEDDED
 myshort pixelangle[MAXVIEWWIDTH];
+#endif
 //int32_t finetangent[FINEANGLES/4];
 myshort horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
 

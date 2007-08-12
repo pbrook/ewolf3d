@@ -111,7 +111,8 @@ sprites.c: build_sprites.c pagemap.c pal4bit.c
 	./build_sprites > sprites.c
 
 clean:
-	rm -rf swolf3d xwolf3d sdlwolf3d *.o *.il build_tables tables.c \
+	rm -rf swolf3d xwolf3d sdlwolf3d ewolf3d *.o *.il \
+	  build_tables tables.c \
 	  build_huffman huffman.h build_mapheaders mapheaders.c \
 	  build_pagemap pagemap.c build_grstarts grstarts.c \
 	  build_pictable pictable.c build_pal4bit pal4bit.c \

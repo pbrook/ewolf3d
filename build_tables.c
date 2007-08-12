@@ -8,12 +8,18 @@ fixed finetangent[FINEANGLES/4];
 fixed sintable[ANGLES+ANGLES/4+1];
 
 static const double radtoint = (double)FINEANGLES/2.0/PI;
+#ifdef EMBEDDED
+static myshort pa[128];
+#endif
 
 int main()
 {
 	myint i;
-	double tang, angle, anglestep;
+	long    intang;
+	myint     halfview;
+	double tang, angle, anglestep, facedist;
 	fixed value;
+	fixed scale;
 
 	/* FIXME: Use linear interpolation to reduce size of trig tables. */
 /* calculate fine tangents */
@@ -50,6 +56,33 @@ int main()
 	    angle += anglestep;
 	}
 	printf ("\n};\n");
+
+#ifdef EMBEDDED
+	facedist = 0x5800+MINDIST;
+	halfview = 64;               /* half view in pixels */
+
+	if (MAXVIEWWIDTH != 128)
+	  printf("#error MAXVIEWWIDTH %d, expected 128\n", MAXVIEWWIDTH);
+/*
+ calculate scale value for vertical height calculations
+ and sprite x calculations
+*/
+	scale = halfview*facedist/(VIEWGLOBAL/2);
+
+/* calculate the angle offset from view angle of each pixel's ray */
+	for (i = 0; i < halfview; i++) {
+		tang = ((double)i)*VIEWGLOBAL/128/facedist;
+		angle = atan(tang);
+		intang = angle*radtoint;
+		pa[halfview-1-i] = intang;
+		pa[halfview+i] = -intang;
+	}
+	printf ("const myshort pixelangle[128] = {\n");
+	for (i = 0; i < 128; i++) {
+	    printf ("  %d,\n", pa[i]);
+	}
+	printf ("};\n");
+#endif
 	return 0;
 }
 

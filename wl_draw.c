@@ -51,9 +51,13 @@ static const double radtoint = (double)FINEANGLES/2.0/PI;
 // FIXME: Use fixed display size and precalculate angles.
 void CalcProjection(long focal)
 {
+#ifdef EMBEDDED
+	long facedist;
+#else
 	myint     i;
 	long    intang;
 	double angle, tang, facedist;
+#endif
 	myint     halfview;
 
 	focallength = focal;
@@ -72,6 +76,7 @@ void CalcProjection(long focal)
 */
 	heightnumerator = (TILEGLOBAL*scale)>>6;
 
+#ifndef EMBEDDED
 /* calculate the angle offset from view angle of each pixel's ray */
 	for (i = 0; i < halfview; i++) {
 		tang = ((double)i)*VIEWGLOBAL/viewwidth/facedist;
@@ -80,6 +85,7 @@ void CalcProjection(long focal)
 		pixelangle[halfview-1-i] = intang;
 		pixelangle[halfview+i] = -intang;
 	}
+#endif
 }
 
 /*
