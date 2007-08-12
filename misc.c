@@ -220,6 +220,7 @@ char *ultoa(unsigned long value, char *string, myint radix)
 	return string;
 }
 
+#ifndef EMBEDDED
 /* from Dan Olson */
 static void put_dos2ansi(byte attrib)
 {
@@ -296,7 +297,6 @@ static void put_dos2ansi(byte attrib)
 
 void DisplayTextSplash(const byte *text, myint l)
 {
-#ifndef EMBEDDED
 	myint i, x;
 	
 	//printf("%02X %02X %02X %02X\n", text[0], text[1], text[2], text[3]);
@@ -315,8 +315,8 @@ void DisplayTextSplash(const byte *text, myint l)
 		printf("%c[m", 27);
 		printf("\n");
 	}
-#endif
 }
+#endif
 
 /* ** */
 

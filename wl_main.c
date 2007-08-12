@@ -1301,9 +1301,9 @@ myint WolfMain(myint argc, char *argv[])
 	}
 		
 	printf("Now Loading %s\n", GAMENAME);
-#endif
 		
 	CheckForEpisodes();
+#endif
 
 	InitGame();
 

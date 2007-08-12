@@ -5,6 +5,7 @@
 //
 ////////////////////////////////////////////////////////////////////
 #include "wl_def.h"
+#ifndef EMBEDDED
 
 //
 // PRIVATE PROTOTYPES
@@ -20,6 +21,7 @@ void CP_ReadThis();
 #define STARTITEM	newgame
 #endif
 
+#ifndef EMBEDDED
 static const char endStrings[9][80]=
 {
 	ENDSTR1,
@@ -32,6 +34,7 @@ static const char endStrings[9][80]=
 	ENDSTR8,
 	ENDSTR9
 };
+#endif
 
 static signed char
 	MainPos = STARTITEM,
@@ -204,6 +207,7 @@ static char SaveGameNames[10][32];
 static char SaveName[13]="savegam?.";
 
 
+#ifdef ENABLE_CONTROLS
 ////////////////////////////////////////////////////////////////////
 //
 // INPUT MANAGER SCANCODE TABLES and
@@ -253,6 +257,7 @@ const char *IN_GetScanName(ScanCode scan)
 
 	return ScanNames[scan];
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -3390,3 +3395,4 @@ void CheckForEpisodes()
 	strcat(configname, extension);
 	strcat(SaveName, extension);
 }
+#endif

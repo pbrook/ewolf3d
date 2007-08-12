@@ -125,11 +125,19 @@ void DrawOutline(myint x,myint y,myint w,myint h,myint color1,myint color2);
 void WaitKeyUp(void);
 void ReadAnyControl(ControlInfo *ci);
 void TicDelay(myint count);
+#ifdef EMBEDDED
+#define CacheLump(s, e) do {} while(0)
+#define UnCacheLump(s, e) do {} while(0)
+#define StartCPMusic(s) do {} while(0)
+#define Confirm(s) 1
+#define Message(s) do {} while(0)
+#else
 void CacheLump(myint lumpstart,myint lumpend);
 void UnCacheLump(myint lumpstart,myint lumpend);
 void StartCPMusic(myint song);
 myint  Confirm(const char *string);
 void Message(const char *string);
+#endif
 void CheckPause(void);
 void ShootSnd(void);
 void FreeMusic(void);
