@@ -1,5 +1,9 @@
 #include "wl_def.h"
 
+#if defined(LUMINARY) && !defined(HOST)
+const unsigned char gamepal[1];
+#else
+
 #ifndef SPEAR
 
 const unsigned char gamepal[] =
@@ -148,4 +152,5 @@ const unsigned char gamepal[] =
  '\0', 0x1b, 0x1b, 0x26, '\0', 0x22,'\0'
 };
 
+#endif
 #endif
