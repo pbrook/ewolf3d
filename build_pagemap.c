@@ -45,12 +45,12 @@ int main()
     fseek(f, (header[0] - last) * 4, SEEK_CUR);
     for (i = 0; i < last; i++)
       {
-	fread(&size, 2, 1, f);
-	printf("{%d, %d},\n", offsets[i] >> 8, size);
 #ifndef ENABLE_COLOR
 	if (i == header[1])
 	  printf("#ifdef HOST\n");
 #endif
+	fread(&size, 2, 1, f);
+	printf("{%d, %d},\n", offsets[i] >> 8, size);
       }
 #ifndef ENABLE_COLOR
     printf("#endif\n");
