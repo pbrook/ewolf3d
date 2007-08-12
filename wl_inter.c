@@ -102,6 +102,7 @@ void EndSpear()
 
 void Victory()
 {
+#ifndef EMBEDDED
 #ifndef SPEARDEMO
 	long	sec;
 	myint i,min,kr,sr,tr,x;
@@ -241,6 +242,7 @@ void Victory()
 #endif
 
 #endif /* SPEARDEMO */
+#endif
 }
 
 /* ======================================================================== */
@@ -253,6 +255,7 @@ void Victory()
 ==================
 */
 
+#ifndef EMBEDDED
 void PG13()
 {
 	VW_FadeOut();
@@ -269,6 +272,7 @@ void PG13()
 
 	VW_FadeOut ();
 }
+#endif
 
 
 //==========================================================================
