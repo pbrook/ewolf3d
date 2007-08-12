@@ -106,6 +106,7 @@ void CalcTics()
 
 /* ======================================================================== */
 
+#ifndef EMBEDDED
 static void DiskFlopAnim(myint x, myint y)
 {
 	static char which = 0;
@@ -149,9 +150,11 @@ static int32_t CalcFileChecksum(myint fd, myint len)
 	
 	return cs;
 }
+#endif
 
 myint WriteConfig()
 {
+#ifndef EMBEDDED
 #ifdef ENABLE_CONTROLS
 	myint i;
 #endif
@@ -230,6 +233,7 @@ myint WriteConfig()
 		CloseWrite(fd);
 	}
 	
+#endif
 	return 0;
 }
 
@@ -254,6 +258,7 @@ static void SetDefaults()
 
 myint ReadConfig()
 {
+#ifndef EMBEDDED
 	myint fd, configokay;
 	char buf[8];
 	int32_t version, v;
@@ -362,12 +367,16 @@ configend:
 	if (!configokay) {
 		SetDefaults();
 	}
+#else
+	SetDefaults();
+#endif
 	
 	return 0;
 }
 
 myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 {
+#ifndef EMBEDDED
 	objtype *ob;
 	myint fd, i, x, y;
 	int32_t cs;
@@ -535,9 +544,11 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 		return -1;
 	}
 	
+#endif
 	return 0;
 }
 
+#ifndef EMBEDDED
 myint ReadSaveTag(const char *fn, const char *tag)
 {
 	char buf[8];
@@ -585,9 +596,11 @@ rstfail:
 	
 	return -1;
 }
+#endif
 
 myint LoadTheGame(const char *fn, myint dx, myint dy)
 {
+#ifndef EMBEDDED
 	char buf[8];
 	myint fd, i, x, y, id;
 	int32_t v;
@@ -817,6 +830,7 @@ loadfail:
 	IN_Ack();
 	
 	NewGame(1, 0);
+#endif
 	return -1;
 }
 
