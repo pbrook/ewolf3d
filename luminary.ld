@@ -60,12 +60,6 @@ SECTIONS
     KEEP (*(SORT(.fini_array.*)))
     PROVIDE_HIDDEN (__fini_array_end = .);
   } >rom
-  /* .ARM.exidx is sorted, so has to go in its own output section.  */
-   __exidx_start = .;
-  .ARM.exidx :
-  {
-    *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-  } >rom
   __exidx_end = .;
   _etext = .;
 
@@ -135,5 +129,7 @@ SECTIONS
   .debug_varnames  0 : { *(.debug_varnames) }
   .note.gnu.arm.ident 0 : { KEEP (*(.note.gnu.arm.ident)) }
   .ARM.attributes 0 : { KEEP (*(.ARM.attributes)) }
+  __exidx_start = 0;
   /DISCARD/ : { *(.note.GNU-stack) *(.isr_vector) }
+  /DISCARD/ : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
 }

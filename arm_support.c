@@ -17,6 +17,10 @@ void __errno()
 {
 }
 
+void __aeabi_unwind_cpp_pr0()
+{
+}
+
 int atoi(const char *p)
 {
     int negative = 0;
