@@ -7,6 +7,8 @@ ENTRY(_start)
 SEARCH_DIR(.)
 __DYNAMIC  =  0;
 
+EXTERN(__isr_vectors)
+
 MEMORY
 {
   rom (rx)  : ORIGIN = 0x00000000, LENGTH = 256k

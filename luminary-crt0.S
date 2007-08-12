@@ -35,6 +35,8 @@ isr_handler:
 	b .
 
 .section ".isr", "a", %progbits
+.global __isr_vectors
+__isr_vectors:
 /* System vectors.  */
 .word _stack
 .word _start

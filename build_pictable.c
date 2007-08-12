@@ -1,5 +1,6 @@
 #include "wl_def.h"
 
+#ifndef EMBEDDED
 #include "huffman.h"
 
 void CAL_HuffExpand(const byte *source, byte *dest, long length, 
@@ -32,9 +33,11 @@ void CAL_HuffExpand(const byte *source, byte *dest, long length,
 		}
 	} while (dest != endoff);   
 } 
+#endif
 
 int main()
 {
+#ifndef EMBEDDED
     byte *source;
     byte *p;
     int start;
@@ -57,8 +60,11 @@ int main()
 
     p = malloc(size);
     CAL_HuffExpand(source, p, size, grhuffman);
+#endif
 
     printf("#include \"wl_def.h\"\n");
+#ifndef EMBEDDED
+    printf("#ifndef EMBEDDED\n");
     printf("const pictabletype pictable[NUMPICS] = {\n", NUMPICS);
     if (size / 4 < NUMPICS)
       printf("#error NUMPICS > %d\n", size / 4);
@@ -68,5 +74,7 @@ int main()
 	p += 4;
       }
     printf("};\n");
+    printf("#endif\n");
+#endif
     return 0;
 }

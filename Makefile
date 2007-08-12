@@ -2,7 +2,7 @@ PROGS=ewolf3d
 
 ifeq ($(PROGS),ewolf3d)
 CC = arm-unknown-eabi-gcc
-CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -Os
+CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -Os -ffunction-sections -fdata-sections
 else
 CC = gcc -m32
 CFLAGS = -g -Wall
@@ -69,7 +69,7 @@ sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
 
 ewolf3d: $(EOBJS) luminary-crt0.o
-	$(CC) $(CFLAGS) -o ewolf3d $(EOBJS) $(ELDLIBS)
+	$(CC) $(CFLAGS) -o ewolf3d -Wl,--gc-sections $(EOBJS) $(ELDLIBS)
 
 tables.o: tables.c
 

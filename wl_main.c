@@ -374,9 +374,9 @@ configend:
 	return 0;
 }
 
+#ifndef EMBEDDED
 myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 {
-#ifndef EMBEDDED
 	objtype *ob;
 	myint fd, i, x, y;
 	int32_t cs;
@@ -544,11 +544,9 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 		return -1;
 	}
 	
-#endif
 	return 0;
 }
 
-#ifndef EMBEDDED
 myint ReadSaveTag(const char *fn, const char *tag)
 {
 	char buf[8];
@@ -596,11 +594,9 @@ rstfail:
 	
 	return -1;
 }
-#endif
 
 myint LoadTheGame(const char *fn, myint dx, myint dy)
 {
-#ifndef EMBEDDED
 	char buf[8];
 	myint fd, i, x, y, id;
 	int32_t v;
@@ -830,9 +826,9 @@ loadfail:
 	IN_Ack();
 	
 	NewGame(1, 0);
-#endif
 	return -1;
 }
+#endif
 
 /* ======================================================================== */
 

@@ -8,7 +8,9 @@ typedef struct
 	boolean flag1:1;
 } huffnode;
 #else
+#ifndef EMBEDDED
 #include "huffman.h"
+#endif
 #endif
 /*
 =============================================================================
@@ -29,18 +31,20 @@ ms0	mapseg0[MAPSIZE * MAPSIZE];
 #ifdef ENABLE_AUDIO
 static byte	*audiosegs[NUMSNDCHUNKS];
 #endif
+#ifndef EMBEDDED
 static pool_id grsegs[NUMCHUNKS];
+#endif
 
 #define gfilename "vgagraph." GAMEEXT
 #ifndef ENABLE_PRECOMPILE
-#define gdictname "vgadict."
-#define mheadname "maphead."
-#define gheadname "vgahead."
+#define gdictname "vgadict." GAMEEXT
+#define mheadname "maphead." GAMEEXT
+#define gheadname "vgahead." GAMEEXT
 #endif
 #define gmapsname "gamemaps." GAMEEXT
 #ifndef ENABLE_AUTIO
-#define aheadname "audiohed."
-#define afilename "audiot."
+#define aheadname "audiohed." GAMEEXT
+#define afilename "audiot." GAMEEXT
 #endif
 #define pfilename "vswap." GAMEEXT
 
@@ -164,6 +168,7 @@ boolean CA_LoadFile(const char *filename, memptr *ptr)
 ============================================================================
 */
 
+#ifndef EMBEDDED
 /*
 ======================
 =
@@ -204,6 +209,7 @@ void CAL_HuffExpand(const byte *source, byte *dest, long length,
 		}
 	} while (dest != endoff);   
 } 
+#endif
 
 /*
 ======================
@@ -585,6 +591,7 @@ void CA_LoadAllSounds()
 
 /* ======================================================================== */
 
+#ifndef EMBEDDED
 /*
 ======================
 =
@@ -673,6 +680,7 @@ memptr CA_GetChunk(myint chunk)
 	//MM_FreePtr((memptr)&source);
 	return dest;
 }
+#endif
 
 void CA_UnCacheGrChunk(myint chunk)
 {
@@ -947,9 +955,11 @@ memptr PM_GetPage(myint pagenum)
 		Quit("PM_GetPage: Invalid page request");
 
 #ifdef EMBEDDED
+#if 0
 	if (RomChunks[pagenum]) {
 	    return (memptr)RomChunks[pagenum];
 	}
+#endif
 #endif
 	if (PageAddr[pagenum]) {
 		addr = MM_PoolPtr(PageAddr[pagenum]);
