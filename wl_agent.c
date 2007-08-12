@@ -324,8 +324,8 @@ void TakeDamage(myint points, objtype *attacker)
 
 #ifndef EMBEDDED
 	if (!godmode)
-		gamestate.health -= points;
 #endif
+		gamestate.health -= points;
 
 	if (gamestate.health<=0)
 	{
