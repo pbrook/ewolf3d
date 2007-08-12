@@ -712,9 +712,28 @@ extern	myint		mouseadjustment;
 extern myshort pixelangle[MAXVIEWWIDTH];
 extern const fixed finetangent[FINEANGLES/4];
 extern const fixed sintable[];
-extern const fixed *const costable;
-#define sinfix(a) sintable[a]
-#define cosfix(a) costable[a]
+
+static inline fixed sinfix(int a)
+{
+    if (a > ANGLES / 2) {
+	a -= ANGLES / 2;
+	if (a > ANGLES / 4)
+	  a = (ANGLES / 2) - a;
+	return -sintable[a];
+    } else {
+	if (a > ANGLES / 4)
+	  a = (ANGLES / 2) - a;
+	return sintable[a];
+    }
+}
+
+static inline fixed cosfix(int a)
+{
+    a += ANGLES / 4;
+    if (a >= ANGLES)
+	a -= ANGLES;
+    return sinfix(a);
+}
 
 extern char configname[13];
 

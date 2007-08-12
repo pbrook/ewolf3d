@@ -56,11 +56,10 @@ int main()
 	}
 	printf ("const fixed sintable[] = {\n");
 	printf ("  0");
-	for (i = 0; i <= ANGLES+ANGLES/4; i++) {
+	for (i = 0; i <= ANGLES/4; i++) {
 	    printf (",\n  0x%x", sintable[i]);
 	}
 	printf ("\n};\n");
-	printf ("const fixed *const costable = sintable+(ANGLES/4);\n");
 	return 0;
 }
 
