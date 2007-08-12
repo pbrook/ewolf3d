@@ -12,7 +12,9 @@
 // configuration variables
 //
 boolean		MousePresent;
+#ifndef ENABLE_JOYSTICK
 boolean		JoysPresent[MaxJoys];
+#endif
 
 // 	Global variables
 uint32_t	Keyboard[NumCodes >> 5];
@@ -176,6 +178,7 @@ static void INL_ShutMouse(void)
 {
 }
 
+#ifdef ENABLE_JOYSTICK
 ///////////////////////////////////////////////////////////////////////////
 //
 //	INL_StartJoy() - Detects & auto-configures the specified joystick
@@ -196,6 +199,7 @@ static void INL_ShutJoy(word joy)
 {
 	JoysPresent[joy] = false;
 }
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -205,8 +209,10 @@ static void INL_ShutJoy(word joy)
 ///////////////////////////////////////////////////////////////////////////
 void IN_Startup(void)
 {
+#ifdef ENABLE_JOYSTICK
 	boolean	checkjoys;
 	word	i;
+#endif
 
 	if (IN_Started)
 		return;
@@ -239,14 +245,18 @@ void IN_Startup(void)
 ///////////////////////////////////////////////////////////////////////////
 void IN_Shutdown(void)
 {
+#ifdef ENABLE_JOYSTICK
 	word i;
+#endif
 
 	if (!IN_Started)
 		return;
 
 	INL_ShutMouse();
+#ifdef ENABLE_JOYSTICK
 	for (i = 0;i < MaxJoys;i++)
 		INL_ShutJoy(i);
+#endif
 	INL_ShutKbd();
 
 	IN_Started = false;
