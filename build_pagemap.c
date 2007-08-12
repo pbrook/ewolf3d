@@ -19,6 +19,7 @@ int main()
     printf("const myint PMSoundStart = %d;\n", header[2]);
     printf("pool_id PageAddr[%d];\n", header[0]);
     last = header[0];
+    printf("const PageListStruct PMPages[%d] = {\n", last);
 #else
 #ifdef ENABLE_COLOR
     printf("pool_id PageAddr[%d];\n", header[2]);
@@ -26,8 +27,12 @@ int main()
     printf("pool_id PageAddr[%d];\n", header[1]);
 #endif
     last = header[2];
-#endif
+    printf("#ifdef HOST\n");
     printf("const PageListStruct PMPages[%d] = {\n", last);
+    printf("#else\n");
+    printf("const PageListStruct PMPages[%d] = {\n", header[1]);
+    printf("#endif\n");
+#endif
     for (i = 0; i < last; i++)
       {
 	fread(&offsets[i], 4, 1, f);
@@ -42,7 +47,14 @@ int main()
       {
 	fread(&size, 2, 1, f);
 	printf("{%d, %d},\n", offsets[i] >> 8, size);
+#ifndef ENABLE_COLOR
+	if (i == header[1])
+	  printf("#ifdef HOST\n");
+#endif
       }
+#ifndef ENABLE_COLOR
+    printf("#endif\n");
+#endif
     printf("};\n");
     return 0;
 }
