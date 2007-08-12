@@ -870,8 +870,8 @@ void Thrust(myint angle, long speed)
 	if (speed >= MINDIST*2)
 		speed = MINDIST*2-1;
 
-	xmove = FixedByFrac(speed,costable[angle]);
-	ymove = -FixedByFrac(speed,sintable[angle]);
+	xmove = FixedByFrac(speed,cosfix(angle));
+	ymove = -FixedByFrac(speed,sinfix(angle));
 
 	ClipMove(player,xmove,ymove);
 

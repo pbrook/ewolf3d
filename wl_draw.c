@@ -435,8 +435,8 @@ static void WallRefresh()
 {
 	viewangle = player->angle;
 	
-	viewsin = sintable[viewangle];
-	viewcos = costable[viewangle];
+	viewsin = sinfix(viewangle);
+	viewcos = cosfix(viewangle);
 	viewx = player->x - FixedByFrac(focallength, viewcos);
 	viewy = player->y + FixedByFrac(focallength, viewsin);
 
@@ -740,13 +740,23 @@ static void ScaledDraw4(const byte *gfx, myint count, byte *vid, int x,
     vid += x >> 1;
     if (x & 1) {
 	while (count--) {
-		*vid = (*vid & 0xf0) | pal4bit[gfx[frac >> 16]];
+		c = gfx[frac >> 17];
+		if (frac & (1 << 16))
+		  c &= 0xf;
+		else
+		  c >>= 4;
+		*vid = (*vid & 0xf0) | c;
 		vid += vpitch;
 		frac += delta;
 	}
     } else {
 	while (count--) {
-		*vid = (*vid & 0x0f) | (pal4bit[gfx[frac >> 16]] << 4);
+		c = gfx[frac >> 17];
+		if (frac & (1 << 16))
+		  c <<= 4;
+		else
+		  c &= 0xf0;
+		*vid = (*vid & 0x0f) | c;
 		vid += vpitch;
 		frac += delta;
 	}
