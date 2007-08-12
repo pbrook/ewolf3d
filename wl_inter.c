@@ -372,6 +372,7 @@ LRstruct LevelRatios[20];
 
 void LevelCompleted()
 {
+#ifndef EMBEDDED
 	#define VBLWAIT	30
 	#define PAR_AMOUNT	500
 	#define PERCENT100AMT	10000
@@ -844,6 +845,7 @@ void LevelCompleted()
 	DrawPlayBorder ();
 
 	UnCacheLump(LEVELEND_LUMP_START,LEVELEND_LUMP_END);
+#endif
 }
 
 

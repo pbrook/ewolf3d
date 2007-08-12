@@ -207,6 +207,7 @@ data
 */
 void VW_DrawPropString(const char *string)
 {
+#ifndef EMBEDDED
 	byte *font;
 	myint width, step, height, x, xs, y;
 	byte *source, *ptrs;
@@ -231,10 +232,12 @@ void VW_DrawPropString(const char *string)
 			source++;
 		}
 	}
+#endif
 }
 
 void VW_MeasurePropString(const char *string, word *width, word *height)
 {
+#ifndef EMBEDDED
 	myint w, mw;
 	byte *font = CA_GetChunk(STARTFONT+fontnumber);
 	
@@ -256,6 +259,7 @@ void VW_MeasurePropString(const char *string, word *width, word *height)
 		mw = w;
 		
 	*width = mw;
+#endif
 }
 
 void VWB_DrawTile8(myint x, myint y, myint tile)
