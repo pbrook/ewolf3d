@@ -956,6 +956,9 @@ memptr PM_GetPage(myint pagenum)
 	if (pagenum >= ChunksInFile)
 		Quit("PM_GetPage: Invalid page request");
 
+	if (PageAddr[pagenum])
+	    return MM_PoolPtr(PageAddr[pagenum]);
+
 #ifndef ENABLE_COLOR
 	if (pagenum < PMSpriteStart) {
 	    byte pal[4];
@@ -998,14 +1001,10 @@ memptr PM_GetPage(myint pagenum)
 	}
 #endif
 #endif
-	if (PageAddr[pagenum]) {
-		addr = MM_PoolPtr(PageAddr[pagenum]);
-	} else {
-		const PageListStruct *page = &PMPages[pagenum];
-		addr = MM_AllocPool(&PageAddr[pagenum], page->length);
-		PML_ReadFromFile(addr, (int32_t)page->offset << 8,
-				 page->length);
-	}
+	const PageListStruct *page = &PMPages[pagenum];
+	addr = MM_AllocPool(&PageAddr[pagenum], page->length);
+	PML_ReadFromFile(addr, (int32_t)page->offset << 8,
+			 page->length);
 	return addr;
 #endif
 }
