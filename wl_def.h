@@ -672,9 +672,10 @@ typedef	struct
 	myint		faceframe;
 	myint		attackframe,attackcount,weaponframe;
 
-	myint		episode,secretcount,treasurecount,killcount,
-			secrettotal,treasuretotal;
+	myint		episode;
 #ifdef ENABLE_STATS
+	myint		secretcount,treasurecount,killcount;
+	myint		secrettotal,treasuretotal;
 	myint killtotal;
 #endif
 	long		TimeCount;

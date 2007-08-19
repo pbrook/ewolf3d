@@ -135,8 +135,10 @@ void SpawnStatic(myint tilex, myint tiley, myint type)
 	case	bo_bible:
 	case	bo_crown:
 	case	bo_fullheal:
+#ifdef ENABLE_STATS
 		if (!loadedgame)
 			gamestate.treasuretotal++;
+#endif
 
 	case	bo_firstaid:
 	case	bo_key1:
@@ -742,7 +744,9 @@ void PushWall(myint checkx, myint checky, myint dir)
 		break;
 	}
 
+#ifdef ENABLE_STATS
 	gamestate.secretcount++;
+#endif
 	pwallx = checkx;
 	pwally = checky;
 	pwalldir = dir;

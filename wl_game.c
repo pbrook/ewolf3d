@@ -147,8 +147,10 @@ void ScanInfoPlane()
 // P wall
 //
 			case 98: /* PUSHABLETILE */
+#ifdef ENABLE_STATS
 				if (!loadedgame)
 				  gamestate.secrettotal++;
+#endif
 				setmapspecial(x, y, ms_pushable);
 				break;
 
@@ -508,14 +510,16 @@ void SetupGameLevel()
 
 	if (!loadedgame) {
 		gamestate.TimeCount =
-		gamestate.secrettotal =
 #ifdef ENABLE_STATS
+		gamestate.secrettotal =
 		gamestate.killtotal =
-#endif
 		gamestate.treasuretotal =
 		gamestate.secretcount =
 		gamestate.killcount =
 		gamestate.treasurecount = 0;
+#else
+		0;
+#endif
 	}
 
 	if (demoplayback || demorecord)

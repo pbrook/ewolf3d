@@ -615,22 +615,30 @@ void GetBonus (statobj_t *check)
 	case	bo_cross:
 		SD_PlaySound (BONUS1SND);
 		GivePoints (100);
+#ifdef ENABLE_STATS
 		gamestate.treasurecount++;
+#endif
 		break;
 	case	bo_chalice:
 		SD_PlaySound (BONUS2SND);
 		GivePoints (500);
+#ifdef ENABLE_STATS
 		gamestate.treasurecount++;
+#endif
 		break;
 	case	bo_bible:
 		SD_PlaySound (BONUS3SND);
 		GivePoints (1000);
+#ifdef ENABLE_STATS
 		gamestate.treasurecount++;
+#endif
 		break;
 	case	bo_crown:
 		SD_PlaySound (BONUS4SND);
 		GivePoints (5000);
+#ifdef ENABLE_STATS
 		gamestate.treasurecount++;
+#endif
 		break;
 
 	case	bo_clip:
@@ -678,7 +686,9 @@ void GetBonus (statobj_t *check)
 		HealSelf (99);
 		GiveAmmo (25);
 		GiveExtraMan ();
+#ifdef ENABLE_STATS
 		gamestate.treasurecount++;
+#endif
 		break;
 
 	case	bo_food:

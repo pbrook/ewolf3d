@@ -860,7 +860,9 @@ void KillActor (objtype *ob)
 		break;
 	}
 
+#ifdef ENABLE_STATS
 	gamestate.killcount++;
+#endif
 	ob->flags &= ~FL_SHOOTABLE;
 	clear_actor(ob->tilex, ob->tiley);
 	ob->flags |= FL_NONMARK;
