@@ -380,13 +380,11 @@ void INL_Update()
 
 /* Graphics bits.  */
 
-byte *gfxbuf;
 byte framebuffer[128 * 64 / 2];
+byte *gfxbuf = framebuffer;
 
 void VL_Startup()
 {
-    gfxbuf = framebuffer;
-
 #ifdef INTEGRATOR
     /* Initialize CLCDC.  */
     clcdc[0] = 0x1c; // Horizontal timing (128 pixels)
