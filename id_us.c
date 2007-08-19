@@ -285,6 +285,7 @@ static void USL_XORICursor(myint x, myint y, const char *s, word cursor)
 
 }
 
+#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	US_LineInput() - Gets a line of user input at (x,y), the string defaults
@@ -472,6 +473,7 @@ boolean US_LineInput(myint x,myint y,char *buf,const char *def,boolean escok,
 	IN_ClearKeysDown();
 	return(result);
 }
+#endif
 
 static const byte rndtable[256] ={
   0,   8, 109, 220, 222, 241, 149, 107,  75, 248, 254, 140,  16,  66,

@@ -36,6 +36,7 @@ ControlType	Controls[MaxPlayers];
 
 =============================================================================
 */
+#ifndef EMBEDDED
 static const byte ASCIINames[] =		// Unshifted ASCII for scan codes
 					{
 //	 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
@@ -60,9 +61,12 @@ static const byte ASCIINames[] =		// Unshifted ASCII for scan codes
 	0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,	// 6
 	0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0   	// 7
 					};
+#endif
 
 static	boolean		IN_Started;
+#ifndef EMBEDDED
 static	boolean		CapsLock;
+#endif
 static	ScanCode	CurCode,LastCode;
 
 static	const Direction	DirTable[] =		// Quick lookup for total direction
@@ -84,7 +88,10 @@ static boolean btnstate[8];
   Keyboard[(code >> 5)] &= ~(1 << (code & 31))
 void keyboard_handler(myint code, myint press)
 {
-	byte k, c = 0;
+	byte k;
+#ifndef EMBEDDED
+	byte c = 0;
+#endif
 
 	LastEventTime = get_TimeCount();
 
@@ -105,6 +112,7 @@ void keyboard_handler(myint code, myint press)
 			
 			SetKey(k);
 
+#ifndef EMBEDDED
 			if (k == sc_CapsLock)
 			{
 				CapsLock ^= true;
@@ -125,6 +133,7 @@ void keyboard_handler(myint code, myint press)
 			
 			if (c)
 				LastASCII = c;
+#endif
 		}
 	}
 }
