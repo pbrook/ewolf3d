@@ -57,7 +57,9 @@ static int32_t grstarts[NUMCHUNKS + 1];	/* array of offsets in vgagraph */
 static huffnode grhuffman[256];
 #endif
 
+#ifndef EMBEDDED
 static myint grhandle = -1;	/* handle to VGAGRAPH */
+#endif
 static myint maphandle = -1;	/* handle to GAMEMAPS */
 #ifdef ENABLE_AUDIO
 static myint audiohandle = -1;	/* handle to AUDIOT */
@@ -322,6 +324,7 @@ void CA_RLEWexpand(const word *source, byte *dest, int offset)
 =============================================================================
 */
 
+#ifndef EMBEDDED
 /*
 ======================
 =
@@ -391,6 +394,7 @@ static void CAL_SetupGrFile()
 	CA_UnCacheGrChunk(STRUCTPIC);
 #endif
 }
+#endif
 
 /* ======================================================================== */
 
@@ -455,6 +459,7 @@ static void CAL_SetupMapFile()
 
 /* ======================================================================== */
 
+#ifdef ENABLE_AUDIO
 /*
 ======================
 =
@@ -465,7 +470,6 @@ static void CAL_SetupMapFile()
 
 static void CAL_SetupAudioFile()
 {
-#ifdef ENABLE_AUDIO
 	myint handle;
 	long length;
 	myint i;
@@ -488,8 +492,8 @@ static void CAL_SetupAudioFile()
 	audiohandle = OpenRead(afilename);
 	if (audiohandle == -1)
 		CA_CannotOpen(afilename);
-#endif
 }
+#endif
 
 /* ======================================================================== */
 
@@ -506,8 +510,12 @@ static void CAL_SetupAudioFile()
 void CA_Startup()
 {
 	CAL_SetupMapFile();
+#ifndef EMBEDDED
 	CAL_SetupGrFile();
+#endif
+#ifdef ENABLE_AUDIO
 	CAL_SetupAudioFile();
+#endif
 
 	mapon = -1;
 }
@@ -525,7 +533,9 @@ void CA_Startup()
 void CA_Shutdown()
 {
 	CloseRead(maphandle);
+#ifndef EMBEDDED
 	CloseRead(grhandle);
+#endif
 #ifdef ENABLE_AUDIO
 	CloseRead(audiohandle);
 #endif
