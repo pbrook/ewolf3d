@@ -18,8 +18,12 @@ void VL_Shutdown();
 void VL_WaitVBL(myint vbls);
 void VW_UpdateScreen();
 
+#ifdef LUMINARY
+#define VL_SetPalette(p) do {} while(0)
+#else
 void VL_SetPalette(const byte *palette);
 void VL_GetPalette(byte *palette);
+#endif
 
 void VL_MemToScreen(const byte *source, myint width, myint height, myint x, myint y);
 

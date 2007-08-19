@@ -31,8 +31,13 @@ extern boolean screenfaded;
 #define VW_Hlin(x,z,y,c)	VL_Hlin(x,y,(z)-(x)+1,c)
 #define VW_Vlin(y,z,x,c)	VL_Vlin(x,y,(z)-(y)+1,c)
 #define VW_WaitVBL		VL_WaitVBL
+#ifdef LUMINARY
+#define VW_FadeIn()		do {} while (0)
+#define VW_FadeOut()		do {} while (0)
+#else
 #define VW_FadeIn()		VL_FadeIn(0,255,gamepal,30);
 #define VW_FadeOut()		VL_FadeOut(0,255,0,0,0,30);
+#endif
 void	VW_MeasurePropString(const char *string, word *width, word *height);
 
 void VW_DrawPropString(const char *string);

@@ -1036,10 +1036,12 @@ void Died()
 		} while (curangle != iangle);
 	}
 
+#ifdef ENABLE_FLASHES
 //
 // fade to red
 //
 	FinishPaletteShifts();
+#endif
 
 	FizzleFade(false, 70, 4);
 	

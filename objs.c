@@ -1,8 +1,6 @@
 #include "wl_def.h"
 
-#if defined(LUMINARY) && !defined(HOST)
-const unsigned char gamepal[1];
-#else
+#if defined(HOST) || !defined(LUMINARY)
 
 #ifndef SPEAR
 

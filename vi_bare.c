@@ -429,9 +429,9 @@ void VW_UpdateScreen()
 #endif
 }
 
+#ifdef INTEGRATOR
 void VL_SetPalette(const byte *palette)
 {
-#ifdef INTEGRATOR
     int i;
     uint32_t val;
     const byte *p = palette;
@@ -445,13 +445,13 @@ void VL_SetPalette(const byte *palette)
 	val |= (*(p++) & 0x3e) << 25;
 	clcdc[i + 0x80] = val;
     }
-#endif
 }
 
 void VL_GetPalette(byte *palette)
 {
     FIXME();
 }
+#endif
 
 #ifdef DEBUG
 void Quit(const char *error)

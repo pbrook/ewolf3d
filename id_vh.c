@@ -82,6 +82,7 @@ void VL_FadeOut(myint start, myint end, myint red, myint green, myint blue, myin
 	screenfaded = true;
 }
 
+#ifndef LUMINARY
 /*
 =================
 =
@@ -121,6 +122,7 @@ void VL_FadeIn(myint start, myint end, const byte *palette, myint steps)
 #endif
 	screenfaded = false;
 }
+#endif
 
 void VL_CacheScreen(myint chunk)
 {

@@ -2413,7 +2413,9 @@ void A_StartDeathCam(objtype *ob)
 	long    xmove,ymove;
 	long	dist;
 
+#ifdef ENABLE_FLASHES
 	FinishPaletteShifts();
+#endif
 
 	VW_WaitVBL(100);
 

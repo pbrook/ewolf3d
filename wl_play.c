@@ -1101,6 +1101,7 @@ void UpdatePaletteShifts()
 }
 
 
+#ifdef ENABLE_FLASHES
 /*
 =====================
 =
@@ -1113,15 +1114,13 @@ void UpdatePaletteShifts()
 
 void FinishPaletteShifts()
 {
-#ifdef ENABLE_FLASHES
 	if (palshifted)
 	{
 		palshifted = 0;
 		VL_SetPalette(gamepal);
 	}
-#endif
-
 }
+#endif
 
 
 /*
@@ -1339,6 +1338,8 @@ void PlayLoop()
 
 	} while (!playstate && !startgame);
 
+#ifdef ENABLE_FLASHES
 	if (playstate != ex_died)
 		FinishPaletteShifts();
+#endif
 }
