@@ -117,10 +117,14 @@ typedef	int8_t ScanCode;
 
 typedef	enum {
 	ctrl_Keyboard,
+#ifdef ENABLE_JOYSTICK
 	ctrl_Joystick,
 	ctrl_Joystick1 = ctrl_Joystick, 
 	ctrl_Joystick2,
+#endif
+#ifdef ENABLE_MOUSE
 	ctrl_Mouse
+#endif
 } PACKED ControlType;
 
 typedef	enum {

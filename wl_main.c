@@ -1127,7 +1127,7 @@ void DoJukebox()
 void ShutdownId()
 {
 	US_Shutdown();
-#ifndef ENABLE_AUDIO
+#ifdef ENABLE_AUDIO
 	SD_Shutdown();
 #endif
 	IN_Shutdown();

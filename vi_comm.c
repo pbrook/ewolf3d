@@ -11,8 +11,10 @@
 //
 // configuration variables
 //
+#ifdef ENABLE_MOUSE
 boolean		MousePresent;
-#ifndef ENABLE_JOYSTICK
+#endif
+#ifdef ENABLE_JOYSTICK
 boolean		JoysPresent[MaxJoys];
 #endif
 
@@ -70,7 +72,9 @@ static	const Direction	DirTable[] =		// Quick lookup for total direction
 						dir_SouthWest,	dir_South,	dir_SouthEast
 					};
 
+#ifndef KBD_ONLY
 static boolean btnstate[8];
+#endif
 
 #define	GetKey(code) \
   ((Keyboard[(code >> 5)] & (1 << (code & 31))) != 0)
@@ -325,19 +329,21 @@ IN_CheckAck();
 				buttons += 1 << 1;
 			realdelta = false;
 			break;
+#ifdef ENABLE_JOYSTICK
 		case ctrl_Joystick1:
 		case ctrl_Joystick2:
-#ifdef ENABLE_JOYSTICK
 			INL_GetJoyDelta(type - ctrl_Joystick,&dx,&dy);
 			buttons = INL_GetJoyButtons(type - ctrl_Joystick);
 			realdelta = true;
-#endif
 			break;
+#endif
+#ifdef ENABLE_MOUSE
 		case ctrl_Mouse:
 			IN_GetMouseDelta(&dx,&dy);
 			buttons = IN_MouseButtons();
 			realdelta = true;
 			break;
+#endif
 		}
 
 	if (realdelta)
@@ -371,12 +377,16 @@ IN_CheckAck();
 
 void IN_StartAck(void)
 {
+#ifndef KBD_ONLY
 	unsigned	i,buttons;
+#endif
+
 
 //
 // get initial state of everything
 //
 	IN_ClearKeysDown();
+#ifndef KBD_ONLY
 	memset (btnstate,0,sizeof(btnstate));
 
 	buttons = IN_JoyButtons () << 4;
@@ -386,17 +396,21 @@ void IN_StartAck(void)
 	for (i=0;i<8;i++,buttons>>=1)
 		if (buttons&1)
 			btnstate[i] = true;
+#endif
 }
 
 boolean IN_CheckAck()
 {	
+#ifndef KBD_ONLY
 	unsigned i, buttons;
+#endif
 	
 	INL_Update();
 		
 	if (LastScan)
 		return true;
 
+#ifndef KBD_ONLY
 	buttons = IN_JoyButtons () << 4;
 	if (MousePresent)
 		buttons |= IN_MouseButtons ();
@@ -409,6 +423,7 @@ boolean IN_CheckAck()
 		}
 		else
 			btnstate[i]=false;
+#endif
 
 	return false;
 }

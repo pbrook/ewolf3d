@@ -33,6 +33,10 @@
 #define SKIPFADE 1
 
 //#define ENABLE_JOYSTICK 1
+//#define ENABLE_MOUSE 1
+#if !defined(ENABLE_MOUSE) && !defined(ENABLE_JOYSTICK)
+#define KBD_ONLY
+#endif
 
 //#define ENABLE_HIGHSCORES 1
 
