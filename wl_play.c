@@ -1255,7 +1255,9 @@ void PlayLoop()
 	
 	frameon = 0;
 	anglefrac = 0;
+#ifndef EMBEDDED
 	facecount = 0;
+#endif
 	funnyticount = 0;
 	
 	memset (buttonstate,0,sizeof(buttonstate));
@@ -1306,7 +1308,9 @@ void PlayLoop()
 
 		gamestate.TimeCount += tics;
 
+#ifdef ENABE_AUDIO
  		UpdateSoundLoc(player->x, player->y, player->angle);
+#endif
 
 		if (screenfaded)
 			VW_FadeIn();

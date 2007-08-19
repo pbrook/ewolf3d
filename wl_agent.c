@@ -225,6 +225,7 @@ void DrawFace()
 }
 
 
+#ifndef EMBEDDED
 /*
 ===============
 =
@@ -253,6 +254,7 @@ void UpdateFace()
 		DrawFace();
 	}
 }
+#endif
 
 
 /*
@@ -664,8 +666,10 @@ void GetBonus (statobj_t *check)
 		SD_PlaySound (GETGATLINGSND);
 		GiveWeapon (wp_chaingun);
 
+#ifndef EMBEDDED
 		StatusDrawPic (17,4,GOTGATLINGPIC);
 		facecount = 0;
+#endif
 		gotgatgun = 1;
 		break;
 
@@ -807,8 +811,10 @@ void ClipMove(objtype *ob, long xmove, long ymove)
 		return;		// walk through walls
 #endif
 
+#ifdef ENABLE_AUDIO
 	if (!SD_SoundPlaying())
 		SD_PlaySound (HITWALLSND);
+#endif
 
 	ob->x = basex+xmove;
 	ob->y = basey;
@@ -1223,7 +1229,9 @@ void T_Attack(objtype *ob)
 {
 	const struct atkinf *cur;
 
+#ifndef EMBEDDED
 	UpdateFace();
+#endif
 
 	if (gamestate.victoryflag)		// watching the BJ actor
 	{
@@ -1323,7 +1331,9 @@ void T_Player(objtype *ob)
 		return;
 	}
 
+#ifndef EMBEDDED
 	UpdateFace();
+#endif
 	CheckWeaponChange();
 
 	if (buttonstate[bt_use])

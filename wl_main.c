@@ -253,9 +253,11 @@ static void SetDefaults()
 
 	mouseadjustment = 5;
 
+#ifdef ENABLE_AUDIO
 	SD_SetMusicMode(smm_AdLib);
 	SD_SetSoundMode(sdm_AdLib);
 	SD_SetDigiDevice(sds_SoundBlaster);
+#endif
 }
 
 myint ReadConfig()
@@ -1125,7 +1127,9 @@ void DoJukebox()
 void ShutdownId()
 {
 	US_Shutdown();
+#ifndef ENABLE_AUDIO
 	SD_Shutdown();
+#endif
 	IN_Shutdown();
 	VW_Shutdown();
 	CA_Shutdown();
@@ -1182,7 +1186,9 @@ void InitGame()
 	CA_Startup();
 	VW_Startup();
 	IN_Startup();
+#ifdef ENABLE_AUDIO
 	SD_Startup();
+#endif
 	US_Startup();
 	
 //

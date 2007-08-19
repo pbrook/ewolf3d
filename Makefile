@@ -33,7 +33,7 @@ EOBJS = $(OBJS) $(ROBJS) vi_bare.o arm_support.o
 LDLIBS =
 
 # no sound
-OBJS += sd_null.o
+#OBJS += sd_null.o
 # sound using OSS
 #OBJS += sd_oss.o fmopl.o
 #CFLAGS += -D_REENTRANT

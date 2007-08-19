@@ -1,6 +1,7 @@
 #ifndef	__SD_COMM_H__
 #define	__SD_COMM_H__
 
+#ifdef ENABLE_AUDIO
 typedef	enum	{
 					sdm_Off,
 					sdm_PC,sdm_AdLib
@@ -40,5 +41,10 @@ void UpdateSoundLoc(fixed x, fixed y, myint angle);
 
 extern myint DigiMap[];
 void InitDigiMap();
+#else
+#define SD_WaitSoundDone() do {} while(0)
+#define SD_PlaySound(n) do {} while (0)
+#define PlaySoundLocGlobal(s, id, gx, gy)
+#endif
 
 #endif
