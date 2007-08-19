@@ -8,7 +8,7 @@ int total_rle;
 int total_lz;
 int total_before;
 
-void compress_wall(int picnum)
+int compress_wall(int picnum)
 {
     byte pixels[64 * 64];
     byte data[16];
@@ -22,16 +22,17 @@ void compress_wall(int picnum)
     byte c;
 
     if (PMPages[picnum].length == 0) {
-	printf("#define Wall%d NULL\n", picnum);
-	return;
+	return 0;
     }
     fseek(vswap, PMPages[picnum].offset << 8, SEEK_SET);
     fread(pixels, PMPages[picnum].length, 1, vswap);
     for (i = 0; i < 64 * 64; i++) {
 	pixels[i] = pal4bit[pixels[i]];
     }
+#if 0
     printf ("static const byte ROMAREA Wall%d[%d] = {\n", picnum,
 	    64 * 64 / 4 + WALLCBLOCK * 2);
+#endif
     p = pixels;
     for (i = 0; i < WALLCBLOCK; i++) {
 	for (j = 0; j < 16; j++)
@@ -74,21 +75,30 @@ void compress_wall(int picnum)
 	printf ("\n");
 	p += WALLBLOCKSIZE;
     }
-    printf("};\n");
+    printf ("\n");
+    return 1;
 }
 
 int main()
 {
   int i;
+  int *wallstarts;
+  int wallnum;
+  wallstarts = (int *)malloc(PMSpriteStart * sizeof(int));
   vswap = fopen("vswap." GAMEEXT, "rb");
   printf("#include \"wl_def.h\"\n");
+  wallnum = 0;
+  printf("const byte ROMAREA WallData[] = {\n");
   for (i = 0; i < PMSpriteStart; i++) {
-      compress_wall(i);
+      wallstarts[i] = wallnum;
+      if (compress_wall(i))
+	wallnum++;
   }
+  printf("};\n");
   // FIXME: Could use array indices instead of pointers.  */
-  printf("const byte *const ROMAREA WallChunks[%d] = {\n", PMSpriteStart);
+  printf("const byte const ROMAREA WallChunks[%d] = {\n", PMSpriteStart);
   for (i = 0; i < PMSpriteStart; i++) {
-      printf("  Wall%d,\n", i);
+      printf("  %d,\n", wallstarts[i]);
   }
   printf("};\n");
   fclose(vswap);

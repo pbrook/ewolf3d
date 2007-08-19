@@ -980,7 +980,8 @@ memptr PM_GetPage(myint pagenum)
 
 	    addr = MM_AllocPool(&PageAddr[pagenum], 64 * 64);
 	    p = (byte *)addr;
-	    src = WallChunks[pagenum];
+	    y = WallChunks[pagenum] * (64 * 64 / 4 + WALLCBLOCK * 2);
+	    src = WallData+y;
 	    for (x = 0; x < WALLCBLOCK; x++) {
 		pal[0] = 0x1f - (src[0] >> 4);
 		pal[1] = 0x1f - (src[0] & 0x0f);
