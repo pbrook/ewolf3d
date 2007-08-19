@@ -1,5 +1,6 @@
 #include "wl_def.h"
 
+#ifndef EMBEDDED
 /*
 ==================
 =
@@ -15,6 +16,7 @@ void ClearSplitVWB()
 	WindowW = 320;
 	WindowH = 160;
 }
+#endif
 
 
 /* ======================================================================== */
@@ -368,10 +370,12 @@ void BJ_Breathe()
 ==================
 */
 
+#ifndef EMBEDDED
 #ifndef SPEAR
 LRstruct LevelRatios[8];
 #else
 LRstruct LevelRatios[20];
+#endif
 #endif
 
 void LevelCompleted()

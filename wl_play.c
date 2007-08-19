@@ -603,6 +603,7 @@ void CheckKeys()
 		DrawAmmo();
 		DrawScore();
 
+#ifndef EMBEDDED
 		ClearMemory();
 		CA_CacheGrChunk(STARTFONT+1);
 		ClearSplitVWB();
@@ -614,6 +615,7 @@ void CheckKeys()
 		IN_Ack();
 
 		DrawPlayBorder();
+#endif
 	}
 
 	//
