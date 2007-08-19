@@ -343,7 +343,7 @@ uint32_t SwapInt32L(uint32_t i)
 
 /* ** */
 
-#ifndef PRECOMPILE
+#ifndef ENABLE_PRECOMPILE
 myint OpenWrite(const char *fn)
 {
 	myint fp;

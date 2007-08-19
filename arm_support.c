@@ -116,7 +116,7 @@ void *memcpy(void *dest, const void *src, size_t n)
     return dest;
 }
 
-#ifndef PRECOMPILE
+#ifndef ENABLE_PRECOMPILE
 #ifdef LUMINARY
 #define MAX_FILES 4
 static FATFS fat;
