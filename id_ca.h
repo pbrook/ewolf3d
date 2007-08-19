@@ -3,7 +3,11 @@
 
 /* ======================================================================== */
 
+#ifdef UPLOAD
+#define NUMMAPS		10
+#else
 #define NUMMAPS		60
+#endif
 #define MAPPLANES	2
 
 typedef	struct

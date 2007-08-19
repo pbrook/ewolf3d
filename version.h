@@ -60,9 +60,7 @@
 #if WMODE == 0
 /* #define SPEAR */
 /* #define SPEARDEMO */
-#ifndef EMBEDDED
 #define UPLOAD
-#endif
 #define GAMENAME	"Wolfenstein 3D Shareware"
 #define GAMEEXT		"wl1"
 #define GAMETYPE	"WL1\0"

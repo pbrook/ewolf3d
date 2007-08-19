@@ -524,7 +524,9 @@ void PollControls()
 
 void CenterWindow(word w,word h)
 {
+#ifndef EMBEDDED
 	US_DrawWindow(((MAXX / 8) - w) / 2,((MAXY / 8) - h) / 2,w,h);
+#endif
 }
 
 //===========================================================================

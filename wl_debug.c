@@ -1,5 +1,6 @@
 #include "wl_def.h"
 
+#ifndef EMBEDDED
 /*
 ==================
 =
@@ -90,7 +91,6 @@ void ShapeTest()
 {
 }
 
-#ifndef EMBEDDED
 /*
 ================
 =

@@ -21,9 +21,9 @@ int main()
 
     printf("#include \"wl_def.h\"\n");
     printf("const word RLEWtag = 0x%x;\n", rlew);
-    printf("const maptype mapheaderseg[60] = {\n");
+    printf("const maptype mapheaderseg[NUMMAPS] = {\n");
     f = fopen("gamemaps." GAMEEXT, "rb");
-    for (i = 0; i < 60; i++)
+    for (i = 0; i < NUMMAPS; i++)
       {
 	if (!offsets[i]) {
 	    printf ("{{0, 0}, {0,0}},\n");

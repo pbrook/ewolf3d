@@ -491,6 +491,7 @@ void A_DeathScream (objtype *ob)
 
 	case guardobj:
 		{
+#ifdef ENABLE_AUDIO
 #ifndef UPLOAD
 		 myint sounds[8]={ DEATHSCREAM1SND, DEATHSCREAM2SND,
 				 DEATHSCREAM3SND, DEATHSCREAM4SND,
@@ -505,6 +506,7 @@ void A_DeathScream (objtype *ob)
 		 };
 		 PlaySoundLocActor(sounds[US_RndT()%3], ob);
 #endif				
+#endif
 		}
 		break;
 	case officerobj:
