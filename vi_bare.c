@@ -326,15 +326,6 @@ void VL_ScreenSaver()
 
 /* Input.  */
 
-byte IN_MouseButtons()
-{
-    return 0;
-}
-
-void IN_GetMouseDelta(myint *dx, myint *dy)
-{
-}
-
 void INL_Update()
 {
 #ifdef INTEGRATOR

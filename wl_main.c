@@ -28,7 +28,9 @@ myint centerx;
 myint shootdelta;			/* pixels away from centerx a target can be */
 
 boolean startgame,loadedgame;
+#ifdef MOUSE_ENABLED
 myint mouseadjustment;
+#endif
 
 long frameon;
 long lasttimecount;
@@ -243,15 +245,16 @@ static void SetDefaults()
 {
 	viewsize = 15;
 	
+#ifdef MOUSE_ENABLED
 	mouseenabled = false;
+	mouseadjustment = 5;
+#endif
 
 #ifdef JOYSTICK_ENABLED
 	joystickenabled = false;
 	joypadenabled = false;
 	joystickport = 0;
 #endif
-
-	mouseadjustment = 5;
 
 #ifdef ENABLE_AUDIO
 	SD_SetMusicMode(smm_AdLib);
