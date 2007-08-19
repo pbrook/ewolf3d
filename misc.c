@@ -504,3 +504,29 @@ myshort atan2fix(fixed x, fixed y)
     return res + offset;
 }
 
+fixed sinfix(int a)
+{
+    if (a > ANGLES / 2) {
+	a -= ANGLES / 2;
+	if (a > ANGLES / 4)
+	  a = (ANGLES / 2) - a;
+	if (a == ANGLES / 4)
+	  return -GLOBAL1;
+	return -(fixed)sintable[a];
+    } else {
+	if (a > ANGLES / 4)
+	  a = (ANGLES / 2) - a;
+	if (a == ANGLES / 4)
+	  return GLOBAL1;
+	return (fixed)sintable[a];
+    }
+}
+
+fixed cosfix(int a)
+{
+    a += ANGLES / 4;
+    if (a >= ANGLES)
+	a -= ANGLES;
+    return sinfix(a);
+}
+

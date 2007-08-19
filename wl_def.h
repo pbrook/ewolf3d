@@ -723,32 +723,8 @@ extern myshort pixelangle[MAXVIEWWIDTH];
 #endif
 extern const fixed finetangent[FINEANGLES/4];
 extern const uint16_t sintable[];
-
-static inline fixed sinfix(int a)
-{
-    if (a > ANGLES / 2) {
-	a -= ANGLES / 2;
-	if (a > ANGLES / 4)
-	  a = (ANGLES / 2) - a;
-	if (a == ANGLES / 4)
-	  return -GLOBAL1;
-	return -(fixed)sintable[a];
-    } else {
-	if (a > ANGLES / 4)
-	  a = (ANGLES / 2) - a;
-	if (a == ANGLES / 4)
-	  return GLOBAL1;
-	return (fixed)sintable[a];
-    }
-}
-
-static inline fixed cosfix(int a)
-{
-    a += ANGLES / 4;
-    if (a >= ANGLES)
-	a -= ANGLES;
-    return sinfix(a);
-}
+fixed sinfix(int a);
+fixed cosfix(int a);
 
 extern char configname[13];
 
