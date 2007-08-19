@@ -239,19 +239,18 @@ static void oled_init()
 
 }
 
+static void oled_setwindow()
+{
+    static const byte cmd[6] = {0x15, 0, 63, 0x75, 0, 63};
+    ssi_select(0);
+    oled_write(cmd, 6, 1);
+}
+
 void oled_clear()
 {
     uint8_t buf[4];
     int i;
-    ssi_select(0);
-    buf[0] = 0x15;
-    buf[1] = 0;
-    buf[2] = 63;
-    oled_write(buf, 3, 1);
-    buf[0] = 0x75;
-    buf[1] = 0;
-    buf[2] = 63;
-    oled_write(buf, 3, 1);
+    oled_setwindow();
     memset(buf, 0, 4);
     for (i = 0; i < 128 * 64 / 8; i++) {
 	oled_write(buf, 4, 0);
@@ -267,15 +266,7 @@ void oled_render()
     byte *p;
 #endif
 
-    ssi_select(0);
-    buf[0] = 0x15;
-    buf[1] = 0;
-    buf[2] = 63;
-    oled_write(buf, 3, 1);
-    buf[0] = 0x75;
-    buf[1] = 0;
-    buf[2] = 63;
-    oled_write(buf, 3, 1);
+    oled_setwindow();
     buf[0] = 0xA0;
     buf[1] = 0x52;
     oled_write(buf, 2, 1);
