@@ -122,19 +122,20 @@ void NewState(objtype *ob, myint state) /* stateenum */
 	}                                               \
 }
 
-#define CHECKSIDE(x,y)								\
-{                                               \
-	if (any_actor_at(x, y))                                       \
-	{                                               \
-		if (wall_actor_at(x, y))                               \
-			return false;                           \
-		if (!obj_actor_at(x, y))                               \
-			doornum = get_actor_at(x, y);                      \
-		else if (objlist[get_actor_at(x, y)].flags & FL_SHOOTABLE) \
-			return false;                           \
-	}                                               \
+static int do_checkside(int x, int y)
+{
+	if (any_actor_at(x, y))
+	{
+		if (wall_actor_at(x, y))
+			return -2;
+		if (!obj_actor_at(x, y))
+			return get_actor_at(x, y);
+		else if (objlist[get_actor_at(x, y)].flags & FL_SHOOTABLE)
+			return -2;
+	}
+	return -1;
 }
-
+#define CHECKSIDE(x, y) doornum = do_checkside(x, y);
 
 boolean TryWalk(objtype *ob)
 {
@@ -276,6 +277,8 @@ boolean TryWalk(objtype *ob)
 			Quit ("Walk: Bad dir");
 		}
 
+	if (doornum == -2)
+	  return false;
 	if (doornum != -1)
 	{
 		OpenDoor (doornum);

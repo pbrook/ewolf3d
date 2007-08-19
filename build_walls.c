@@ -30,12 +30,13 @@ void compress_wall(int picnum)
     for (i = 0; i < 64 * 64; i++) {
 	pixels[i] = pal4bit[pixels[i]];
     }
-    printf ("static const byte ROMAREA Wall%d[64 * 18] = {\n", picnum);
+    printf ("static const byte ROMAREA Wall%d[%d] = {\n", picnum,
+	    64 * 64 / 4 + WALLCBLOCK * 2);
     p = pixels;
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < WALLCBLOCK; i++) {
 	for (j = 0; j < 16; j++)
 	    data[j] = 0;
-	for (j = 0; j < 64; j++)
+	for (j = 0; j < WALLBLOCKSIZE; j++)
 	    data[p[j]]++;
 	for (n = 0; n < 4; n++) {
 	    bestmatch = 0;
@@ -55,7 +56,7 @@ void compress_wall(int picnum)
 	}
 	printf ("%d, %d, ", (val[0] << 4) | val[1], (val[2] << 4) |  val[3]);
 	c = 0;
-	for (j = 0; j < 64; j++) {
+	for (j = 0; j < WALLBLOCKSIZE; j++) {
 	    bestmatch = 16;
 	    bestpos = 0;
 	    for (n = 0; n < 4; n++) {
@@ -71,7 +72,7 @@ void compress_wall(int picnum)
 	    }
 	}
 	printf ("\n");
-	p += 64;
+	p += WALLBLOCKSIZE;
     }
     printf("};\n");
 }

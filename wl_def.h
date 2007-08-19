@@ -28,6 +28,8 @@ extern myint vwidth, vheight, vpitch; /* size of screen */
 #define MAXSTATS		400		// max number of lamps, bonus, etc
 #define MAXDOORS		64		// max number of sliding doors
 #define MAXWALLTILES		64		// max number of wall tiles
+#define WALLCBLOCK		16		// Number of compression blocks
+#define WALLBLOCKSIZE		((64 * 64) / WALLCBLOCK)
 
 //
 // tile constants

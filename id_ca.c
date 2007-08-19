@@ -971,13 +971,13 @@ memptr PM_GetPage(myint pagenum)
 	    addr = MM_AllocPool(&PageAddr[pagenum], 64 * 64);
 	    p = (byte *)addr;
 	    src = WallChunks[pagenum];
-	    for (x = 0; x < 64; x++) {
+	    for (x = 0; x < WALLCBLOCK; x++) {
 		pal[0] = 0x1f - (src[0] >> 4);
 		pal[1] = 0x1f - (src[0] & 0x0f);
 		pal[2] = 0x1f - (src[1] >> 4);
 		pal[3] = 0x1f - (src[1] & 0x0f);
 		src += 2;
-		for (y = 0; y < 16; y++) {
+		for (y = 0; y < WALLBLOCKSIZE / 4; y++) {
 		    c = *(src++);
 		    *(p++) = pal[c & 3];
 		    c >>= 2;
