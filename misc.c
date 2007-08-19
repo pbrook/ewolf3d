@@ -343,6 +343,7 @@ uint32_t SwapInt32L(uint32_t i)
 
 /* ** */
 
+#ifndef PRECOMPILE
 myint OpenWrite(const char *fn)
 {
 	myint fp;
@@ -454,6 +455,7 @@ myint ReadBytes(myint fp, byte *d, myint len)
 {
 	return read(fp, d, len);
 }
+#endif
 
 myshort atan2fix(fixed x, fixed y)
 {

@@ -272,7 +272,6 @@ void PG13()
 
 	VW_FadeOut ();
 }
-#endif
 
 
 //==========================================================================
@@ -352,6 +351,7 @@ void BJ_Breathe()
 		max=35;
 	}
 }
+#endif
 
 
 
@@ -857,6 +857,7 @@ void LevelCompleted()
 //==========================================================================
 
 
+#ifndef EMBEDDED
 /*
 =================
 =
@@ -882,7 +883,6 @@ boolean PreloadUpdate(myint current, myint total)
 
 void PreloadGraphics()
 {
-#ifndef EMBEDDED
 	myint i;
 	
 	DrawLevel();
@@ -908,8 +908,8 @@ void PreloadGraphics()
 
 	DrawPlayBorder();
 	VW_UpdateScreen();
-#endif
 }
+#endif
 
 
 //==========================================================================

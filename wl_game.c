@@ -705,6 +705,7 @@ void DrawStatusBar()
 
 void DrawPlayScreen()
 {
+#ifndef EMBEDDED
 	VW_FadeOut();
 
 	CA_CacheGrChunk(STATUSBARPIC);
@@ -715,6 +716,7 @@ void DrawPlayScreen()
 	CA_UnCacheGrChunk(STATUSBARPIC);
 
 	DrawStatusBar();
+#endif
 }
 
 /* ======================================================================= */
@@ -1117,9 +1119,11 @@ restartgame:
 		ingame = true;
 		StartMusic();
 		
+#ifndef EMBEDDED
 		if (!died)
 			PreloadGraphics();
 		else
+#endif
 			died = false;
 
 		DrawLevel();

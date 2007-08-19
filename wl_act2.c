@@ -2475,6 +2475,7 @@ void A_StartDeathCam(objtype *ob)
 
 	gamestate.victoryflag = true;
 	
+#ifndef EMBEDDED
 	FizzleFade(false, 70, 127);
 
 	CacheLump(LEVELEND_LUMP_START, LEVELEND_LUMP_END);
@@ -2482,6 +2483,7 @@ void A_StartDeathCam(objtype *ob)
 	Write(0, 7, STR_SEEAGAIN);
 
 	VW_UpdateScreen();
+#endif
 
 	IN_UserInput(300);
 

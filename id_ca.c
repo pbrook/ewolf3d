@@ -60,7 +60,9 @@ static huffnode grhuffman[256];
 #ifndef EMBEDDED
 static myint grhandle = -1;	/* handle to VGAGRAPH */
 #endif
+#ifndef ENABLE_PRECOMPILE
 static myint maphandle = -1;	/* handle to GAMEMAPS */
+#endif
 #ifdef ENABLE_AUDIO
 static myint audiohandle = -1;	/* handle to AUDIOT */
 #endif
@@ -73,6 +75,7 @@ static myint audiohandle = -1;	/* handle to AUDIOT */
 =============================================================================
 */
 
+#ifndef ENABLE_PRECOMPILE
 static void CA_CannotOpen(const char *string)
 {
 	char str[30];
@@ -82,6 +85,7 @@ static void CA_CannotOpen(const char *string)
 	strcat(str, "!\n");
 	Quit(str);
 }
+#endif
 
 #ifdef ENABLE_DEMO
 /*
@@ -398,6 +402,7 @@ static void CAL_SetupGrFile()
 
 /* ======================================================================== */
 
+#ifndef ENABLE_PRECOMPILE
 /*
 ======================
 =
@@ -408,18 +413,15 @@ static void CAL_SetupGrFile()
 
 static void CAL_SetupMapFile()
 {
-#ifndef ENABLE_PRECOMPILE
 	myint i;
 	myint handle;
 	long pos;
-#endif
 	
 /* open the data file */
 	maphandle = OpenRead(gmapsname);
 	if (maphandle == -1)
 		CA_CannotOpen(gmapsname);
 
-#ifndef ENABLE_PRECOMPILE
 	handle = OpenRead(mheadname);
 	if (handle == -1)
 		CA_CannotOpen(mheadname);
@@ -452,9 +454,8 @@ static void CAL_SetupMapFile()
 	}
 
 	CloseRead(handle);
-#endif
-	
 }
+#endif
 
 
 /* ======================================================================== */
@@ -509,7 +510,9 @@ static void CAL_SetupAudioFile()
 
 void CA_Startup()
 {
+#ifndef ENABLE_PRECOMPILE
 	CAL_SetupMapFile();
+#endif
 #ifndef EMBEDDED
 	CAL_SetupGrFile();
 #endif
@@ -532,7 +535,9 @@ void CA_Startup()
 
 void CA_Shutdown()
 {
+#ifndef ENABLE_PRECOMPILE
 	CloseRead(maphandle);
+#endif
 #ifndef EMBEDDED
 	CloseRead(grhandle);
 #endif
@@ -711,7 +716,9 @@ void CA_CacheGrChunk(myint chunk)
 
 void CA_CacheMap(myint mapnum, myint plane)
 {
+#ifndef ENABLE_PRECOMPILE
 	long pos,compressed;
+#endif
 	byte *source;
 	memptr buffer2seg;
 	long expanded;
@@ -721,12 +728,10 @@ void CA_CacheMap(myint mapnum, myint plane)
 /* load plane into the already allocated buffers */
 
 #ifdef ENABLE_PRECOMPILE
-	pos = mapheaderseg[mapnum].planestart[plane];
-	compressed = mapheaderseg[mapnum].planelength[plane];
+	source = (byte *)MapPlane[mapnum * 2 + plane];
 #else
 	pos = mapheaderseg[mapnum]->planestart[plane];
 	compressed = mapheaderseg[mapnum]->planelength[plane];
-#endif
 
 	ReadSeek(maphandle, pos, SEEK_SET);
 	
@@ -734,6 +739,7 @@ void CA_CacheMap(myint mapnum, myint plane)
 	//MM_GetPtr((void *)&source, compressed);
 
 	ReadBytes(maphandle, (byte *)source, compressed);
+#endif
 	
 	expanded = source[0] | (source[1] << 8);		
 	buffer2seg = MM_AllocPool(NULL, expanded);
@@ -868,10 +874,10 @@ void MM_SortMem()
 {
 }
 
+#ifndef ENABLE_PRECOMPILE
 static boolean PMStarted;
 
 static myint PageFile = -1;
-#ifndef ENABLE_PRECOMPILE
 myint ChunksInFile, PMSpriteStart, PMSoundStart;
 PageListStruct *PMPages;
 #endif

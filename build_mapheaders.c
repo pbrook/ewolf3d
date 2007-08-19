@@ -21,6 +21,7 @@ int main()
 
     printf("#include \"wl_def.h\"\n");
     printf("const word RLEWtag = 0x%x;\n", rlew);
+    printf("#ifdef HOST\n");
     printf("const maptype mapheaderseg[NUMMAPS] = {\n");
     f = fopen("gamemaps." GAMEEXT, "rb");
     for (i = 0; i < NUMMAPS; i++)
@@ -40,6 +41,7 @@ int main()
 	  }
       }
     printf("};\n");
+    printf("#endif\n");
     return 0;
 }
 

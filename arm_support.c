@@ -116,6 +116,7 @@ void *memcpy(void *dest, const void *src, size_t n)
     return dest;
 }
 
+#ifndef PRECOMPILE
 #ifdef LUMINARY
 #define MAX_FILES 4
 static FATFS fat;
@@ -251,4 +252,5 @@ off_t lseek(int fd, off_t ptr, int whence)
 	return -1;
     return ptr;
 }
+#endif
 #endif

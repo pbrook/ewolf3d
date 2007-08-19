@@ -29,8 +29,9 @@ extern	myint	mapon;
 typedef byte ms0;
 extern	ms0	mapseg0[64 * 64];
 #ifdef ENABLE_PRECOMPILE
-extern	const maptype	mapheaderseg[NUMMAPS];
+extern const byte *const MapPlane[NUMMAPS * 2];
 extern const word RLEWtag;
+extern	const maptype mapheaderseg[NUMMAPS];
 #else
 extern	maptype	*mapheaderseg[NUMMAPS];
 #endif

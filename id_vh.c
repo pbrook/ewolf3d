@@ -124,18 +124,16 @@ void VL_FadeIn(myint start, myint end, const byte *palette, myint steps)
 }
 #endif
 
+#ifndef EMBEDDED
 void VL_CacheScreen(myint chunk)
 {
-#ifndef EMBEDDED
 	CA_CacheGrChunk(chunk);
 	VL_MemToScreen(CA_GetChunk(chunk), 320, 200, 0, 0);
 	CA_UnCacheGrChunk(chunk);
-#endif
 }
 
 void VL_DeModeXize(byte *buf, myint width, myint height)
 {
-#ifndef EMBEDDED
 	byte *mem, *ptr, *destline;
 	myint plane, x, y;
 	
@@ -160,7 +158,6 @@ void VL_DeModeXize(byte *buf, myint width, myint height)
 	memcpy(buf, mem, width * height);
 	
 	MM_FreePtr((memptr)&mem);
-#endif
 }
 
 /*
@@ -173,7 +170,6 @@ void VL_DeModeXize(byte *buf, myint width, myint height)
 
 static void VL_Plot(myint x, myint y, myint color)
 {
-#ifndef EMBEDDED
 	myint xend, yend, xs, ys;
 	
 	xend = x + 1;
@@ -192,7 +188,6 @@ static void VL_Plot(myint x, myint y, myint color)
 	for (xs = x; xs < xend; xs++)
 		for (ys = y; ys < yend; ys++)
 			*(gfxbuf + ys * vwidth + xs) = color;
-#endif
 }
 
 void VW_Plot(myint x, myint y, myint color)
@@ -209,7 +204,6 @@ data
 */
 void VW_DrawPropString(const char *string)
 {
-#ifndef EMBEDDED
 	byte *font;
 	myint width, step, height, x, xs, y;
 	byte *source, *ptrs;
@@ -234,12 +228,10 @@ void VW_DrawPropString(const char *string)
 			source++;
 		}
 	}
-#endif
 }
 
 void VW_MeasurePropString(const char *string, word *width, word *height)
 {
-#ifndef EMBEDDED
 	myint w, mw;
 	byte *font = CA_GetChunk(STARTFONT+fontnumber);
 	
@@ -261,19 +253,15 @@ void VW_MeasurePropString(const char *string, word *width, word *height)
 		mw = w;
 		
 	*width = mw;
-#endif
 }
 
 void VWB_DrawTile8(myint x, myint y, myint tile)
 {
-#ifndef EMBEDDED
 	VL_MemToScreen(CA_GetChunk(STARTTILE8)+(tile*64), 8, 8, x, y);
-#endif
 }
 
 void VWB_DrawPic(myint x, myint y, myint chunknum)
 {
-#ifndef EMBEDDED
 	myint picnum = chunknum - STARTPICS;
 	myint width, height;
 
@@ -281,7 +269,6 @@ void VWB_DrawPic(myint x, myint y, myint chunknum)
 	height = pictable[picnum].height;
 
 	VL_MemToScreen(CA_GetChunk(chunknum), width, height, x, y);
-#endif
 }
 
 /*
@@ -374,7 +361,6 @@ void VL_Vlin(myint x, myint y, myint height, myint color)
 
 void VW_Bar(myint x, myint y, myint width, myint height, myint color)
 {
-#ifndef EMBEDDED
 	myint w, h;
 	byte *ptr;
 	
@@ -390,8 +376,8 @@ void VW_Bar(myint x, myint y, myint width, myint height, myint color)
 		memset(ptr, color, w);
 		ptr += vwidth;
 	}
-#endif
 }
+#endif
 
 void VL_Bar(myint x, myint y, myint width, myint height, myint color)
 {
@@ -414,6 +400,7 @@ void VL_Bar(myint x, myint y, myint width, myint height, myint color)
 #endif
 }
 
+#ifndef EMBEDDED
 /*
 =================
 =
@@ -432,6 +419,7 @@ void VL_MemToScreen(const byte *source, myint width, myint height, myint x, myin
 		for (h = 0; h < height; h++)
 			VL_Plot(x+w, y+h, source[h*width+w]);
 }
+#endif
 
 void VW_Startup()
 {
