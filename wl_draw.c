@@ -941,9 +941,16 @@ static void RenderShape(myint xcenter, myint shapenum, unsigned height,
 		cmd = sprite[n] | (sprite[n + 1] << 8);
 		RenderLine(height, row, p, sprite, cmd);
 #else
-		n = ((x >> 16) << 1) + 2;
+		n = (((x >> 16) * 3) / 2) + 2;
 		cmd = sprite[n] | (sprite[n + 1] << 8);
-		cmdend = sprite[n + 2] | (sprite[n + 3] << 8);
+		if (x & (1 << 16)) {
+		    cmd >>= 4;
+		    cmdend = sprite[n + 2] | ((sprite[n + 3] & 0xf) << 8);
+		} else {
+		    cmdend = (cmd >> 12) | (sprite[n + 2] << 4);
+		    cmd &= 0xfff;
+		}
+
 		RenderLine(height, row, p, sprite, cmd, cmdend);
 #endif
 	}	

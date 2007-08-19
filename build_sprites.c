@@ -12,7 +12,7 @@ void recompile_sprite(int picnum)
     int poststart[32 * 64];
     int postlen[32 * 64];
     int postpixel[64 * 32];
-    int xstart[64];
+    int xstart[65];
     const byte *src;
     int np;
     int numpixels;
@@ -23,7 +23,6 @@ void recompile_sprite(int picnum)
     int y0;
     int y1;
     int i;
-    int size;
     int limit;
     int commonpixels;
     int j;
@@ -44,7 +43,7 @@ void recompile_sprite(int picnum)
     src = chunk;
     width = src[2] + 1 - src[0];
     /* left, right, (width+1) offsets.  */
-    pixelpos = width * 2 + 4;
+    pixelpos = ((width * 3 + 4) / 2) + 2;
     for (x = 0; x < width; x++) {
 	xstart[x] = np;
 	cmd = src[x * 2 + 4] | (src[x * 2 + 5] << 8);
@@ -119,17 +118,24 @@ void recompile_sprite(int picnum)
 	    commonpixels += n;
 	}
     }
-    size = 2 + width * 2 + np * 3 + numpixels;
 
     printf("static const byte ROMAREA Sprite%d[] = {\n",
 	   picnum - PMSpriteStart);
-    pixelpos = 0;
+    xstart[width] = np - 1;
     printf("%d, %d,\n", src[0], src[2]);
-    for (x = 0; x < width; x++) {
-	printf ("%d, %d, ", postpixel[xstart[x]] & 0xff,
-		postpixel[xstart[x]] >> 8);
+    for (x = 0; x < width; x += 2) {
+	int start0;
+	int start1;
+	int tmp;
+	start0 = postpixel[xstart[x]];
+	start1 = postpixel[xstart[x + 1]];
+	printf ("%d, %d, %d, ", start0 & 0xff,
+		(start0 >> 8) | ((start1 & 0xf) << 4), start1 >> 4);
     }
-    printf("%d, %d,\n", postpixel[np - 1] & 0xff, postpixel[np - 1] >> 8);
+    if (x == width)
+      printf("%d, %d,\n", postpixel[np - 1] & 0xff, postpixel[np - 1] >> 8);
+    else
+      printf("\n");
     x = 1;
     for (i = 0; i < np; i++) {
 	if (postlen[i] == 0) {
