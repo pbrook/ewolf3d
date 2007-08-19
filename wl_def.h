@@ -673,7 +673,10 @@ typedef	struct
 	myint		attackframe,attackcount,weaponframe;
 
 	myint		episode,secretcount,treasurecount,killcount,
-			secrettotal,treasuretotal,killtotal;
+			secrettotal,treasuretotal;
+#ifdef ENABLE_STATS
+	myint killtotal;
+#endif
 	long		TimeCount;
 	long		killx,killy;
 	boolean		victoryflag;		// set during victory animations

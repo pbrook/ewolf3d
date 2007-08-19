@@ -59,6 +59,7 @@ void US_Shutdown()
 	US_Started = false;
 }
 
+#ifndef EMBEDDED
 //	Window/Printing routines
 
 ///////////////////////////////////////////////////////////////////////////
@@ -69,7 +70,6 @@ void US_Shutdown()
 ///////////////////////////////////////////////////////////////////////////
 void US_Print(const char *str)
 {
-#ifndef EMBEDDED
 	char c, *se, *s, *sz = strdup(str);
 	word w, h;
 	s = sz;
@@ -103,7 +103,6 @@ void US_Print(const char *str)
 	py = PrintY;
 	
 	free(sz);
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -181,7 +180,6 @@ void US_CPrintLine(const char *s)
 ///////////////////////////////////////////////////////////////////////////
 void US_CPrint(const char *str)
 {
-#ifndef EMBEDDED
 	/* Functions like to pass a string constant */
 	
 	char c, *se, *s, *sz = strdup(str);
@@ -205,7 +203,6 @@ void US_CPrint(const char *str)
 	}
 	
 	free(sz);
-#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -285,7 +282,6 @@ static void USL_XORICursor(myint x, myint y, const char *s, word cursor)
 
 }
 
-#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	US_LineInput() - Gets a line of user input at (x,y), the string defaults

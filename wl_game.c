@@ -509,7 +509,9 @@ void SetupGameLevel()
 	if (!loadedgame) {
 		gamestate.TimeCount =
 		gamestate.secrettotal =
+#ifdef ENABLE_STATS
 		gamestate.killtotal =
+#endif
 		gamestate.treasuretotal =
 		gamestate.secretcount =
 		gamestate.killcount =
