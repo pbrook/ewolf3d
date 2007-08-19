@@ -13,8 +13,8 @@ statobj_t statobjlist[MAXSTATS], *laststatobj;
 
 struct
 {
-	myshort	picnum;
-	stat_t	type;
+	myshort	picnum:10;
+	stat_t	type:6;
 } static const statinfo[] =
 {
 {SPR_STAT_0},					// puddle          spr1v
