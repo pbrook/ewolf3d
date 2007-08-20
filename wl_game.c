@@ -621,7 +621,9 @@ void SetupGameLevel()
 			}
 		}
 
+#ifdef ENABLE_AUDIO
 	CA_LoadAllSounds();
+#endif
 }
 
 /* ======================================================================== */

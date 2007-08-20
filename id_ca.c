@@ -548,6 +548,7 @@ void CA_Shutdown()
 
 /* ======================================================================== */
 
+#ifdef ENABLE_AUDIO
 /*
 ======================
 =
@@ -556,7 +557,6 @@ void CA_Shutdown()
 ======================
 */
 
-#ifdef ENABLE_AUDIO
 void CA_CacheAudioChunk(myint chunk)
 {
 	myint pos, length;
@@ -584,7 +584,6 @@ void CA_UnCacheAudioChunk(myint chunk)
 	MM_FreePtr((memptr *)&audiosegs[chunk]);
 	audiosegs[chunk] = 0;
 }
-#endif
 
 /*
 ======================
@@ -596,13 +595,12 @@ void CA_UnCacheAudioChunk(myint chunk)
 
 void CA_LoadAllSounds()
 {
-#ifdef ENABLE_AUDIO
 	myint start, i;
 
 	for (start = STARTADLIBSOUNDS, i = 0; i < NUMSOUNDS; i++, start++)
 		CA_CacheAudioChunk(start);
-#endif
 }
+#endif
 
 /* ======================================================================== */
 
