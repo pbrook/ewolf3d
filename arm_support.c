@@ -9,14 +9,6 @@
 #define SEMI_SWI "swi 0x123456"
 #endif
 
-#ifdef LUMINARY
-#include "tff.h"
-#endif
-
-void __errno()
-{
-}
-
 void __aeabi_unwind_cpp_pr0()
 {
 }
@@ -117,63 +109,6 @@ void *memcpy(void *dest, const void *src, size_t n)
 }
 
 #ifndef ENABLE_PRECOMPILE
-#ifdef LUMINARY
-#define MAX_FILES 4
-static FATFS fat;
-static FIL files[MAX_FILES];
-static byte numfiles = 0xff;
-
-int open(const char *filename, int flags, ...)
-{
-    FIL *f;
-
-#ifdef O_BINARY
-    flags &= ~O_BINARY;
-#endif
-    if (flags != O_RDONLY)
-	Quit("Can only open readonly\n");
-
-    if (numfiles == 0xff) {
-	f_mount(0, &fat);
-	numfiles = 0;
-    }
-
-    f = &files[numfiles];
-    if (f_open(f, filename, FA_READ))
-	Quit(filename);
-    return numfiles++;
-}
-
-ssize_t read(int fd, void *buf, size_t count)
-{
-    WORD rc;
-    f_read(&files[fd], buf, count, &rc);
-    if (rc != count)
-	Quit("Read Failed\n");
-    return rc;
-}
-
-ssize_t write(int fd, const void *buf, size_t count)
-{
-    Quit("Write\n");
-    return -1;
-}
-
-int close(int fd)
-{
-    f_close(&files[fd]);
-    return 0;
-}
-
-off_t lseek(int fd, off_t ptr, int whence)
-{
-    if (whence != SEEK_SET)
-	Quit("Bad Seek whence\n");
-    if (f_lseek(&files[fd], ptr))
-	return -1;
-    return ptr;
-}
-#else
 static uint32_t angel(int reason, uint32_t *args)
 {
     register uint32_t r0 asm ("r0");
@@ -252,5 +187,4 @@ off_t lseek(int fd, off_t ptr, int whence)
 	return -1;
     return ptr;
 }
-#endif
 #endif
