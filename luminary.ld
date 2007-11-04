@@ -88,7 +88,7 @@ SECTIONS
     PROVIDE(end = .);
   } >ram 
 
-  .romchunk :
+  .romchunk 0xfc00 :
   {
     *(.romchunk)
   } > rom

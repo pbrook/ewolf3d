@@ -72,7 +72,7 @@ xwolf3d: $(XOBJS)
 sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
 
-ewolf3d: $(EOBJS) luminary-crt0.o
+ewolf3d: $(EOBJS) luminary-crt0.o luminary.ld
 	$(CC) $(CFLAGS) -o ewolf3d -Wl,--gc-sections $(EOBJS) $(ELDLIBS)
 
 tables.o: tables.c
