@@ -197,4 +197,6 @@ void INL_GetJoyDelta(word joy,myint *dx,myint *dy);
 void IN_StartAck();
 boolean IN_CheckAck();
 
+void keyboard_handler(myint code, myint press);
+
 #endif

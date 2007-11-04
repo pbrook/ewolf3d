@@ -72,8 +72,15 @@ xwolf3d: $(XOBJS)
 sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
 
-ewolf3d: $(EOBJS) luminary-crt0.o luminary.ld
-	$(CC) $(CFLAGS) -o ewolf3d -Wl,--gc-sections $(EOBJS) $(ELDLIBS)
+ewolf3d: ewolf3d_reva ewolf3d_revc
+
+ewolf3d_reva: ewolf3d_revc $(EOBJS) luminary-crt0.o luminary.ld oled_osram.o
+	$(CC) $(CFLAGS) -o $@ -Wl,--gc-sections $(EOBJS) oled_osram.o \
+	  $(ELDLIBS)
+
+ewolf3d_revc: $(EOBJS) luminary-crt0.o luminary.ld oled_rit.o
+	$(CC) $(CFLAGS) -o $@ -Wl,--gc-sections $(EOBJS) oled_rit.o \
+	  $(ELDLIBS)
 
 tables.o: tables.c
 

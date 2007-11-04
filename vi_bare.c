@@ -60,111 +60,6 @@ void ssi_select(int dev)
 
 }
 
-#define OSRAM_INIT_REMAP    0x52
-#define OSRAM_INIT_OFFSET   0x4C
-//*****************************************************************************
-//
-// The sequence of commands used to initialize the SSD0323 controller.  Each
-// command is described as follows:  there is a byte specifying the number of
-// bytes in the command sequence, followed by that many bytes of command data.
-// Note:  This initialization sequence is derived from OSRAM App Note AN018.
-//
-//*****************************************************************************
-static const uint8_t oled_init_strings[] =
-{
-    //
-    // Column Address
-    //
-    4, 0x15, 0, 63, 0xe3,
-
-    //
-    // Row Address
-    //
-    4, 0x75, 0, 63, 0xe3,
-
-    //
-    // Contrast Control
-    //
-    3, 0x81, 50, 0xe3,
-
-    //
-    // Half Current Range
-    //
-    2, 0x85, 0xe3,
-
-    //
-    // Display Re-map
-    //
-    3, 0xA0, OSRAM_INIT_REMAP, 0xe3,
-
-    //
-    // Display Start Line
-    //
-    3, 0xA1, 0, 0xe3,
-
-    //
-    // Display Offset
-    //
-    3, 0xA2, OSRAM_INIT_OFFSET, 0xe3,
-
-    //
-    // Display Mode Normal
-    //
-    2, 0xA4, 0xe3,
-
-    //
-    // Multiplex Ratio
-    //
-    3, 0xA8, 63, 0xe3,
-
-    //
-    // Phase Length
-    //
-    3, 0xB1, 0x22, 0xe3,
-
-    //
-    // Row Period
-    //
-    3, 0xB2, 70, 0xe3,
-
-    //
-    // Display Clock Divide
-    //
-    3, 0xB3, 0xF1, 0xe3,
-
-    //
-    // VSL
-    //
-    3, 0xBF, 0x0D, 0xe3,
-
-    //
-    // VCOMH
-    //
-    3, 0xBE, 0x02, 0xe3,
-
-    //
-    // VP
-    //
-    3, 0xBC, 0x10, 0xe3,
-
-    //
-    // Gamma
-    //
-    10, 0xB8, 0x01, 0x11, 0x22, 0x32, 0x43, 0x54, 0x65, 0x76, 0xe3,
-
-    //
-    // Set DC-DC
-    3, 0xAD, 0x03, 0xe3,
-
-    //
-    // Display ON/OFF
-    //
-    2, 0xAF, 0xe3,
-
-    // Done.
-    0
-};
-
 static void ssi_flush_rx()
 {
     while (HWREG(SSI0 + 0x00c) & 0x04)
@@ -241,8 +136,9 @@ static void oled_init()
 
 static void oled_setwindow()
 {
-    static const byte cmd[6] = {0x15, 0, 63, 0x75, 0, 63};
+    static byte cmd[6] = {0x15, 0, 63, 0x75, 0, /* height-1 */0};
     ssi_select(0);
+    cmd[5] = oled_height - 1;
     oled_write(cmd, 6, 1);
 }
 
@@ -252,7 +148,7 @@ void oled_clear()
     int i;
     oled_setwindow();
     memset(buf, 0, 4);
-    for (i = 0; i < 128 * 64 / 8; i++) {
+    for (i = 0; i < oled_height * (128 / 8); i++) {
 	oled_write(buf, 4, 0);
     }
 }
@@ -471,7 +367,15 @@ static void sys_init()
     HWREG(GPIOC + 0x51c) |= 0x80; /* Digital */
     HWREG(GPIOC + 0x508) |= 0x80; /* 8mA drive strength. */
     HWREG(GPIOC + 0x510) |= 0x80; /* Pull-up.  */
-    HWREG(GPIOC + 0x200) |= 0x00;
+    HWREG(GPIOC + 0x200) = 0x00;
+
+    /* Explicitly enable +15V power to the OLED.
+       Needed on rev C board, harmless on earlier boards.  */
+    HWREG(GPIOC + 0x400) |= 0x40; /* Output */
+    HWREG(GPIOC + 0x51c) |= 0x40; /* Digital */
+    HWREG(GPIOC + 0x508) |= 0x40; /* 8mA drive strength. */
+    HWREG(GPIOC + 0x510) |= 0x40; /* Pull-up.  */
+    HWREG(GPIOC + 0x100) = 0x40; /* Enable.  */
 
     /* SD card select.  */
     HWREG(GPIOD + 0x400) |= 0x01; /* Output */

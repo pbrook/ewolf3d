@@ -68,4 +68,9 @@ static __inline__ uint32_t SwapInt32(uint32_t i)
 		((uint32_t)(i & 0x000000FF) << 24);
 }
 
+#ifdef LUMINARY
+extern const int oled_height;
+extern const uint8_t oled_init_strings[];
+#endif
+
 #endif
