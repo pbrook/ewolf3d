@@ -79,8 +79,8 @@ void ssi_isr()
 	mask = ssi_tosend ? 0x06 : 0x04;
 	if ((status & mask) == 0)
 	  break;
-	/* Send data if TX FIFO not full.  */
-	if (ssi_tosend && (status & 0x02)) {
+	/* Send data if RX FIFO empty and TX FIFO not full.  */
+	if (ssi_tosend && (status & 0x06) == 2) {
 	    HWREG(SSI0 + 0x008) = *(ssi_data++);
 	    ssi_tosend--;
 	}
@@ -89,6 +89,10 @@ void ssi_isr()
 	    HWREG(SSI0 + 0x008);
 	    ssi_left--;
 	}
+    }
+    if (!ssi_tosend) {
+	/* Mask SSI interrupts.  */
+	HWREG(SSI0 + 0x014) = 0x0;
     }
 }
 
@@ -106,8 +110,8 @@ static void oled_write(const uint8_t *p, int n, int command)
     while (left) {
 	uint32_t status;
 	status = HWREG(SSI0 + 0x00c);
-	/* Send data if TX FIFO not full.  */
-	if (n == left && (status & 0x02)) {
+	/* Send data if RX FIFO empty and TX FIFO not full.  */
+	if (n == left && (status & 0x06) == 2) {
 	    HWREG(SSI0 + 0x008) = *(p++);
 	    n--;
 	}
@@ -183,8 +187,6 @@ void oled_render()
 		  "cpsie i\n\t"
 		  "bne 1b\n\t"
 		  : : "r" (&ssi_tosend) : "r0");
-    /* Mask SSI interrupts.  */
-    HWREG(SSI0 + 0x014) = 0x0;
     /* Pull remaining bytes out of FIFO.  */
     while (ssi_left) {
 	uint32_t status;
