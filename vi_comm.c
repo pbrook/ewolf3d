@@ -138,6 +138,7 @@ void keyboard_handler(myint code, myint press)
 	}
 }
 
+#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	IN_UserInput() - Waits for the specified delay time (in ticks) or the
@@ -160,6 +161,7 @@ boolean IN_UserInput(longword delay)
 	
 	return false;
 }
+#endif
 
 //===========================================================================
 
@@ -381,6 +383,7 @@ IN_CheckAck();
 }
 #endif
 
+#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	IN_Ack() - waits for a button or key press.  If a button is down, upon
@@ -447,3 +450,4 @@ void IN_Ack()
 
 	while(!IN_CheckAck()) ;
 }
+#endif

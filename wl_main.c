@@ -1222,7 +1222,9 @@ void InitGame()
 //
 	InitRedShifts();
 
+#ifndef EMBEDDED
 	IN_CheckAck();
+#endif
 //
 // HOLDING DOWN 'M' KEY?
 //

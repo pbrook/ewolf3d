@@ -170,19 +170,7 @@ long filelength(myint handle)
 #endif
 }
 
-char *strlwr(char *s)
-{
-	char *p = s;
-	
-	while (*p) {
-		if (*p >= 'A' && *p <= 'Z')
-			*p += 'a' - 'A';
-		p++;
-	}
-	
-	return s;
-}
-	
+#ifndef EMBEDDED
 char *itoa(myint value, char *string, myint radix)
 {
 	return ltoa(value, string, radix);
@@ -220,7 +208,6 @@ char *ultoa(unsigned long value, char *string, myint radix)
 	return string;
 }
 
-#ifndef EMBEDDED
 /* from Dan Olson */
 static void put_dos2ansi(byte attrib)
 {

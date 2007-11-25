@@ -254,7 +254,6 @@ void UpdateFace()
 		DrawFace();
 	}
 }
-#endif
 
 
 /*
@@ -306,6 +305,7 @@ void DrawHealth()
 	LatchNumber(21,16,3,gamestate.health);
 }
 
+#endif
 
 /*
 ===============
@@ -340,10 +340,10 @@ void TakeDamage(myint points, objtype *attacker)
 
 	gotgatgun=0;
 
+#ifndef EMBEDDED
 	DrawHealth();
 	DrawFace();
 
-#ifndef EMBEDDED
 	//
 	// MAKE BJ'S EYES BUG IF MAJOR DAMAGE!
 	//
@@ -373,15 +373,18 @@ void HealSelf(myint points)
 	if (gamestate.health>100)
 		gamestate.health = 100;
 
+#ifndef EMBEDDED
 	DrawHealth();
 	gotgatgun = 0;	// JR
 	DrawFace();
+#endif
 }
 
 
 //===========================================================================
 
 
+#ifndef EMBEDDED
 /*
 ===============
 =
@@ -415,6 +418,7 @@ void DrawLives()
 {
 	LatchNumber(14,16,1,gamestate.lives);
 }
+#endif
 
 
 /*
@@ -429,12 +433,15 @@ void GiveExtraMan()
 {
 	if (gamestate.lives<9)
 		gamestate.lives++;
+#ifndef EMBEDDED
 	DrawLives();
+#endif
 	SD_PlaySound(BONUS1UPSND);
 }
 
 //===========================================================================
 
+#ifndef EMBEDDED
 /*
 ===============
 =
@@ -447,6 +454,7 @@ void DrawScore()
 {
 	LatchNumber(6, 16, 6, gamestate.score);
 }
+#endif
 
 /*
 ===============
@@ -464,7 +472,9 @@ void GivePoints(long points)
 		gamestate.nextextra += EXTRAPOINTS;
 		GiveExtraMan();
 	}
+#ifndef EMBEDDED
 	DrawScore();
+#endif
 }
 
 //===========================================================================
@@ -479,7 +489,9 @@ void GivePoints(long points)
 
 void DrawWeapon()
 {
+#ifndef EMBEDDED
 	StatusDrawPic(32,8,KNIFEPIC+gamestate.weapon);
+#endif
 }
 
 /*
@@ -492,6 +504,7 @@ void DrawWeapon()
 
 void DrawKeys()
 {
+#ifndef EMBEDDED
 	if (gamestate.keys & 1)
 		StatusDrawPic(30,4,GOLDKEYPIC);
 	else
@@ -501,6 +514,7 @@ void DrawKeys()
 		StatusDrawPic(30,20,SILVERKEYPIC);
 	else
 		StatusDrawPic(30,20,NOKEYPIC);
+#endif
 }
 
 /*
@@ -524,6 +538,7 @@ void GiveWeapon(myint weapon)
 
 //===========================================================================
 
+#ifndef EMBEDDED
 /*
 ===============
 =
@@ -536,6 +551,7 @@ void DrawAmmo()
 {
 	LatchNumber(27,16,2,gamestate.ammo);
 }
+#endif
 
 /*
 ===============
@@ -558,7 +574,9 @@ void GiveAmmo(myint ammo)
 	gamestate.ammo += ammo;
 	if (gamestate.ammo > 99)
 		gamestate.ammo = 99;
+#ifndef EMBEDDED
 	DrawAmmo();
+#endif
 }
 
 //===========================================================================
@@ -1304,7 +1322,9 @@ void T_Attack(objtype *ob)
 			}
 			GunAttack (ob);
 			gamestate.ammo--;
+#ifndef EMBEDDED
 			DrawAmmo ();
+#endif
 			break;
 
 		case 2:

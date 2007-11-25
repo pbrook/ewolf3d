@@ -21,8 +21,6 @@ long filelength(myint handle);
 #define strnicmp strncasecmp
 #endif
 
-char *strlwr(char *s);
-
 char *itoa(myint value, char *string, myint radix);
 char *ltoa(long value, char *string, myint radix);
 char *ultoa(unsigned long value, char *string, myint radix);

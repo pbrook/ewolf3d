@@ -2457,6 +2457,7 @@ boolean	CheckPosition(objtype *ob)
 
 void A_StartDeathCam(objtype *ob)
 {
+#ifndef EMBEDDED
 	long	dx,dy;
 	long    xmove,ymove;
 	long	dist;
@@ -2475,7 +2476,6 @@ void A_StartDeathCam(objtype *ob)
 
 	gamestate.victoryflag = true;
 	
-#ifndef EMBEDDED
 	FizzleFade(false, 70, 127);
 
 	CacheLump(LEVELEND_LUMP_START, LEVELEND_LUMP_END);
@@ -2483,7 +2483,6 @@ void A_StartDeathCam(objtype *ob)
 	Write(0, 7, STR_SEEAGAIN);
 
 	VW_UpdateScreen();
-#endif
 
 	IN_UserInput(300);
 
@@ -2538,6 +2537,7 @@ void A_StartDeathCam(objtype *ob)
 	default:
 		break;
 	}
+#endif
 
 }
 

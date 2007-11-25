@@ -630,6 +630,7 @@ void SetupGameLevel()
 
 /* ======================================================================== */
 
+#ifndef EMBEDDED
 /*
 ===================
 =
@@ -642,7 +643,6 @@ void SetupGameLevel()
 
 void DrawPlayBorderSides()
 {
-#ifndef EMBEDDED
 	myint xl, yl;
 
 	xl = 160-viewwidthwin/2;
@@ -657,7 +657,6 @@ void DrawPlayBorderSides()
 		VW_Vlin(yl-1,yl+viewheightwin,xl-1,0);
 		VW_Vlin(yl-1,yl+viewheightwin,xl+viewwidthwin,125);
 	}
-#endif
 }
 
 /*
@@ -670,7 +669,6 @@ void DrawPlayBorderSides()
 
 void DrawPlayBorder()
 {
-#ifndef EMBEDDED
 	myint xl, yl;
 
 	VW_Bar(0,0,320,200-STATUSLINES+1,127);
@@ -688,7 +686,6 @@ void DrawPlayBorder()
 		VW_Vlin(yl-1,yl+viewheightwin,xl+viewwidthwin,125);
 		VW_Plot(xl-1,yl+viewheightwin,124);
 	}
-#endif
 }
 
 void DrawStatusBar()
@@ -702,6 +699,7 @@ void DrawStatusBar()
 	DrawWeapon();
 	DrawScore();
 }
+#endif
 
 /*
 ===================
@@ -1059,7 +1057,9 @@ void Died()
 	
 	IN_ClearKeysDown();
 	
+#ifndef EMBEDDED
 	IN_UserInput(140);
+#endif
 	SD_WaitSoundDone();
 
 	gamestate.lives--;
@@ -1074,12 +1074,14 @@ void Died()
 		gamestate.attackframe = gamestate.attackcount =
 		gamestate.weaponframe = 0;
 
+#ifndef EMBEDDED
 		DrawKeys();
 		DrawWeapon();
 		DrawAmmo();
 		DrawHealth();
 		DrawFace();
 		DrawLives();
+#endif
 	}
 
 }
@@ -1108,7 +1110,9 @@ restartgame:
 	{
 		if (!loadedgame)
 			gamestate.score = gamestate.oldscore;
+#ifndef EMBEDDED
 		DrawScore();
+#endif
 
 		startgame = false;
 		if (loadedgame)
@@ -1134,7 +1138,9 @@ restartgame:
 #endif
 			died = false;
 
+#ifndef EMBEDDED
 		DrawLevel();
+#endif
 
 #ifdef SPEAR
 startplayloop:

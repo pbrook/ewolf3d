@@ -465,8 +465,10 @@ void PollControls()
 	}
 #endif
 
+#ifndef EMBEDDED
 	/* Update keys */
 	IN_CheckAck(); 
+#endif
 	
 	UpdateInput();
 	
