@@ -23,43 +23,6 @@ int read_buttons()
     return buttons;
 }
 
-/* Switch between OLED and SD card.  */
-void ssi_select(int dev)
-{
-    static int curdev = 2;
-    if (dev == curdev)
-	return;
-    curdev = dev;
-    if (dev) {
-	/* SD card.  */
-	//HWREG(GPIOA + 0x504) |= 0x3c; /* 4mA drive strength.  */
-	HWREG(SSI0 + 0x004) = 0; /* Disable.  */
-	/* Force fss device select high.  */
-	HWREG(GPIOA + 0x020) = 1;
-	HWREG(GPIOA + 0x420) &= ~0x08;
-	HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
-	/* Initial config is done at 400kHz, then switch to full speed.  */
-	/* 50MHz / 400kbit = 125 cycles/bit.  */
-	/* SCR=62 (+1), SPI polarity=0, 8bit */
-	if (dev == 2)
-	    HWREG(SSI0 + 0x000) = 0x3e07;
-	else
-	    HWREG(SSI0 + 0x000) = 0x0007;
-	HWREG(SSI0 + 0x04) = 2; /* Enable.  */
-    } else {
-	/* OLED */
-	HWREG(SSI0 + 0x004) = 0; /* Disable.  */
-	/* Enable fss device select.  */
-	HWREG(GPIOA + 0x420) |= 0x08;
-	HWREG(GPIOA + 0x020) = 0;
-	/* 50MHz / 3.5Mbit = 14.2 cycles/bit.  */
-	HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
-	HWREG(SSI0 + 0x000) = 0x0647; /* SCR=6 (+1), SPI polarity=1, 8bit */
-	HWREG(SSI0 + 0x04) = 2; /* Enable.  */
-    }
-
-}
-
 static void ssi_flush_rx()
 {
     while (HWREG(SSI0 + 0x00c) & 0x04)
@@ -128,7 +91,14 @@ static void oled_init()
     int i;
     const uint8_t *p;
 
-    ssi_select(0);
+    /* Enable fss device select.  */
+    HWREG(GPIOA + 0x420) |= 0x08;
+    HWREG(GPIOA + 0x020) = 0;
+    /* 50MHz / 3.5Mbit = 14.2 cycles/bit.  */
+    HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
+    HWREG(SSI0 + 0x000) = 0x0647; /* SCR=6 (+1), SPI polarity=1, 8bit */
+    HWREG(SSI0 + 0x04) = 2; /* Enable.  */
+
     p = oled_init_strings;
     while (*p) {
 	i = *(p++);
@@ -141,7 +111,7 @@ static void oled_init()
 static void oled_setwindow()
 {
     static byte cmd[6] = {0x15, 0, 63, 0x75, 0, /* height-1 */0};
-    ssi_select(0);
+
     cmd[5] = oled_height - 1;
     oled_write(cmd, 6, 1);
 }
@@ -160,11 +130,6 @@ void oled_clear()
 void oled_render()
 {
     uint8_t buf[16];
-#ifndef EMBEDDED
-    int i;
-    int j;
-    byte *p;
-#endif
 
     oled_setwindow();
     buf[0] = 0xA0;
@@ -196,25 +161,13 @@ void oled_render()
 	    ssi_left--;
 	}
     }
-#if 0
-    p = gfxbuf;
-    for (i = 0; i < 128 * 64 / 32; i++) {
-	// FIXME: Translate and stream to OLED on the fly.
-	// FIXME: Double buffer and send async.
-	for (j = 0; j < 16; j++) {
-	    buf[j] = pal4bit[*(p++)] << 4;
-	    buf[j] |= pal4bit[*(p++)];
-	}
-	oled_write(buf, 16, 0);
-    }
-#endif
 }
 
 /* Turn off screen to prevernt burn-in.  */
 void VL_ScreenSaver()
 {
     static const byte offcmd[] = {0xAE, 0xAD, 0x02};
-    ssi_select(0);
+
     oled_write(offcmd, 3, 1);
     while (read_buttons() == 0)
 	asm volatile ("wfi");
@@ -378,13 +331,6 @@ static void sys_init()
     HWREG(GPIOC + 0x508) |= 0x40; /* 8mA drive strength. */
     HWREG(GPIOC + 0x510) |= 0x40; /* Pull-up.  */
     HWREG(GPIOC + 0x100) = 0x40; /* Enable.  */
-
-    /* SD card select.  */
-    HWREG(GPIOD + 0x400) |= 0x01; /* Output */
-    HWREG(GPIOD + 0x51c) |= 0x01; /* Digital */
-    HWREG(GPIOD + 0x504) |= 0x01; /* 4mA drive strength. */
-    HWREG(GPIOD + 0x510) |= 0x01; /* Pull-up.  */
-    HWREG(GPIOD + 0x004) |= 0x01;
 
     /* User pushbutton input.  */
     HWREG(GPIOF + 0x51c) |= 0x02; /* Digital */
