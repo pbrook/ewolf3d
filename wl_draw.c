@@ -425,8 +425,10 @@ static void DrawPlayerWeapon()
 	    SimpleScaleShape(viewwidth/2,shapenum,viewheight+1);
 	}
 
+#ifdef ENABLE_DEMO
 	if (demorecord || demoplayback)
 		SimpleScaleShape(viewwidth/2,SPR_DEMO,viewheight+1);
+#endif
 }
 
 /*

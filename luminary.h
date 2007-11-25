@@ -8,5 +8,6 @@
 #define GPIOF 0x40025000
 #define GPIOG 0x40026000
 #define SSI0  0x40008000
+#define ENET  0x40048000
 
-extern void ssi_select(int);
+#define NVIC ((volatile int *)0xe000e000)

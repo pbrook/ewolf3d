@@ -900,9 +900,11 @@ extern	myint viewsize;
 extern	myint			controlx,controly;		// range from -100 to 100
 extern	boolean		buttonstate[NUMBUTTONS];
 
+#ifdef ENABLE_DEMO
 extern	boolean		demorecord,demoplayback;
 extern	byte		*demoptr, *lastdemoptr;
 extern	memptr		demobuffer;
+#endif
 
 
 void StatusDrawPic(unsigned x, unsigned y, unsigned picnum);

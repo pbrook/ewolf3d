@@ -2,7 +2,7 @@ PROGS=ewolf3d
 
 ifeq ($(PROGS),ewolf3d)
 CC = arm-unknown-eabi-gcc
-CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -Os -ffunction-sections -fdata-sections
+CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -Os -ffunction-sections -fdata-sections -fno-strict-aliasing
 else
 CC = gcc -m32
 CFLAGS = -g -Wall
@@ -21,7 +21,7 @@ OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
 	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.c \
 	grstarts.o pictable.o pal4bit.o \
-	sprites.o walls.o mapdata.o
+	sprites.o walls.o mapdata.o net.o
 # romchunk.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o
@@ -72,7 +72,10 @@ xwolf3d: $(XOBJS)
 sdlwolf3d: $(DOBJS)
 	$(CC) -o sdlwolf3d $(DOBJS) $(DLDLIBS)
 
-ewolf3d: ewolf3d_reva ewolf3d_revc
+ewolf3d: ewolf3d_reva ewolf3d_revc foo
+
+foo: ewolf3d_reva
+	arm-unknown-eabi-objcopy -O binary $< $@
 
 ewolf3d_reva: ewolf3d_revc $(EOBJS) luminary-crt0.o luminary.ld oled_osram.o
 	$(CC) $(CFLAGS) -o $@ -Wl,--gc-sections $(EOBJS) oled_osram.o \

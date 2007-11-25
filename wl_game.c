@@ -522,9 +522,11 @@ void SetupGameLevel()
 #endif
 	}
 
+#ifdef ENABLE_DEMO
 	if (demoplayback || demorecord)
 		US_InitRndT(false);
 	else
+#endif
 		US_InitRndT(true);
 
 #ifndef ENABLE_PRECOMPILE

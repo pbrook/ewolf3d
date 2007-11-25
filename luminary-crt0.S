@@ -84,8 +84,25 @@ __isr_vectors:
 .word isr_handler /*26*/
 .word isr_handler /*27*/
 .word isr_handler /*28*/
+.word isr_handler /*29*/
 .word isr_handler /*30*/
 .word isr_handler /*31*/
+.word isr_handler /*32*/
+.word isr_handler /*33*/
+.word isr_handler /*34*/
+.word isr_handler /*35*/
+.word isr_handler /*36*/
+.word isr_handler /*37*/
+.word isr_handler /*38*/
+.word isr_handler /*39*/
+.word isr_handler /*40*/
+.word isr_handler /*41*/
+.word ethernet_isr /*42*/
+.word isr_handler /*43*/
+.word isr_handler /*44*/
+.word isr_handler /*45*/
+.word isr_handler /*46*/
+.word isr_handler /*47*/
 
 .bss
 _stack_end:

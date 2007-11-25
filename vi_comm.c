@@ -287,6 +287,7 @@ void IN_ClearKeysDown(void)
 	memset(Keyboard, 0, sizeof(Keyboard));
 }
 
+#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	IN_ReadControl() - Reads the device associated with the specified
@@ -313,6 +314,7 @@ IN_CheckAck();
 		case ctrl_Keyboard:
 			def = &KbdDefs;
 
+#ifndef EMBEDDED
 			if (GetKey(def->upleft))
 				mx = motion_Left,my = motion_Up;
 			else if (GetKey(def->upright))
@@ -321,6 +323,7 @@ IN_CheckAck();
 				mx = motion_Left,my = motion_Down;
 			else if (GetKey(def->downright))
 				mx = motion_Right,my = motion_Down;
+#endif
 
 			if (GetKey(def->up))
 				my = motion_Up;
@@ -376,6 +379,7 @@ IN_CheckAck();
 	info->button3 = buttons & (1 << 3);
 	info->dir = DirTable[((my + 1) * 3) + (mx + 1)];
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////
 //

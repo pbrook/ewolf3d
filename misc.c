@@ -63,6 +63,7 @@ void TimerInit()
 }
 
 #elif defined (LUMINARY)
+#include "luminary.h"
 
 volatile unsigned long tcount;
 static volatile int tlock;
@@ -80,7 +81,6 @@ unsigned long get_TimeCount(void)
 }
 
 #define treg ((volatile int *)0x40030000)
-#define NVIC ((volatile int *)0xe000e000)
 
 void timer_isr()
 {

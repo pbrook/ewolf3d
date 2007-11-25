@@ -85,9 +85,11 @@ void CalcTics()
 	myint newtime;
 	myint ticcount;
 	
+#ifdef ENABLE_DEMO
 	if (demoplayback || demorecord)
 		ticcount = DEMOTICS - 1; /* [70/4] 17.5 Hz */
 	else
+#endif
 		ticcount = 0 + 1; /* 35 Hz */
 	
 	newtime = sleepuntil(lasttimecount + ticcount);
@@ -95,9 +97,12 @@ void CalcTics()
 	
 	lasttimecount = newtime;
 	
+#ifdef ENABLE_DEMO
 	if (demoplayback || demorecord)
 		tics = DEMOTICS;
-	else if (tics > MAXTICS)
+	else
+#endif
+	if (tics > MAXTICS)
 		tics = MAXTICS;
 
 #ifdef LUMINARY

@@ -50,7 +50,7 @@ byte			buttonmouse[4]={bt_attack,bt_strafe,bt_use,bt_nobutton};
 
 boolean		buttonheld[NUMBUTTONS];
 
-#ifndef ENABLE_DEMO
+#ifdef ENABLE_DEMO
 boolean		demorecord,demoplayback;
 byte		*demoptr, *lastdemoptr;
 memptr		demobuffer;
@@ -426,8 +426,11 @@ void UpdateInput()
 
 void PollControls()
 {
-	myint max, min, i;
+	myint max, min;
+#ifdef ENABLE_DEMO
+	myint i;
 	byte buttonbits;
+#endif
 	static boolean shoothack;
 
 	controlx = 0;
@@ -437,6 +440,7 @@ void PollControls()
 	memcpy(buttonheld, buttonstate, sizeof(buttonstate));
 	memset(buttonstate, 0, sizeof(buttonstate));
 
+#ifdef ENABLE_DEMO
 	if (demoplayback) {
 	//
 	// read commands from demo buffer
@@ -459,6 +463,7 @@ void PollControls()
 
 		return;
 	}
+#endif
 
 	/* Update keys */
 	IN_CheckAck(); 
@@ -489,6 +494,7 @@ void PollControls()
 	else if (controly < min)
 		controly = min;
 
+#ifdef ENABLE_DEMO
 	if (demorecord)
 	{
 	//
@@ -516,6 +522,7 @@ void PollControls()
 		controlx *= (myint)tics;
 		controly *= (myint)tics;
 	}
+#endif
 }
 
 
@@ -556,7 +563,11 @@ void CheckKeys()
 {
 	byte	scan;
 
-	if (screenfaded || demoplayback)	// don't do anything with a faded screen
+	if (screenfaded	// don't do anything with a faded screen
+#ifdef ENABLE_DEMO
+	      || demoplayback
+#endif
+	      )
 		return;
 
 	scan = LastScan;
@@ -584,7 +595,6 @@ void CheckKeys()
 		IN_ClearKeysDown();
 		return;
 	}
-#endif
 
 	//
 	// SECRET CHEAT CODE: 'MLI'
@@ -603,7 +613,6 @@ void CheckKeys()
 		DrawAmmo();
 		DrawScore();
 
-#ifndef EMBEDDED
 		ClearMemory();
 		CA_CacheGrChunk(STARTFONT+1);
 		ClearSplitVWB();
@@ -615,13 +624,11 @@ void CheckKeys()
 		IN_Ack();
 
 		DrawPlayBorder();
-#endif
 	}
 
 	//
 	// OPEN UP DEBUG KEYS
 	//
-#ifndef EMBEDDED
 	if (IN_KeyDown(sc_BackSpace) && IN_KeyDown(sc_LShift) &&
 		IN_KeyDown(sc_Alt) && MS_CheckParm("debugmode")) {
 	 ClearMemory();
@@ -1282,8 +1289,10 @@ void PlayLoop()
 	IN_GetMouseDelta(NULL, NULL); // Clear accumulated mouse movement
 #endif
 		
+#ifdef ENABLE_DEMO
 	if (demoplayback)
 		IN_StartAck();
+#endif
 
 	set_TimeCount(0);
 	
@@ -1345,6 +1354,7 @@ void PlayLoop()
 		}
 #endif
 
+#ifdef ENABLE_DEMO
 		if (demoplayback)
 		{
 			if (IN_CheckAck())
@@ -1353,6 +1363,7 @@ void PlayLoop()
 				playstate = ex_abort;
 			}
 		}
+#endif
 
 	} while (!playstate && !startgame);
 
