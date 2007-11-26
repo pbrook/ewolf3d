@@ -91,14 +91,6 @@ static void oled_init()
     int i;
     const uint8_t *p;
 
-    /* Enable fss device select.  */
-    HWREG(GPIOA + 0x420) |= 0x08;
-    HWREG(GPIOA + 0x020) = 0;
-    /* 50MHz / 3.5Mbit = 14.2 cycles/bit.  */
-    HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
-    HWREG(SSI0 + 0x000) = 0x0647; /* SCR=6 (+1), SPI polarity=1, 8bit */
-    HWREG(SSI0 + 0x04) = 2; /* Enable.  */
-
     p = oled_init_strings;
     while (*p) {
 	i = *(p++);
