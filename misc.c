@@ -444,7 +444,7 @@ myint ReadBytes(myint fp, byte *d, myint len)
 }
 #endif
 
-myshort atan2fix(fixed x, fixed y)
+myshort atan2fix(fixed y, fixed x)
 {
     boolean negative;
     long long quot;
@@ -469,7 +469,7 @@ myshort atan2fix(fixed x, fixed y)
       return negative ? 270 : 90;
     if (y == 0)
       return offset;
-    quot = ((long long)y << 32) / x;
+    quot = ((long long)y << 16) / x;
     tang = (fixed)quot;
     if (quot != tang) {
 	/* Overflow.  */
@@ -482,9 +482,9 @@ myshort atan2fix(fixed x, fixed y)
 	while (low + 1 < high) {
 	    res = (low + high) >> 1;
 	    if (finetangent[res] < tang)
-		high = res;
-	    else
 		low = res;
+	    else
+		high = res;
 	}
 	res = res / (FINEANGLES / ANGLES);
     }
