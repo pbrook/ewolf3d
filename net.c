@@ -13,8 +13,8 @@
 
 char dhcp_state = DHCPDISCOVER;
 static uint32_t my_ip;
-static uint32_t other_ip;
-static uint8_t extra_opts[7] = {54, 4, 0, 0, 0, 0, 0xff};
+static uint32_t other_ip = 0xffffffff;
+static uint8_t extra_opts[] = {54, 4, 0, 0, 0, 0, 50, 4, 0, 0, 0, 0, 0xff};
 
 struct {
     uint32_t high;
@@ -70,7 +70,7 @@ static void send_packet(void);
 #define udp_dport (ip_packet + 22)
 #define udp_len (ip_packet + 24)
 #define udp_csum (ip_packet + 26)
-#define bootp_mac (packetdata + 70)
+#define bootp_mac (ip_packet + 56)
 #define dhcp_data (packetdata + 278)
 #define opt_msg_type (dhcp_data + 6)
 #define opt_end (dhcp_data + 14)
@@ -119,10 +119,8 @@ void dhcp_rx()
 {
     uint32_t v;
     uint32_t new_ip;
-    uint32_t new_dhcp_ip;
     int length;
     uint8_t c;
-    int i;
     int send;
     int newstate;
     uint32_t *p;
@@ -130,30 +128,31 @@ void dhcp_rx()
 
     send = 0;
     v = HWREG(ENET + 0x10);
-    length = ((v & 0xffff) - 1) >> 2;
+    length = v & 0xffff;
     if (length < 288 || length > 592) {
 	/* Wrong size.  Discard packet.  */
+	length = (length - 1) >> 2;
 	while (length--)
 	    HWREG(ENET + 0x10);
 	return;
     }
     p = (uint32_t *)rx_packet;
     *(p++) = v;
+    length = (length - 1) >> 2;
     while (length) {
 	*(p++) = HWREG(ENET + 0x10);
 	length--;
     }
-    /* Is the packet sent to us.  */
-    if (memcmp(rx_packet + 2, &my_mac, 6))
-	return;
     /* IP Headers.  */
     ip_data = rx_packet + 16;
-    new_ip = *(uint32_t *)(ip_data + 12);
-    new_dhcp_ip = *(uint32_t *)(ip_data + 16);
     /* Check xid.  */
-    if (*(uint32_t *)(ip_data + 24) != 0xdeadbeef)
+    if (*(uint32_t *)(ip_data + 32) != 0xefbeadde)
 	return;
-    ip_data += 304;
+    /* Check chaddr matches.  */
+    if (memcmp(ip_data + 56, &my_mac, 6))
+	return;
+    new_ip = *(uint32_t *)(ip_data + 44);
+    ip_data += 264;
     /* Option data.  */
     if (*(uint32_t *)ip_data != 0x63538263)
 	return;
@@ -161,15 +160,13 @@ void dhcp_rx()
     newstate = dhcp_state;
     while (1) {
 	NEXTB;
-#if 0
 	if (c == 0xff)
 	    break;
-#endif
 	switch (c) {
 	case 53:
 	    NEXTB; NEXTB;
 	    switch (dhcp_state) {
-	    case DHCPOFFER:
+	    case DHCPDISCOVER:
 		if (c != DHCPOFFER)
 		    return;
 		newstate = DHCPREQUEST;
@@ -208,14 +205,13 @@ void dhcp_rx()
 	return;
 
     dhcp_state = newstate;
-    my_ip = new_ip;
-    other_ip = new_dhcp_ip;
-    memcpy(destmac, rx_packet + 10, 6);
     *opt_msg_type = dhcp_state;
+    memcpy(extra_opts + 8, &new_ip, 4);
+    memcpy(opt_end, extra_opts, sizeof(extra_opts));
 
-    memcpy(opt_end, extra_opts, 7);
-
-    if (dhcp_state != DHCPINFORM)
+    if (dhcp_state == DHCPINFORM)
+	my_ip = new_ip;
+    else
 	send_packet();
 }
 
@@ -228,6 +224,14 @@ void ethernet_isr(void)
       /* Recieve packet.  */
       if (dhcp_state != DHCPACK) {
 	  dhcp_rx();
+      } else {
+	  uint32_t v;
+	  int length;
+
+	  v = HWREG(ENET + 0x10);
+	  length = ((v & 0xffff) - 1) >> 2;
+	  while (length--)
+	      HWREG(ENET + 0x10);
       }
   }
 
