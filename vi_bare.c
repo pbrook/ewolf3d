@@ -340,10 +340,18 @@ static void sys_init()
     HWREG(GPIOE + 0x51c) |= 0x0f; /* Digital */
     HWREG(GPIOE + 0x510) |= 0x0f; /* Pull-up.  */
 
+    /* Enable fss device select.  */
+    HWREG(GPIOA + 0x420) |= 0x08;
+    HWREG(GPIOA + 0x020) = 0;
+    /* 50MHz / 3.5Mbit = 14.2 cycles/bit.  */
+    HWREG(SSI0 + 0x010) = 2; /* prescale /2 */
+    HWREG(SSI0 + 0x000) = 0x0647; /* SCR=6 (+1), SPI polarity=1, 8bit */
+    HWREG(SSI0 + 0x04) = 2; /* Enable.  */
+
     ssi_flush_rx();
 
-    oled_clear();
     oled_init();
+    oled_clear();
 #endif
 }
 
