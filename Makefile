@@ -79,7 +79,7 @@ foo: ewolf3d_reva
 
 ewolf3d_reva: ewolf3d_revc $(EOBJS) luminary-crt0.o luminary.ld oled_osram.o
 	$(CC) $(CFLAGS) -o $@ -Wl,--gc-sections $(EOBJS) oled_osram.o \
-	  $(ELDLIBS)
+	  $(ELDLIBS) -Wl,-Map,ewolf3d_reva.map
 
 ewolf3d_revc: $(EOBJS) luminary-crt0.o luminary.ld oled_rit.o
 	$(CC) $(CFLAGS) -o $@ -Wl,--gc-sections $(EOBJS) oled_rit.o \
