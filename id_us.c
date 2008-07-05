@@ -8,9 +8,11 @@ typedef	struct {
 	Point ul, lr;
 } Rect;
 
+#ifndef EMBEDDED
 //	Global variables
 word		PrintX,PrintY;
 word		WindowX,WindowY,WindowW,WindowH;
+#endif
 
 //	Internal variables
 
@@ -46,6 +48,7 @@ void US_Startup()
 }
 
 
+#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	US_Shutdown() - Shuts down the User Mgr
@@ -59,7 +62,6 @@ void US_Shutdown()
 	US_Started = false;
 }
 
-#ifndef EMBEDDED
 //	Window/Printing routines
 
 ///////////////////////////////////////////////////////////////////////////

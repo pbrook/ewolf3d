@@ -14,18 +14,22 @@
 
 #define FOCALLENGTH     0x5800		/* in global coordinates */
 
+#ifndef EMBEDDED
 char str[80], str2[20];
-
-myint viewwidth, viewheight;
-myint viewwidthwin, viewheightwin; /* for borders */
-myint xoffset, yoffset;
-#ifndef LUMINARY
-myint vwidth, vheight, vpitch; /* size of screen */
 #endif
+
+#ifndef EMBEDDED
+myint viewwidth, sviewheight;
+myint xoffset, yoffset;
 myint viewsize;
 
 myint centerx;
 myint shootdelta;			/* pixels away from centerx a target can be */
+#endif
+#ifndef LUMINARY
+myint viewwidthwin, viewheightwin; /* for borders */
+myint vwidth, vheight, vpitch; /* size of screen */
+#endif
 
 boolean startgame,loadedgame;
 #ifdef MOUSE_ENABLED
@@ -248,7 +252,9 @@ myint WriteConfig()
 
 static void SetDefaults()
 {
+#ifndef EMBEDDED
 	viewsize = 15;
+#endif
 	
 #ifdef MOUSE_ENABLED
 	mouseenabled = false;
@@ -903,6 +909,7 @@ void SetupWalls()
 	}
 }
 
+#ifndef EMBEDDED
 void ShowViewSize(myint width)
 {
 	myint oldwidth,oldheight;
@@ -917,6 +924,7 @@ void ShowViewSize(myint width)
 	viewheightwin = oldheight;
 	viewwidthwin = oldwidth;
 }
+#endif
 
 void NewViewSize(myint width)
 {
@@ -937,18 +945,16 @@ void NewViewSize(myint width)
 	viewwidthwin = width*16*320/vwidth;
 	viewheightwin = width_to_height(width*16)*320/vwidth;
 	viewsize = width*320/vwidth;
-#else
-	viewsize = width;
 #endif
 	
+#ifndef EMBEDDED
 	viewwidth = width*16;
-	viewheight = width_to_height(width*16);
+	sviewheight = width_to_height(width*16);
 	
 	centerx = viewwidth/2-1;
 	shootdelta = viewwidth/10;
 	
-#ifndef EMBEDDED
-	yoffset = (vheight-STATUSLINES*vheight/200-viewheight)/2;
+	yoffset = (vheight-STATUSLINES*vheight/200-sviewheight)/2;
 	xoffset = (vwidth-viewwidth)/2;
 #endif
 #ifndef LUMINARY
@@ -1122,6 +1128,7 @@ void DoJukebox()
 
 /* ======================================================================== */
 
+#ifndef EMBEDDED
 /*
 ==========================
 =
@@ -1146,6 +1153,7 @@ void ShutdownId()
 #endif
 	MM_Shutdown();
 }
+#endif
 
 /*
 =====================
@@ -1185,7 +1193,9 @@ void NewGame(myint difficulty, myint episode)
 
 void InitGame()
 {
+#ifndef EMBEDDED
 	myint i;
+#endif
 
 	MM_Startup(); 
 #ifdef ENABLE_COLOR
@@ -1205,16 +1215,22 @@ void InitGame()
 
 	ReadConfig();
 
+#ifndef EMBEDDED
 /* load in and lock down some basic chunks */
 
 	CA_CacheGrChunk(STARTFONT);
 	CA_CacheGrChunk(STARTTILE8);
 	for (i = LATCHPICS_LUMP_START; i <= LATCHPICS_LUMP_END; i++)
 		CA_CacheGrChunk(i);
+#endif
 			
 	SetupWalls();
 
+#ifdef EMBEDDED
+	NewViewSize(8);
+#else
 	NewViewSize(viewsize);
+#endif
 
 
 //

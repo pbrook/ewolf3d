@@ -21,7 +21,8 @@ OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
 	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.c \
 	grstarts.o pictable.o pal4bit.o \
-	sprites.o walls.o mapdata.o net.o
+	sprites.o walls.o mapdata.o
+# net.o
 # romchunk.o
 ROBJS = wl_draw.o
 SOBJS = $(OBJS) $(ROBJS) vi_svga.o

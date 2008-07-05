@@ -97,7 +97,8 @@ __isr_vectors:
 .word isr_handler /*39*/
 .word isr_handler /*40*/
 .word isr_handler /*41*/
-.word ethernet_isr /*42*/
+.word isr_handler /*42*/
+/*.word ethernet_isr *//*42*/
 .word isr_handler /*43*/
 .word isr_handler /*44*/
 .word isr_handler /*45*/

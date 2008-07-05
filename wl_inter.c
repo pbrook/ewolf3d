@@ -918,6 +918,7 @@ void PreloadGraphics()
 
 //==========================================================================
 
+#ifdef ENABLE_HIGHSCORES
 /*
 ==================
 =
@@ -928,7 +929,6 @@ void PreloadGraphics()
 
 void DrawHighScores()
 {
-#ifdef ENABLE_HIGHSCORES
 	char buffer[16];
 	char buffer1[16], *str;
 	word i, w, h;
@@ -1039,7 +1039,6 @@ void DrawHighScores()
 	UnCacheLump(HIGHSCORES_LUMP_START, HIGHSCORES_LUMP_END);
 	fontnumber = 0;
 #endif
-#endif
 }
 
 /*
@@ -1052,7 +1051,6 @@ void DrawHighScores()
 
 void CheckHighScore(long score, word other)
 {
-#ifdef ENABLE_HIGHSCORES
 	word i, j;
 	myint n;
 	HighScore myscore;
@@ -1081,7 +1079,9 @@ void CheckHighScore(long score, word other)
 #else
 	StartCPMusic(ROSTER_MUS);
 #endif
+#ifdef ENABLE_HIGHSCORES
 	DrawHighScores();
+#endif
 
 	VW_FadeIn();
 
@@ -1112,5 +1112,5 @@ void CheckHighScore(long score, word other)
 		IN_UserInput(500);
 	}
 
-#endif
 }
+#endif

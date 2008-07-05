@@ -708,12 +708,21 @@ typedef	enum PACKED {
 
 extern	char str[80], str2[20];
 
-extern myint viewwidth, viewheight;
+#ifdef EMBEDDED
+#define viewwidth 128
+#define sviewheight 64
+#define xoffset 0
+#define yoffset 0
+#define centerx (viewwidth/2-1)
+#define shootdelta (viewwidth/10)
+#else
+extern myint viewwidth, sviewheight;
 extern myint viewwidthwin, viewheightwin;
 extern myint xoffset, yoffset;
 
 extern	myint			centerx;
 extern	myint			shootdelta;
+#endif
 
 extern	boolean         startgame,loadedgame;
 extern	myint		mouseadjustment;

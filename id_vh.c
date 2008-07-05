@@ -8,13 +8,14 @@ myint px, py;
 byte fontcolor, backcolor;
 myint fontnumber;
 
+#ifndef LUMINARY
+myint xfrac, yfrac;
+
 boolean	screenfaded;
 
 #ifndef SKIPFADE
 static byte palette1[256][3], palette2[256][3];
 #endif
-
-myint xfrac, yfrac;
 
 /* ======================================================================== */
 
@@ -82,7 +83,6 @@ void VL_FadeOut(myint start, myint end, myint red, myint green, myint blue, myin
 	screenfaded = true;
 }
 
-#ifndef LUMINARY
 /*
 =================
 =
@@ -425,11 +425,15 @@ void VW_Startup()
 {
 	VL_Startup();
 	
+#ifndef EMBEDDED
 	xfrac = (vwidth << 16) / 320;
 	yfrac = (vheight << 16) / 200;
+#endif
 }
 
+#ifndef EMBEDDED
 void VW_Shutdown()
 {
 	VL_Shutdown();
 }
+#endif

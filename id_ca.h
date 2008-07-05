@@ -81,7 +81,7 @@ typedef	struct {
 } PageListStruct;
 
 #ifdef ENABLE_PRECOMPILE
-extern const myint ChunksInFile, PMSpriteStart, PMSoundStart;
+extern const myint PMSpriteStart, PMSoundStart;
 extern const PageListStruct PMPages[];
 extern pool_id PageAddr[];
 extern const uint32_t grstarts[NUMCHUNKS + 1];

@@ -523,6 +523,7 @@ void CA_Startup()
 	mapon = -1;
 }
 
+#ifndef EMBEDDED
 /*
 ======================
 =
@@ -545,6 +546,7 @@ void CA_Shutdown()
 	CloseRead(audiohandle);
 #endif
 }
+#endif
 
 /* ======================================================================== */
 
@@ -695,12 +697,14 @@ memptr CA_GetChunk(myint chunk)
 }
 #endif
 
+#ifndef EMBEDDED
 void CA_UnCacheGrChunk(myint chunk)
 {
 }
 void CA_CacheGrChunk(myint chunk)
 {
 }
+#endif
 	
 /* ======================================================================== */
 
@@ -780,9 +784,11 @@ void MM_Startup()
   pool_offset = 0;
 }
 
+#ifndef EMBEDDED
 void MM_Shutdown()
 {
 }
+#endif
 
 memptr MM_AllocPool(pool_id *id, unsigned long size)
 {
@@ -967,8 +973,10 @@ static void PML_ClosePageFile()
 memptr PM_GetPage(myint pagenum)
 {
 	memptr addr;
+#ifndef EMBEDDED
 	if (pagenum >= ChunksInFile)
 		Quit("PM_GetPage: Invalid page request");
+#endif
 
 	if (PageAddr[pagenum])
 	    return MM_PoolPtr(PageAddr[pagenum]);

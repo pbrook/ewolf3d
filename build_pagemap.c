@@ -13,7 +13,6 @@ int main()
     fread(header, 2, 3, f);
 
     printf("#include \"wl_def.h\"\n");
-    printf("const myint ChunksInFile = %d;\n", header[0]);
     printf("const myint PMSpriteStart = %d;\n", header[1]);
 #ifdef ENABLE_AUDIO
     printf("const myint PMSoundStart = %d;\n", header[2]);

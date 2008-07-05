@@ -237,14 +237,6 @@ void VL_Startup()
 #endif
 }
 
-void VL_Shutdown()
-{
-}
-
-void VL_WaitVBL(int i)
-{
-}
-
 void VW_UpdateScreen()
 {
 #ifdef LUMINARY

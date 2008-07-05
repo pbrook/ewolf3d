@@ -154,6 +154,7 @@ unsigned long sleepuntil(unsigned long t)
     return now;
 }
 
+#ifndef EMBEDDED
 long filelength(myint handle)
 {
 #ifdef __linux__
@@ -170,7 +171,6 @@ long filelength(myint handle)
 #endif
 }
 
-#ifndef EMBEDDED
 char *itoa(myint value, char *string, myint radix)
 {
 	return ltoa(value, string, radix);

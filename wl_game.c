@@ -1205,7 +1205,9 @@ startplayloop:
 
 				ClearMemory();
 
+#ifdef ENABLE_HIGHSCORES
 				CheckHighScore(gamestate.score,gamestate.mapon+1);
+#endif
 
 				strcpy(MainMenu[viewscores].string,STR_VS);
 				MainMenu[viewscores].routine = (MenuFunc)CP_ViewScores;
@@ -1273,7 +1275,9 @@ startplayloop:
 
 			ClearMemory();
 
+#ifdef ENABLE_HIGHSCORES
 			CheckHighScore(gamestate.score,gamestate.mapon+1);
+#endif
 
 			return;
 
@@ -1290,7 +1294,9 @@ startplayloop:
 
 			ClearMemory();
 
+#ifdef ENABLE_HIGHSCORES
 			CheckHighScore(gamestate.score,gamestate.mapon+1);
+#endif
 
 			return;
 

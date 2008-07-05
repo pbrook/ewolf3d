@@ -6,7 +6,6 @@ boolean AdLibPresent, SoundBlasterPresent;
 SDMode SoundMode;
 SMMode MusicMode;
 SDSMode DigiMode;
-#endif
 
 void SD_SetDigiDevice(SDSMode mode)
 {
@@ -128,3 +127,4 @@ void PlaySoundLocGlobal(word s, myint id, fixed gx,fixed gy)
 void UpdateSoundLoc(fixed x, fixed y, myint angle)
 {
 }
+#endif

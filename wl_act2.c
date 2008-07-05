@@ -2415,6 +2415,7 @@ void T_BJDone(objtype *ob)
 //===========================================================================
 
 
+#ifndef EMBEDDED
 /*
 ===============
 =
@@ -2445,6 +2446,7 @@ boolean	CheckPosition(objtype *ob)
 
 	return true;
 }
+#endif
 
 
 /*

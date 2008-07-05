@@ -415,19 +415,19 @@ static void DrawPlayerWeapon()
 	if (gamestate.victoryflag)
 	{
 		if ((player->state == s_deathcam) && (get_TimeCount() & 32))
-			SimpleScaleShape(viewwidth/2,SPR_DEATHCAM,viewheight+1);
+			SimpleScaleShape(viewwidth/2,SPR_DEATHCAM,sviewheight+1);
 		return;
 	}
 #endif
 
 	if (gamestate.weapon != wp_none) {
 	    shapenum = weaponscale[gamestate.weapon]+gamestate.weaponframe;
-	    SimpleScaleShape(viewwidth/2,shapenum,viewheight+1);
+	    SimpleScaleShape(viewwidth/2,shapenum,sviewheight+1);
 	}
 
 #ifdef ENABLE_DEMO
 	if (demorecord || demoplayback)
-		SimpleScaleShape(viewwidth/2,SPR_DEMO,viewheight+1);
+		SimpleScaleShape(viewwidth/2,SPR_DEMO,sviewheight+1);
 #endif
 }
 
@@ -548,7 +548,7 @@ static void SetPlaneViewSize()
 	myint x, y;
 	byte *dest, *src;
 
-	halfheight = viewheight >> 1;
+	halfheight = sviewheight >> 1;
 
 	for (y = 0; y < halfheight; y++) {
 		planeylookup[y] = gfxbuf + (halfheight-1-y)*vwidth;
@@ -587,7 +587,7 @@ void DrawPlanes()
 	myint height, lastheight;
 	myint x;
 
-	if ((viewheight>>1) != halfheight)
+	if ((sviewheight>>1) != halfheight)
 		SetPlaneViewSize();	/* screen size has changed */
 
 /* loop over all columns */
@@ -645,8 +645,8 @@ static void ClearScreen()
 	unsigned myint ceiling = Ceiling[gamestate.episode*10+mapon] & 0xFF;
 	unsigned myint floor = 0x19;
 
-	VL_Bar(xoffset, yoffset, viewwidth, viewheight / 2, ceiling);
-	VL_Bar(xoffset, yoffset + viewheight / 2, viewwidth, viewheight / 2, floor);
+	VL_Bar(xoffset, yoffset, viewwidth, sviewheight / 2, ceiling);
+	VL_Bar(xoffset, yoffset + sviewheight / 2, viewwidth, sviewheight / 2, floor);
 }
 
 /* ======================================================================== */
@@ -720,8 +720,8 @@ static void ScaleLine(unsigned myint height, byte *source, myint x)
 		frac = (64 << 16) / height;
 		delta = (64 << 16) - frac*height;
 		
-		if (height < viewheight) {
-			y = yoffset + (viewheight - height) / 2;
+		if (height < sviewheight) {
+			y = yoffset + (sviewheight - height) / 2;
 			
 			ScaledDraw(source, height, gfxbuf + (y * vpitch) + xoffset, 
 			x, delta, frac);
@@ -729,10 +729,10 @@ static void ScaleLine(unsigned myint height, byte *source, myint x)
 			return;	
 		} 
 		
-		y = (height - viewheight) / 2;
+		y = (height - sviewheight) / 2;
 		y *= frac;
 
-		ScaledDraw(source, viewheight, gfxbuf + (yoffset * vpitch) + xoffset, 
+		ScaledDraw(source, sviewheight, gfxbuf + (yoffset * vpitch) + xoffset, 
 		x, y+delta, frac);
 	}
 }
@@ -808,7 +808,7 @@ static void RenderLine(unsigned myint height, byte *row, int x,
     // FIXME: Cache delta and yclip across lines.
     delta = (64 << 16) / height;
 
-    if (height < viewheight) {
+    if (height < sviewheight) {
 #ifdef ENABLE_COLOR
 	while (sprite[cmd+0]) {
 	    y1 = sprite[cmd+0] / 2;
@@ -836,7 +836,7 @@ static void RenderLine(unsigned myint height, byte *row, int x,
 		        x, 0/*frac*/, delta);
 	}
     } else {
-	yclip = (height - viewheight) / 2;
+	yclip = (height - sviewheight) / 2;
 	yclip *= delta;
 	ytop = yclip >> 16;
 #ifdef ENABLE_COLOR
@@ -872,10 +872,10 @@ static void RenderLine(unsigned myint height, byte *row, int x,
 		pend = ((y1 - ytop) * height) >> 6;
 	    }
 
-	    if (pend > viewheight)
-		pend = viewheight;
+	    if (pend > sviewheight)
+		pend = sviewheight;
 
-	    if (pstart < viewheight)
+	    if (pstart < sviewheight)
 		ScaledDraw4(post, pend - pstart, row + (pstart * vpitch),
 			    x, yfrac, delta);
 	}
@@ -926,8 +926,8 @@ static void RenderShape(myint xcenter, myint shapenum, unsigned height,
 	    x -= left;
 	}
 	right -= left;
-	if (height < viewheight)
-	    row = gfxbuf + (yoffset + (viewheight - height) / 2) * vpitch;
+	if (height < sviewheight)
+	    row = gfxbuf + (yoffset + (sviewheight - height) / 2) * vpitch;
 	else
 	    row = gfxbuf + yoffset * vpitch;
 	row += xoffset;
@@ -1410,7 +1410,7 @@ void FizzleFade(boolean abortable, myint frames, myint color)
 		return;
 		
 	width = viewwidth / multiplier;
-	height = viewheight / multiplier;
+	height = sviewheight / multiplier;
 	
 	retr = -1;
 		

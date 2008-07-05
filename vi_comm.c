@@ -175,6 +175,7 @@ static void INL_StartKbd(void)
 	IN_ClearKeysDown();
 }
 
+#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	INL_ShutKbd() - Restores keyboard control to the BIOS
@@ -192,6 +193,7 @@ static void INL_ShutKbd(void)
 static void INL_ShutMouse(void)
 {
 }
+#endif
 
 #ifdef ENABLE_JOYSTICK
 ///////////////////////////////////////////////////////////////////////////
@@ -253,6 +255,7 @@ void IN_Startup(void)
 	IN_Started = true;
 }
 
+#ifndef EMBEDDED
 ///////////////////////////////////////////////////////////////////////////
 //
 //	IN_Shutdown() - Shuts down the Input Mgr
@@ -276,6 +279,7 @@ void IN_Shutdown(void)
 
 	IN_Started = false;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////
 //

@@ -1018,6 +1018,7 @@ void InitRedShifts()
 #endif
 
 
+#ifdef ENABLE_FLASHES
 /*
 =====================
 =
@@ -1028,11 +1029,10 @@ void InitRedShifts()
 
 void ClearPaletteShifts()
 {
-#ifdef ENABLE_FLASHES
 	bonuscount = damagecount = 0;
-#endif
 
 }
+#endif
 
 
 /*
@@ -1077,9 +1077,9 @@ void StartDamageFlash(myint damage)
 =====================
 */
 
+#ifdef ENABLE_FLASHES
 void UpdatePaletteShifts()
 {
-#ifdef ENABLE_FLASHES
 	myint red, white;
 
 	if (bonuscount)
@@ -1123,12 +1123,10 @@ void UpdatePaletteShifts()
 		VL_SetPalette(gamepal);		// back to normal
 		palshifted = false;
 	}
-#endif
 
 }
 
 
-#ifdef ENABLE_FLASHES
 /*
 =====================
 =
@@ -1287,7 +1285,9 @@ void PlayLoop()
 	funnyticount = 0;
 	
 	memset (buttonstate,0,sizeof(buttonstate));
+#ifdef ENABLE_FLASHES
 	ClearPaletteShifts();
+#endif
 
 #ifdef ENABLE_MOUSE
 	IN_GetMouseDelta(NULL, NULL); // Clear accumulated mouse movement
@@ -1319,7 +1319,9 @@ void PlayLoop()
 		for (obj = player; obj; obj = obj_next(obj))
 			DoActor(obj);
 		
+#ifdef ENABLE_FLASHES
 		UpdatePaletteShifts();
+#endif
 
 		ThreeDRefresh();
 
