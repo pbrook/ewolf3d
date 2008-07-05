@@ -46,10 +46,12 @@ myshort pixelangle[MAXVIEWWIDTH];
 //int32_t finetangent[FINEANGLES/4];
 myshort horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
 
+#ifndef EMBEDDED
 char configname[13] = "config." GAMEEXT;
 
 myint _argc;
 char **_argv;
+#endif
 
 /*
 ========================
@@ -1334,8 +1336,10 @@ void DemoLoop()
 
 myint WolfMain(myint argc, char *argv[])
 {
+#ifndef EMBEDDED
 	_argc = argc;
 	_argv = argv;
+#endif
 
 	if (SPR_TOTAL >= 512) {
 	    /* statstruct:shapenum is a 10-bit signed field.  */
