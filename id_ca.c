@@ -833,7 +833,7 @@ memptr MM_AllocPool(pool_id *id, unsigned long size)
     return (memptr)(h + 1);
 }
 
-memptr MM_PoolPtr(pool_id id)
+static memptr MM_PoolPtr(pool_id id)
 {
     if (!id)
 	Quit("Pool entry absent\n");
