@@ -857,6 +857,7 @@ void KillActor (objtype *ob)
 #endif
 	default:
 		points = 0;
+		newstate = ob->state;
 		break;
 	}
 
