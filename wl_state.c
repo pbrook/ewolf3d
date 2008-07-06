@@ -730,6 +730,8 @@ moveok:
 void KillActor (objtype *ob)
 {
 	myint	tilex,tiley;
+	int	points;
+	int	newstate;
 
 	tilex = ob->tilex = ob->x >> TILESHIFT;		// drop item on center
 	tiley = ob->tiley = ob->y >> TILESHIFT;
@@ -737,26 +739,26 @@ void KillActor (objtype *ob)
 	switch (ob->obclass)
 	{
 	case guardobj:
-		GivePoints (100);
-		NewState (ob,s_grddie1);
+		points = 100;
+		newstate = s_grddie1;
 		PlaceItemType (bo_clip2,tilex,tiley);
 		break;
 
 	case officerobj:
-		GivePoints (400);
-		NewState (ob,s_ofcdie1);
+		points = 400;
+		newstate = s_ofcdie1;
 		PlaceItemType (bo_clip2,tilex,tiley);
 		break;
 
 	case mutantobj:
-		GivePoints (700);
-		NewState (ob,s_mutdie1);
+		points = 700;
+		newstate = s_mutdie1;
 		PlaceItemType (bo_clip2,tilex,tiley);
 		break;
 
 	case ssobj:
-		GivePoints (500);
-		NewState (ob,s_ssdie1);
+		points = 500;
+		newstate = s_ssdie1;
 		if (gamestate.bestweapon < wp_machinegun)
 			PlaceItemType (bo_machinegun,tilex,tiley);
 		else
@@ -764,99 +766,102 @@ void KillActor (objtype *ob)
 		break;
 
 	case dogobj:
-		GivePoints (200);
-		NewState (ob,s_dogdie1);
+		points = 200;
+		newstate = s_dogdie1;
 		break;
 
 #ifndef SPEAR
 	case bossobj:
-		GivePoints (5000);
-		NewState (ob,s_bossdie1);
+		points = 5000;
+		newstate = s_bossdie1;
 		PlaceItemType (bo_key1,tilex,tiley);
 		break;
 
 	case gretelobj:
-		GivePoints (5000);
-		NewState (ob,s_greteldie1);
+		points = 5000;
+		newstate = s_greteldie1;
 		PlaceItemType (bo_key1,tilex,tiley);
 		break;
 
 	case giftobj:
-		GivePoints (5000);
+		points = 5000;
 		gamestate.killx = player->x;
 		gamestate.killy = player->y;
-		NewState (ob,s_giftdie1);
+		newstate = s_giftdie1;
 		break;
 
 	case fatobj:
-		GivePoints (5000);
+		points = 5000;
 		gamestate.killx = player->x;
 		gamestate.killy = player->y;
-		NewState (ob,s_fatdie1);
+		newstate = s_fatdie1;
 		break;
 
 	case schabbobj:
-		GivePoints (5000);
+		points = 5000;
 		gamestate.killx = player->x;
 		gamestate.killy = player->y;
-		NewState (ob,s_schabbdie1);
+		newstate = s_schabbdie1;
 		A_DeathScream(ob);
 		break;
 	case fakeobj:
-		GivePoints (2000);
-		NewState (ob,s_fakedie1);
+		points = 2000;
+		newstate = s_fakedie1;
 		break;
 
 	case mechahitlerobj:
-		GivePoints (5000);
-		NewState (ob,s_mechadie1);
+		points = 5000;
+		newstate = s_mechadie1;
 		break;
 	case realhitlerobj:
-		GivePoints (5000);
+		points = 5000;
 		gamestate.killx = player->x;
 		gamestate.killy = player->y;
-		NewState (ob,s_hitlerdie1);
+		newstate = s_hitlerdie1;
 		A_DeathScream(ob);
 		break;
 #else
 	case spectreobj:
-		GivePoints (200);
-		NewState (ob,s_spectredie1);
+		points = 200;
+		newstate = s_spectredie1;
 		break;
 
 	case angelobj:
-		GivePoints (5000);
-		NewState (ob,s_angeldie1);
+		points = 5000;
+		newstate = s_angeldie1;
 		break;
 
 	case transobj:
-		GivePoints (5000);
-		NewState (ob,s_transdie0);
+		points = 5000;
+		newstate = s_transdie0;
 		PlaceItemType (bo_key1,tilex,tiley);
 		break;
 
 	case uberobj:
-		GivePoints (5000);
-		NewState (ob,s_uberdie0);
+		points = 5000;
+		newstate = s_uberdie0;
 		PlaceItemType (bo_key1,tilex,tiley);
 		break;
 
 	case willobj:
-		GivePoints (5000);
-		NewState (ob,s_willdie1);
+		points = 5000;
+		newstate = s_willdie1;
 		PlaceItemType (bo_key1,tilex,tiley);
 		break;
 
 	case deathobj:
-		GivePoints (5000);
-		NewState (ob,s_deathdie1);
+		points = 5000;
+		newstate = s_deathdie1;
 		PlaceItemType (bo_key1,tilex,tiley);
 		break;
 #endif
 	default:
+		points = 0;
 		break;
 	}
 
+	GivePoints(points);
+	NewState (ob, newstate);
 #ifdef ENABLE_STATS
 	gamestate.killcount++;
 #endif
