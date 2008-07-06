@@ -12,8 +12,6 @@
 =============================================================================
 */
 
-#define FOCALLENGTH     0x5800		/* in global coordinates */
-
 #ifndef EMBEDDED
 char str[80], str2[20];
 #endif
@@ -897,6 +895,7 @@ void ShowViewSize(myint width)
 }
 #endif
 
+#ifndef EMBEDDED
 void NewViewSize(myint width)
 {
 	if (width > (MAXVIEWWIDTH / 16))
@@ -904,21 +903,18 @@ void NewViewSize(myint width)
 	if (width < 4)
 		width = 4;	
 	
-#ifndef EMBEDDED
 	width *= vwidth / 320;
 	
 	if ((width*16) > vwidth)
 		width = vwidth / 16;
 	
-	if ((width_to_height(width*16) > (vheight - 40*vheight/200))
+	if (width_to_height(width*16) > (vheight - 40*vheight/200))
 		width = (vheight - 40*vheight/200)/8;
 	
 	viewwidthwin = width*16*320/vwidth;
 	viewheightwin = width_to_height(width*16)*320/vwidth;
 	viewsize = width*320/vwidth;
-#endif
 	
-#ifndef EMBEDDED
 	viewwidth = width*16;
 	sviewheight = width_to_height(width*16);
 	
@@ -927,17 +923,14 @@ void NewViewSize(myint width)
 	
 	yoffset = (vheight-STATUSLINES*vheight/200-sviewheight)/2;
 	xoffset = (vwidth-viewwidth)/2;
-#endif
-#ifndef LUMINARY
 	vpitch = vwidth;
-#endif
-	
 //
 // calculate trace angles and projection constants
 //
 	CalcProjection(FOCALLENGTH);
 
 }
+#endif
 
 //===========================================================================
 
@@ -1197,9 +1190,7 @@ void InitGame()
 		CA_CacheGrChunk(i);
 #endif
 			
-#ifdef EMBEDDED
-	NewViewSize(8);
-#else
+#ifndef EMBEDDED
 	NewViewSize(viewsize);
 #endif
 

@@ -718,6 +718,8 @@ typedef	enum PACKED {
 
 extern	char str[80], str2[20];
 
+#define FOCALLENGTH     0x5800		/* in global coordinates */
+
 #ifdef EMBEDDED
 #define viewwidth 128
 #define sviewheight 64
