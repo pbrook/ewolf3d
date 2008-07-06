@@ -2,7 +2,8 @@ PROGS=ewolf3d
 
 ifeq ($(PROGS),ewolf3d)
 CC = arm-unknown-eabi-gcc
-CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -Os -ffunction-sections -fdata-sections -fno-strict-aliasing
+CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -Os -ffunction-sections -fdata-sections
+#-fno-strict-aliasing
 else
 CC = gcc -m32
 CFLAGS = -g -Wall
