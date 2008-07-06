@@ -1472,6 +1472,6 @@ void FizzleFade(boolean abortable, myint frames, myint color)
 		while (get_TimeCount() < frame);
 	} while (retr == -1);
 
-#endif
 	VW_UpdateScreen();	
+#endif
 }
