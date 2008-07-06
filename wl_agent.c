@@ -41,9 +41,10 @@ objtype		*LastAttacker;
 */
 
 
+/* ??? Does this need to be so big?  */
 static const struct atkinf
 {
-	signed char tics, attack, frame; 	// attack is 1 for gun, 2 for knife
+	signed char tics:4, attack:4, frame:4; 	// attack is 1 for gun, 2 for knife
 } attackinfo[4][14] =
 {
 { {6,0,1},{6,2,2},{6,0,3},{6,-1,4} },
@@ -52,7 +53,6 @@ static const struct atkinf
 { {6,0,1},{6,1,2},{6,4,3},{6,-1,4} },
 };
 
-void DrawWeapon();
 void GiveWeapon(myint weapon);
 void GiveAmmo(myint ammo);
 
@@ -187,11 +187,10 @@ void ControlMovement(objtype *ob)
 ==================
 */
 
+#ifndef EMBEDDED
 void StatusDrawPic(unsigned x, unsigned y, unsigned picnum)
 {
-#ifndef EMBEDDED
 	VWB_DrawPic(x*8, y+160, picnum);
-#endif
 }
 
 
@@ -205,7 +204,6 @@ void StatusDrawPic(unsigned x, unsigned y, unsigned picnum)
 
 void DrawFace()
 {
-#ifndef EMBEDDED
 	if (gamestate.health) {
 		#ifdef SPEAR
 		if (godmode)
@@ -221,11 +219,9 @@ void DrawFace()
 #endif
 		StatusDrawPic (17,4,FACE8APIC);
 	}
-#endif
 }
 
 
-#ifndef EMBEDDED
 /*
 ===============
 =
@@ -479,6 +475,7 @@ void GivePoints(long points)
 
 //===========================================================================
 
+#ifndef EMBEDDED
 /*
 ==================
 =
@@ -489,9 +486,7 @@ void GivePoints(long points)
 
 void DrawWeapon()
 {
-#ifndef EMBEDDED
 	StatusDrawPic(32,8,KNIFEPIC+gamestate.weapon);
-#endif
 }
 
 /*
@@ -504,7 +499,6 @@ void DrawWeapon()
 
 void DrawKeys()
 {
-#ifndef EMBEDDED
 	if (gamestate.keys & 1)
 		StatusDrawPic(30,4,GOLDKEYPIC);
 	else
@@ -514,8 +508,8 @@ void DrawKeys()
 		StatusDrawPic(30,20,SILVERKEYPIC);
 	else
 		StatusDrawPic(30,20,NOKEYPIC);
-#endif
 }
+#endif
 
 /*
 ==================

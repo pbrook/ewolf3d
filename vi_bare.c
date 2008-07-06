@@ -224,7 +224,6 @@ void INL_Update()
 /* Graphics bits.  */
 
 byte framebuffer[128 * 64 / 2];
-byte *gfxbuf = framebuffer;
 
 void VL_Startup()
 {

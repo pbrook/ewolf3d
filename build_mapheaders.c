@@ -19,9 +19,10 @@ int main()
     fread(offsets, 4, 60, f);
     fclose(f);
 
+    printf("#ifndef HOST\n");
+    printf("#define RLEWtag 0x%x\n", rlew);
+    printf("#else\n");
     printf("#include \"wl_def.h\"\n");
-    printf("const word RLEWtag = 0x%x;\n", rlew);
-    printf("#ifdef HOST\n");
     printf("const maptype mapheaderseg[NUMMAPS] = {\n");
     f = fopen("gamemaps." GAMEEXT, "rb");
     for (i = 0; i < NUMMAPS; i++)

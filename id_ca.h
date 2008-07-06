@@ -30,7 +30,6 @@ typedef byte ms0;
 extern	ms0	mapseg0[64 * 64];
 #ifdef ENABLE_PRECOMPILE
 extern const byte *const MapPlane[NUMMAPS * 2];
-extern const word RLEWtag;
 extern	const maptype mapheaderseg[NUMMAPS];
 #else
 extern	maptype	*mapheaderseg[NUMMAPS];
@@ -70,7 +69,6 @@ void MM_FreePtr(memptr *baseptr);
 
 void MM_SetPurge(memptr *baseptr, myint purge);
 void MM_SetLock(memptr *baseptr, boolean locked);
-void MM_SortMem();
 
 #define PMPageSize	4096
 

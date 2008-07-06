@@ -344,7 +344,6 @@ void US_ControlPanel(byte scancode)
 			StartCPMusic (XJAZNAZI_MUS);
 			UnCacheLump(OPTIONS_LUMP_START,OPTIONS_LUMP_END);
 			UnCacheLump(BACKDROP_LUMP_START,BACKDROP_LUMP_END);
-			MM_SortMem();
 			ClearMemory();
 
 			CA_CacheGrChunk (IDGUYS1PIC);
@@ -388,7 +387,6 @@ void US_ControlPanel(byte scancode)
 				break;
 
 			case backtodemo:
-				MM_SortMem();
 				StartGame=1;
 				if (!ingame)
 					StartCPMusic(INTROSONG);
@@ -422,7 +420,6 @@ void US_ControlPanel(byte scancode)
 		
 #ifdef SPEAR
 	UnCacheLump(OPTIONS_LUMP_START, OPTIONS_LUMP_END);
-	MM_SortMem();
 #endif
 }
 

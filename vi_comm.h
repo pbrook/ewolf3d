@@ -3,7 +3,12 @@
 
 /* ======================================================================== */
 
+#ifdef LUMINARY
+extern byte framebuffer[];
+#define gfxbuf framebuffer
+#else
 extern byte *gfxbuf;
+#endif
 
 extern const byte pal4bit[256];
 #ifdef LUMINARY

@@ -19,7 +19,7 @@ HOSTCFLAGS = -DHOST -g -O2
 OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
-	wl_debug.o vi_comm.o tables.o mapheaders.o pagemap.c \
+	wl_debug.o vi_comm.o tables.o pagemap.c \
 	grstarts.o pictable.o pal4bit.o \
 	sprites.o walls.o mapdata.o
 # net.o
@@ -59,7 +59,7 @@ $(XOBJS): version.h id_heads.h wl_def.h Makefile
 $(DOBJS): version.h id_heads.h wl_def.h Makefile
 $(EOBJS): version.h id_heads.h wl_def.h Makefile
 $(PROGS): Makefile
-id_ca.o: huffman.h
+id_ca.o: huffman.h mapheaders.c
 
 .asm.o:
 	$(NASM) -f elf -o $@ $<

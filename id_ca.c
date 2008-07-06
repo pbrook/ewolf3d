@@ -20,7 +20,9 @@ typedef struct
 =============================================================================
 */
 
-#ifndef ENABLE_PRECOMPILE
+#ifdef ENABLE_PRECOMPILE
+#include "mapheaders.c"
+#else
 static word RLEWtag;
 maptype	*mapheaderseg[NUMMAPS];
 #endif
@@ -873,10 +875,6 @@ void MM_SetLock(memptr *baseptr, boolean locked)
 #endif
 }
 #endif
-
-void MM_SortMem()
-{
-}
 
 #ifndef ENABLE_PRECOMPILE
 static boolean PMStarted;

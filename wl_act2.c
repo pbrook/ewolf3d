@@ -1871,7 +1871,7 @@ void SpawnHitler(myint tilex, myint tiley)
 
 void A_HitlerMorph (objtype *ob)
 {
-	word hitpoints[4]={500,700,800,900};
+	const word hitpoints[4]={500,700,800,900};
 
 	SpawnNewObj (ob->tilex,ob->tiley,s_hitlerchase1);
 	new->speed = SPDPATROL*5;

@@ -916,8 +916,6 @@ extern	memptr		demobuffer;
 #endif
 
 
-void StatusDrawPic(unsigned x, unsigned y, unsigned picnum);
-
 void	InitRedShifts (void);
 void 	FinishPaletteShifts (void);
 
@@ -1031,7 +1029,6 @@ extern	myint			anglefrac;
 extern	myint			facecount;
 
 void	SpawnPlayer (myint tilex, myint tiley, myint dir);
-void 	DrawFace (void);
 void	DrawHealth (void);
 void	TakeDamage (myint points,objtype *attacker);
 void	HealSelf (myint points);
@@ -1040,14 +1037,24 @@ void	DrawLives (void);
 void	GiveExtraMan (void);
 void	DrawScore (void);
 void	GivePoints (long points);
-void	DrawWeapon (void);
-void	DrawKeys (void);
 void	GiveWeapon (myint weapon);
 void	DrawAmmo (void);
 void	GiveAmmo (myint ammo);
 void	GiveKey (myint key);
 void	GetBonus (statobj_t *check);
 
+#ifdef EMBEDDED
+#define DrawKeys() do {} while(0)
+#define DrawWeapon() do {} while(0)
+#define DrawFace() do {} while(0)
+#define StatusDrawPic(x,y,picnum) do {} while(0)
+#else
+void	DrawKeys (void);
+void	DrawWeapon (void);
+void 	DrawFace (void);
+void StatusDrawPic(unsigned x, unsigned y, unsigned picnum);
+
+#endif
 void	Thrust (myint angle, long speed);
 
 /*

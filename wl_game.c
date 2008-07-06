@@ -34,7 +34,6 @@ static const myint ElevatorBackTo[]={ 1, 1, 7, 3, 5, 3};
 
 void ClearMemory()
 {
-	MM_SortMem();
 }
 
 /*
