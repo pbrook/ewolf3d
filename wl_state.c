@@ -139,47 +139,50 @@ void NewState(objtype *ob, myint state) /* stateenum */
 boolean TryWalk(objtype *ob)
 {
 	myint doornum;
+	int tilex, tiley;
 
 	doornum = -1;
 
+	tilex = ob->tilex;
+	tiley = ob->tiley;
 	if (ob->obclass == inertobj)
 	{
 		switch (ob->dir)
 		{
 		case north:
-			ob->tiley--;
+			tiley--;
 			break;
 
 		case northeast:
-			ob->tilex++;
-			ob->tiley--;
+			tilex++;
+			tiley--;
 			break;
 
 		case east:
-			ob->tilex++;
+			tilex++;
 			break;
 
 		case southeast:
-			ob->tilex++;
-			ob->tiley++;
+			tilex++;
+			tiley++;
 			break;
 
 		case south:
-			ob->tiley++;
+			tiley++;
 			break;
 
 		case southwest:
-			ob->tilex--;
-			ob->tiley++;
+			tilex--;
+			tiley++;
 			break;
 
 		case west:
-			ob->tilex--;
+			tilex--;
 			break;
 
 		case northwest:
-			ob->tilex--;
-			ob->tiley--;
+			tilex--;
+			tiley--;
 			break;
 			
 		default:
@@ -192,81 +195,81 @@ boolean TryWalk(objtype *ob)
 		case north:
 			if (ob->obclass == dogobj || ob->obclass == fakeobj)
 			{
-				CHECKDIAG(ob->tilex,ob->tiley-1);
+				CHECKDIAG(tilex,tiley-1);
 			}
 			else
 			{
-				CHECKSIDE(ob->tilex,ob->tiley-1);
+				CHECKSIDE(tilex,tiley-1);
 			}
-			ob->tiley--;
+			tiley--;
 			break;
 
 		case northeast:
-			CHECKDIAG(ob->tilex+1,ob->tiley-1);
-			CHECKDIAG(ob->tilex+1,ob->tiley);
-			CHECKDIAG(ob->tilex,ob->tiley-1);
-			ob->tilex++;
-			ob->tiley--;
+			CHECKDIAG(tilex+1,tiley-1);
+			CHECKDIAG(tilex+1,tiley);
+			CHECKDIAG(tilex,tiley-1);
+			tilex++;
+			tiley--;
 			break;
 
 		case east:
 			if (ob->obclass == dogobj || ob->obclass == fakeobj)
 			{
-				CHECKDIAG(ob->tilex+1,ob->tiley);
+				CHECKDIAG(tilex+1,tiley);
 			}
 			else
 			{
-				CHECKSIDE(ob->tilex+1,ob->tiley);
+				CHECKSIDE(tilex+1,tiley);
 			}
-			ob->tilex++;
+			tilex++;
 			break;
 
 		case southeast:
-			CHECKDIAG(ob->tilex+1,ob->tiley+1);
-			CHECKDIAG(ob->tilex+1,ob->tiley);
-			CHECKDIAG(ob->tilex,ob->tiley+1);
-			ob->tilex++;
-			ob->tiley++;
+			CHECKDIAG(tilex+1,tiley+1);
+			CHECKDIAG(tilex+1,tiley);
+			CHECKDIAG(tilex,tiley+1);
+			tilex++;
+			tiley++;
 			break;
 
 		case south:
 			if (ob->obclass == dogobj || ob->obclass == fakeobj)
 			{
-				CHECKDIAG(ob->tilex,ob->tiley+1);
+				CHECKDIAG(tilex,tiley+1);
 			}
 			else
 			{
-				CHECKSIDE(ob->tilex,ob->tiley+1);
+				CHECKSIDE(tilex,tiley+1);
 			}
-			ob->tiley++;
+			tiley++;
 			break;
 
 		case southwest:
-			CHECKDIAG(ob->tilex-1,ob->tiley+1);
-			CHECKDIAG(ob->tilex-1,ob->tiley);
-			CHECKDIAG(ob->tilex,ob->tiley+1);
-			ob->tilex--;
-			ob->tiley++;
+			CHECKDIAG(tilex-1,tiley+1);
+			CHECKDIAG(tilex-1,tiley);
+			CHECKDIAG(tilex,tiley+1);
+			tilex--;
+			tiley++;
 			break;
 
 		case west:
 			if (ob->obclass == dogobj || ob->obclass == fakeobj)
 			{
-				CHECKDIAG(ob->tilex-1,ob->tiley);
+				CHECKDIAG(tilex-1,tiley);
 			}
 			else
 			{
-				CHECKSIDE(ob->tilex-1,ob->tiley);
+				CHECKSIDE(tilex-1,tiley);
 			}
-			ob->tilex--;
+			tilex--;
 			break;
 
 		case northwest:
-			CHECKDIAG(ob->tilex-1,ob->tiley-1);
-			CHECKDIAG(ob->tilex-1,ob->tiley);
-			CHECKDIAG(ob->tilex,ob->tiley-1);
-			ob->tilex--;
-			ob->tiley--;
+			CHECKDIAG(tilex-1,tiley-1);
+			CHECKDIAG(tilex-1,tiley);
+			CHECKDIAG(tilex,tiley-1);
+			tilex--;
+			tiley--;
 			break;
 
 		case nodir:
@@ -276,6 +279,8 @@ boolean TryWalk(objtype *ob)
 			Quit ("Walk: Bad dir");
 		}
 
+	ob->tilex = tilex;
+	ob->tiley = tiley;
 	if (doornum != -1)
 	{
 		OpenDoor (doornum);
@@ -285,7 +290,7 @@ boolean TryWalk(objtype *ob)
 
 
 	ob->areanumber =
-		*(mapseg0 + farmapylookup(ob->tiley)+ob->tilex) - AREATILE;
+		*(mapseg0 + farmapylookup(tiley)+tilex) - AREATILE;
 
 	ob->distance = TILEGLOBAL;
 	return true;
