@@ -619,36 +619,39 @@ void SelectRunDir (objtype *ob)
 void MoveObj (objtype *ob, long move)
 {
 	long	deltax,deltay;
+	long	x, y;
 
+	x = ob->x;
+	y = ob->y;
 	switch (ob->dir)
 	{
 	case north:
-		ob->y -= move;
+		y -= move;
 		break;
 	case northeast:
-		ob->x += move;
-		ob->y -= move;
+		x += move;
+		y -= move;
 		break;
 	case east:
-		ob->x += move;
+		x += move;
 		break;
 	case southeast:
-		ob->x += move;
-		ob->y += move;
+		x += move;
+		y += move;
 		break;
 	case south:
-		ob->y += move;
+		y += move;
 		break;
 	case southwest:
-		ob->x -= move;
-		ob->y += move;
+		x -= move;
+		y += move;
 		break;
 	case west:
-		ob->x -= move;
+		x -= move;
 		break;
 	case northwest:
-		ob->x -= move;
-		ob->y -= move;
+		x -= move;
+		y -= move;
 		break;
 
 	case nodir:
@@ -663,56 +666,21 @@ void MoveObj (objtype *ob, long move)
 //
 	if (getareabyplayer(ob->areanumber))
 	{
-		deltax = ob->x - player->x;
+		deltax = x - player->x;
 		if (deltax < -MINACTORDIST || deltax > MINACTORDIST)
 			goto moveok;
-		deltay = ob->y - player->y;
+		deltay = y - player->y;
 		if (deltay < -MINACTORDIST || deltay > MINACTORDIST)
 			goto moveok;
 
 		if (ob->obclass == ghostobj || ob->obclass == spectreobj)
 			TakeDamage (tics*2,ob);
 
-	//
-	// back up
-	//
-		switch (ob->dir)
-		{
-		case north:
-			ob->y += move;
-			break;
-		case northeast:
-			ob->x -= move;
-			ob->y += move;
-			break;
-		case east:
-			ob->x -= move;
-			break;
-		case southeast:
-			ob->x -= move;
-			ob->y -= move;
-			break;
-		case south:
-			ob->y -= move;
-			break;
-		case southwest:
-			ob->x += move;
-			ob->y -= move;
-			break;
-		case west:
-			ob->x += move;
-			break;
-		case northwest:
-			ob->x += move;
-			ob->y += move;
-			break;
-
-		case nodir:
-			return;
-		}
 		return;
 	}
 moveok:
+	ob->x = x;
+	ob->y = y;
 	ob->distance -=move;
 }
 
