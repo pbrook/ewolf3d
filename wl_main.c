@@ -66,16 +66,6 @@ char **_argv;
 #if defined(__INTEL_COMPILER)
 typedef _int64 int64_t;
 #endif
-fixed FixedByFrac(fixed a, fixed b)
-{
-	int64_t ra = a;
-	int64_t rb = b;
-	int64_t r;
-	
-	r = ra * rb;
-	r >>= TILESHIFT;
-	return (fixed)r;
-}
 #endif
 
 /*

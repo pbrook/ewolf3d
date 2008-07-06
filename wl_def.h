@@ -1155,7 +1155,17 @@ extern void EndText();
 #include "wl_act3.h"
 
 /* FixedByFrac */
-fixed FixedByFrac(fixed a, fixed b);
+//fixed FixedByFrac(fixed a, fixed b);
+static inline fixed FixedByFrac(fixed a, fixed b)
+{
+	int64_t ra = a;
+	int64_t rb = b;
+	int64_t r;
+	
+	r = ra * rb;
+	r >>= TILESHIFT;
+	return (fixed)r;
+}
 
 #ifndef NOASM
 #define FixedByFrac(x, y) \
