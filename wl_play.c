@@ -1165,7 +1165,7 @@ void FinishPaletteShifts()
 =====================
 */
 
-void DoActor(objtype *ob)
+static void DoActor(objtype *ob)
 {
 	void (*think)(objtype *);
 
