@@ -684,7 +684,7 @@ void EndText()
 
 	ClearMemory();
 
-	artnum = endextern+gamestate.episode;
+	artnum = endextern+gamestate_episode;
 	CA_CacheGrChunk(artnum);
 	text = (const char *)grsegs[artnum];
 

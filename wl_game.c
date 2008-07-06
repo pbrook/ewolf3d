@@ -533,7 +533,7 @@ void SetupGameLevel()
 		Quit("Map not 64*64!");
 #endif
 
-	mapon -= gamestate.episode*10;
+	mapon -= gamestate_episode*10;
 	
 	memset(tilemap, 0, sizeof(tilemap));
 	memset(actorat, 0, sizeof(actorat));
@@ -545,11 +545,11 @@ void SetupGameLevel()
 
 /* spawn actors */
 /* load the level */
-	CA_CacheMap(gamestate.mapon+10*gamestate.episode, 1);
+	CA_CacheMap(gamestate.mapon+10*gamestate_episode, 1);
 
 	ScanInfoPlane();
 
-	CA_CacheMap(gamestate.mapon+10*gamestate.episode, 0);
+	CA_CacheMap(gamestate.mapon+10*gamestate_episode, 0);
 
 	FixupActors();
 
@@ -1222,7 +1222,7 @@ startplayloop:
 			// COMING BACK FROM SECRET LEVEL
 			//
 			if (gamestate.mapon == 9)
-				gamestate.mapon = ElevatorBackTo[gamestate.episode];	// back from secret
+				gamestate.mapon = ElevatorBackTo[gamestate_episode];	// back from secret
 			else
 			//
 			// GOING TO SECRET LEVEL

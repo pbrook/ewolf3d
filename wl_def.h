@@ -677,7 +677,12 @@ typedef	struct
 	myint		faceframe;
 	myint		attackframe,attackcount,weaponframe;
 
+#ifndef EMBEDDED
+#define gamestate_episode gamestate.episode
 	myint		episode;
+#else
+#define gamestate_episode 0
+#endif
 #ifdef ENABLE_STATS
 	myint		secretcount,treasurecount,killcount;
 	myint		secrettotal,treasuretotal;

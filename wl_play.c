@@ -929,7 +929,7 @@ void StopMusic()
 
 void StartMusic()
 {
-	StartCPMusic(songs[gamestate.mapon+gamestate.episode*10]);
+	StartCPMusic(songs[gamestate.mapon+gamestate_episode*10]);
 }
 #endif
 

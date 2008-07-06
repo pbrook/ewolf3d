@@ -434,7 +434,7 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 		WriteInt32(fd, gamestate.attackframe);
 		WriteInt32(fd, gamestate.attackcount);
 		WriteInt32(fd, gamestate.weaponframe);
-		WriteInt32(fd, gamestate.episode);
+		WriteInt32(fd, gamestate_episode);
 		WriteInt32(fd, gamestate.secretcount);
 		WriteInt32(fd, gamestate.treasurecount);
 		WriteInt32(fd, gamestate.killcount);
@@ -671,7 +671,7 @@ myint LoadTheGame(const char *fn, myint dx, myint dy)
 	gamestate.attackframe	= ReadInt32(fd);
 	gamestate.attackcount	= ReadInt32(fd);
 	gamestate.weaponframe	= ReadInt32(fd);
-	gamestate.episode	= ReadInt32(fd);
+	gamestate_episode	= ReadInt32(fd);
 	gamestate.secretcount	= ReadInt32(fd);
 	gamestate.treasurecount	= ReadInt32(fd);
 	gamestate.killcount	= ReadInt32(fd);
@@ -1152,6 +1152,7 @@ void NewGame(myint difficulty, myint episode)
 	
 #ifndef EMBEDDED
 	gamestate_difficulty = difficulty;
+	gamestate_episode = episode;
 #endif
 	gamestate.weapon = gamestate.bestweapon
 		= gamestate.chosenweapon = wp_pistol;
@@ -1159,7 +1160,6 @@ void NewGame(myint difficulty, myint episode)
 	gamestate.ammo = STARTAMMO;
 	gamestate.lives = 3;
 	gamestate.nextextra = EXTRAPOINTS;
-	gamestate.episode = episode;
 
 	startgame = true;
 }

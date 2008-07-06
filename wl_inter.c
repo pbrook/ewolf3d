@@ -540,7 +540,7 @@ void LevelCompleted()
 
 	 Write(26,2,itoa(gamestate.mapon+1,tempstr,10));
 
-	 Write(26,12,parTimes[gamestate.episode*10+mapon].timestr);
+	 Write(26,12,parTimes[gamestate_episode*10+mapon].timestr);
 
 	 //
 	 // PRINT TIME
@@ -550,8 +550,8 @@ void LevelCompleted()
 	 if (sec > 99*60)		// 99 minutes max
 	   sec = 99*60;
 
-	 if (gamestate.TimeCount<parTimes[gamestate.episode*10+mapon].time*4200)
-		timeleft=(parTimes[gamestate.episode*10+mapon].time*4200)/70-sec;
+	 if (gamestate.TimeCount<parTimes[gamestate_episode*10+mapon].time*4200)
+		timeleft=(parTimes[gamestate_episode*10+mapon].time*4200)/70-sec;
 
 	 min=sec/60;
 	 sec%=60;
@@ -1057,7 +1057,7 @@ void CheckHighScore(long score, word other)
 
 	strcpy(myscore.name, "");
 	myscore.score = score;
-	myscore.episode = gamestate.episode;
+	myscore.episode = gamestate_episode;
 	myscore.completed = other;
 
 	for (i = 0, n = -1; i < MaxScores;i++)

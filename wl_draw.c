@@ -642,7 +642,7 @@ static const byte Ceiling[]=
 
 static void ClearScreen()
 {
-	unsigned myint ceiling = Ceiling[gamestate.episode*10+mapon];
+	unsigned myint ceiling = Ceiling[gamestate_episode*10+mapon];
 	unsigned myint floor = 0x19;
 
 	VL_Bar(xoffset, yoffset, viewwidth, sviewheight / 2, ceiling);
