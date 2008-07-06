@@ -44,7 +44,7 @@ fixed viewx, viewy;		/* the focal point */
 myshort pixelangle[MAXVIEWWIDTH];
 #endif
 //int32_t finetangent[FINEANGLES/4];
-myshort horizwall[MAXWALLTILES], vertwall[MAXWALLTILES];
+myshort horizwall[MAXWALLTILES], vertwall_table[MAXWALLTILES];
 
 #ifndef EMBEDDED
 char configname[13] = "config." GAMEEXT;
@@ -890,27 +890,6 @@ myint MS_CheckParm(const char *check)
 ==================
 */
 
-/*
-===================
-=
-= SetupWalls
-=
-= Map tile values to scaled pics
-=
-===================
-*/
-
-void SetupWalls()
-{
-	myint i;
-
-	for (i=1;i<MAXWALLTILES;i++)
-	{
-		horizwall[i]=(i-1)*2;
-		vertwall[i]=(i-1)*2+1;
-	}
-}
-
 #ifndef EMBEDDED
 void ShowViewSize(myint width)
 {
@@ -1228,8 +1207,6 @@ void InitGame()
 		CA_CacheGrChunk(i);
 #endif
 			
-	SetupWalls();
-
 #ifdef EMBEDDED
 	NewViewSize(8);
 #else

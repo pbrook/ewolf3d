@@ -1090,9 +1090,9 @@ static void HitVertWall()
 		if (tilemap[xtile-xtilestep][ytile] & 0x80)
 			wallpic = DOORWALL+3;
 		else
-			wallpic = vertwall[tilehit & ~0x40];
+			wallpic = vertwall(tilehit & ~0x40);
 	} else
-		wallpic = vertwall[tilehit];
+		wallpic = vertwall(tilehit);
 		
 	wall = PM_GetPage(wallpic);
 	ScalePost(wall, texture);
@@ -1118,9 +1118,9 @@ static void HitHorizWall()
 		if (tilemap[xtile][ytile-ytilestep] & 0x80)
 			wallpic = DOORWALL+2;
 		else
-			wallpic = horizwall[tilehit & ~0x40];
+			wallpic = horizwall(tilehit & ~0x40);
 	} else
-		wallpic = horizwall[tilehit];
+		wallpic = horizwall(tilehit);
 
 	wall = PM_GetPage(wallpic);
 	ScalePost(wall, texture);
@@ -1145,7 +1145,7 @@ static void HitHorizPWall()
 
 	wallheight[postx] = CalcHeight();
 
-	wallpic = horizwall[tilehit&63];
+	wallpic = horizwall(tilehit&63);
 	wall = PM_GetPage(wallpic);
 	ScalePost(wall, texture);
 }
@@ -1167,7 +1167,7 @@ static void HitVertPWall()
 
 	wallheight[postx] = CalcHeight();
 	
-	wallpic = vertwall[tilehit&63];
+	wallpic = vertwall(tilehit&63);
 
 	wall = PM_GetPage(wallpic);
 	ScalePost(wall, texture);

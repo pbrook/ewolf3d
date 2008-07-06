@@ -980,8 +980,8 @@ extern long frameon;
 extern fixed viewx, viewy;			/* the focal point */
 extern fixed viewsin, viewcos;
 
-extern myshort horizwall[], vertwall[];
-
+#define horizwall(x) ((x)-1)*2
+#define vertwall(x) ((x)-1)*2+1
 
 void BuildTables();
 void CalcTics();
