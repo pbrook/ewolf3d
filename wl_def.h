@@ -660,7 +660,12 @@ enum PACKED {
 
 typedef	struct
 {
+#ifndef EMBEDDED
+#define gamestate_difficulty gamestate.difficulty
 	myint		difficulty;
+#else
+#define gamestate_difficulty gd_medium
+#endif
 	myint		mapon;
 	long		oldscore,score,nextextra;
 	myint		lives;

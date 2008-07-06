@@ -418,7 +418,7 @@ myint SaveTheGame(const char *fn, const char *tag, myint dx, myint dy)
 	
 		DiskFlopAnim(dx, dy);
 	
-		WriteInt32(fd, gamestate.difficulty);
+		WriteInt32(fd, gamestate_difficulty);
 		WriteInt32(fd, gamestate.mapon);
 		WriteInt32(fd, gamestate.oldscore);
 		WriteInt32(fd, gamestate.score);
@@ -655,7 +655,7 @@ myint LoadTheGame(const char *fn, myint dx, myint dy)
 	
 	DiskFlopAnim(dx, dy);
 	
-	gamestate.difficulty	= ReadInt32(fd);
+	gamestate_difficulty	= ReadInt32(fd);
 	gamestate.mapon		= ReadInt32(fd);
 	gamestate.oldscore	= ReadInt32(fd);
 	gamestate.score		= ReadInt32(fd);
@@ -1171,7 +1171,9 @@ void NewGame(myint difficulty, myint episode)
 {
 	memset(&gamestate, 0, sizeof(gamestate));
 	
-	gamestate.difficulty = difficulty;
+#ifndef EMBEDDED
+	gamestate_difficulty = difficulty;
+#endif
 	gamestate.weapon = gamestate.bestweapon
 		= gamestate.chosenweapon = wp_pistol;
 	gamestate.health = 100;

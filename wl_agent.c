@@ -317,7 +317,7 @@ void TakeDamage(myint points, objtype *attacker)
 
 	if (gamestate.victoryflag)
 		return;
-	if (gamestate.difficulty==gd_baby)
+	if (gamestate_difficulty==gd_baby)
 	  points>>=2;
 
 #ifndef EMBEDDED

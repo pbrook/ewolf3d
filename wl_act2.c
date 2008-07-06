@@ -340,7 +340,7 @@ void SpawnStand (enemy_t which, myint tilex, myint tiley, myint dir)
 	}
 
 	new->obclass = guardobj+which;
-	new->hitpoints = starthitpoints[gamestate.difficulty][which];
+	new->hitpoints = starthitpoints[gamestate_difficulty][which];
 	new->dir = dir*2;
 	new->flags |= FL_SHOOTABLE;
 }
@@ -425,7 +425,7 @@ void SpawnPatrol (enemy_t which, myint tilex, myint tiley, myint dir)
 
 	new->obclass = guardobj+which;
 	new->dir = dir*2;
-	new->hitpoints = starthitpoints[gamestate.difficulty][which];
+	new->hitpoints = starthitpoints[gamestate_difficulty][which];
 	new->distance = TILEGLOBAL;
 	new->flags |= FL_SHOOTABLE;
 	new->active = ac_yes;
@@ -835,7 +835,7 @@ void SpawnTrans (myint tilex, myint tiley)
 
 	SpawnNewObj(tilex,tiley,s_transstand);
 	new->obclass = transobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_trans];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_trans];
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
 	if (!loadedgame)
@@ -864,7 +864,7 @@ void SpawnUber (myint tilex, myint tiley)
 
 	SpawnNewObj (tilex,tiley,s_uberstand);
 	new->obclass = uberobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_uber];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_uber];
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
 	if (!loadedgame)
@@ -910,7 +910,7 @@ void SpawnWill(myint tilex, myint tiley)
 
 	SpawnNewObj (tilex,tiley,s_willstand);
 	new->obclass = willobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_will];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_will];
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
 	if (!loadedgame)
@@ -1030,7 +1030,7 @@ void SpawnDeath(myint tilex, myint tiley)
 
 	SpawnNewObj (tilex,tiley,s_deathstand);
 	new->obclass = deathobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_death];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_death];
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
 	if (!loadedgame)
@@ -1130,7 +1130,7 @@ void SpawnAngel(myint tilex, myint tiley)
 
 	SpawnNewObj (tilex,tiley,s_angelstand);
 	new->obclass = angelobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_angel];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_angel];
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
 	if (!loadedgame)
@@ -1199,7 +1199,7 @@ void SpawnSpectre(myint tilex, myint tiley)
 {
 	SpawnNewObj (tilex,tiley,s_spectrewait1);
 	new->obclass = spectreobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_spectre];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_spectre];
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH; // |FL_NEVERMARK|FL_NONMARK;
 #ifdef ENABLE_STATS
 	if (!loadedgame)
@@ -1280,7 +1280,7 @@ void SpawnBoss (myint tilex, myint tiley)
 	new->speed = SPDPATROL;
 
 	new->obclass = bossobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_boss];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_boss];
 	new->dir = south;
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
@@ -1303,7 +1303,7 @@ void SpawnGretel (myint tilex, myint tiley)
 	new->speed = SPDPATROL;
 
 	new->obclass = gretelobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_gretel];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_gretel];
 	new->dir = north;
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
@@ -1370,7 +1370,7 @@ void SpawnSchabbs(myint tilex, myint tiley)
 	new->speed = SPDPATROL;
 
 	new->obclass = schabbobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_schabbs];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_schabbs];
 	new->dir = south;
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
@@ -1401,7 +1401,7 @@ void SpawnGift (myint tilex, myint tiley)
 	new->speed = SPDPATROL;
 
 	new->obclass = giftobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_gift];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_gift];
 	new->dir = north;
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
@@ -1432,7 +1432,7 @@ void SpawnFat (myint tilex, myint tiley)
 	new->speed = SPDPATROL;
 
 	new->obclass = fatobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_fat];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_fat];
 	new->dir = south;
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
@@ -1820,7 +1820,7 @@ void SpawnFakeHitler(myint tilex, myint tiley)
 	new->speed = SPDPATROL;
 
 	new->obclass = fakeobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_fake];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_fake];
 	new->dir = north;
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
@@ -1851,7 +1851,7 @@ void SpawnHitler(myint tilex, myint tiley)
 	new->speed = SPDPATROL;
 
 	new->obclass = mechahitlerobj;
-	new->hitpoints = starthitpoints[gamestate.difficulty][en_hitler];
+	new->hitpoints = starthitpoints[gamestate_difficulty][en_hitler];
 	new->dir = south;
 	new->flags |= FL_SHOOTABLE|FL_AMBUSH;
 #ifdef ENABLE_STATS
@@ -1884,7 +1884,7 @@ void A_HitlerMorph (objtype *ob)
 	new->flags = ob->flags | FL_SHOOTABLE;
 
 	new->obclass = realhitlerobj;
-	new->hitpoints = hitpoints[gamestate.difficulty];
+	new->hitpoints = hitpoints[gamestate_difficulty];
 }
 
 
