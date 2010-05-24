@@ -119,7 +119,7 @@ void recompile_sprite(int picnum)
 	}
     }
 
-    printf("static const byte ROMAREA Sprite%d[] = {\n",
+    printf("static const byte ROMAREA NOPAD Sprite%d[] = {\n",
 	   picnum - PMSpriteStart);
     xstart[width] = np - 1;
     printf("%d, %d,\n", src[0], src[2]);

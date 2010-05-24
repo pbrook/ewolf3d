@@ -13,8 +13,11 @@ extern byte *gfxbuf;
 extern const byte pal4bit[256];
 #ifdef LUMINARY
 #define ROMAREA __attribute__((section(".romchunk")))
+/* Some compilers are lame and align byte arrays to a word boundary.  */
+#define NOPAD __attribute__((aligned(1)))
 #else
 #define ROMAREA
+#define NOPAD
 #endif
 
 void VL_Startup();
