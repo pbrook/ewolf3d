@@ -1,4 +1,4 @@
-PROGS=ewolf3d
+PROGS=sdlwolf3d
 
 ifeq ($(PROGS),ewolf3d)
 CC = arm-unknown-eabi-gcc
@@ -23,6 +23,7 @@ OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_debug.o vi_comm.o tables.o pagemap.o \
 	grstarts.o pal4bit.o \
 	sprites.o walls.o mapdata.o
+# pictable.o
 # net.o
 # romchunk.o
 ROBJS = wl_draw.o
@@ -60,7 +61,8 @@ $(XOBJS): version.h id_heads.h wl_def.h Makefile
 $(DOBJS): version.h id_heads.h wl_def.h Makefile
 $(EOBJS): version.h id_heads.h wl_def.h Makefile
 $(PROGS): Makefile
-id_ca.o: huffman.h mapheaders.c
+id_ca.o: mapheaders.c
+#id_ca.o: huffman.h
 
 .asm.o:
 	$(NASM) -f elf -o $@ $<

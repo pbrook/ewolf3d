@@ -18,8 +18,6 @@ Only the shareware version has been tested.
 To build you will need to original game data, specifically:
   gamemaps.wl1
   maphead.wl1
-  vgadict.wl1
-  vgagraph.wl1
   vgahead.wl1
   vswap.wl1
 These files are still subject to the original licence, so the resulting
