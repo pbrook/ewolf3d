@@ -1,7 +1,7 @@
 Wolfenstein 3D (embedded)
 -------------------------
 
-This is a port of Wolfenstein 3D to the Stellaryis LM3S6965EVB
+This is a port of Wolfenstein 3D to the Stellaris LM3S6965EVB
 microcontroller development board.
 
 A Linux/SDL binary can be build by setting
