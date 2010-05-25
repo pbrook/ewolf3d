@@ -21,7 +21,7 @@ OBJS = objs.o misc.o id_ca.o id_vh.o id_us.o \
 	wl_act1.o wl_act2.o wl_act3.o wl_agent.o wl_game.o \
 	wl_inter.o wl_menu.o wl_play.o wl_state.o wl_main.o \
 	wl_debug.o vi_comm.o tables.o pagemap.o \
-	grstarts.o pictable.o pal4bit.o \
+	grstarts.o pal4bit.o \
 	sprites.o walls.o mapdata.o
 # net.o
 # romchunk.o
