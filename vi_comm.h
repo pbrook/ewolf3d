@@ -3,11 +3,11 @@
 
 /* ======================================================================== */
 
-#ifdef LUMINARY
-extern byte framebuffer[];
-#define gfxbuf framebuffer
-#else
+#ifdef ENABLE_COLOR
 extern byte *gfxbuf;
+#else
+extern byte framebuffer[];
+#define gfxbuf4 framebuffer
 #endif
 
 extern const byte pal4bit[256];

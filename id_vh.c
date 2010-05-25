@@ -94,7 +94,9 @@ void VL_FadeOut(myint start, myint end, myint red, myint green, myint blue, myin
 void VL_FadeIn(myint start, myint end, const byte *palette, myint steps)
 {
 #ifdef SKIPFADE
+#ifndef EMBEDDED
 	VL_SetPalette(palette);
+#endif
 #else
 	myint i, j, delta;
 
@@ -381,8 +383,8 @@ void VW_Bar(myint x, myint y, myint width, myint height, myint color)
 
 void VL_Bar(myint x, myint y, myint width, myint height, myint color)
 {
-#ifdef LUMINARY
-	byte *ptr = gfxbuf + vpitch * y + (x >> 1);
+#ifndef ENABLE_COLOR
+	byte *ptr = gfxbuf4 + vpitch * y + (x >> 1);
 	byte c;
 
 	c = pal4bit[color];

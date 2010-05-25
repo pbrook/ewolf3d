@@ -1,11 +1,11 @@
 #include "wl_def.h"
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 static SDL_Surface *surface;
 static unsigned myint sdl_palettemode;
 
-byte *gfxbuf = NULL;
+byte framebuffer[128 * 64 / 2];
 
 extern void keyboard_handler(myint code, myint press);
 extern boolean InternalKeyboard[NumCodes];
@@ -27,6 +27,7 @@ void DisplayTextSplash(byte *text);
 
 void Quit(const char *error)
 {
+#ifndef EMBEDDED
 	memptr screen = NULL;
 
 	if (!error || !*error) {
@@ -43,6 +44,7 @@ void Quit(const char *error)
 	if (screen) {
 		//DisplayTextSplash(screen);
 	}
+#endif
 	
 	if (error && *error) {
 		fprintf(stderr, "Quit: %s\n", error);
@@ -59,9 +61,31 @@ void VL_WaitVBL(myint vbls)
 
 void VW_UpdateScreen()
 {
+#ifdef EMBEDDED
+	byte *out;
+	byte *in;
+	int x;
+       	int y;
+	byte c;
+
+	out = surface->pixels;
+	in = framebuffer;
+	for (y = 0; y < 64; y++)
+	  {
+	    for (x = 0; x < 64; x++)
+	      {
+		c = *(in++);
+		out[(x << 1)] = c >> 4;
+		out[(x << 1) + 1] = c & 0xf;
+	      }
+	    out += surface->pitch;
+	  }
+#endif
 	SDL_Flip(surface);
 
+#ifndef EMBEDDED
 	gfxbuf = surface->pixels;
+#endif
 }
 
 /*
@@ -77,6 +101,7 @@ void VL_Startup()
 	const SDL_VideoInfo *vinfo;
 	myint flags;
 	
+#ifndef EMBEDDED
 	vwidth = 320;
 	vheight = 200;
 	
@@ -87,6 +112,7 @@ void VL_Startup()
 		vwidth *= 3;
 		vheight *= 3;
 	}
+#endif
 	
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_NOPARACHUTE) < 0) {
 		Quit("Couldn't init SDL");
@@ -96,8 +122,10 @@ void VL_Startup()
 	sdl_palettemode = (vinfo->vfmt->BitsPerPixel == 8) ? (SDL_PHYSPAL|SDL_LOGPAL) : SDL_LOGPAL;
 	
 	flags = SDL_SWSURFACE|SDL_HWPALETTE|SDL_DOUBLEBUF;
+#ifndef EMBEDDED
 	if (MS_CheckParm("fullscreen"))
 		flags |= SDL_FULLSCREEN;
+#endif
 		
 	surface = SDL_SetVideoMode(vwidth, vheight, 8, flags);
 		
@@ -105,7 +133,23 @@ void VL_Startup()
 		SDL_Quit();
 		Quit("(SDL) Couldn't set video mode");
 	}
+#ifndef EMBEDDED
 	gfxbuf = surface->pixels;
+#else
+{
+	SDL_Color colors[256];
+	myint i;
+	
+	for (i = 0; i < 15; i++)
+	{
+		colors[i].r = i << 4;
+		colors[i].g = i << 4;
+		colors[i].b = i << 4;
+	}
+	SDL_SetPalette(surface, sdl_palettemode, colors, 0, 16);
+}
+
+#endif
 	
 	if (surface->flags & SDL_FULLSCREEN)
 		SDL_ShowCursor(0);
@@ -128,6 +172,7 @@ void VL_Shutdown()
 
 /* ======================================================================== */
 
+#ifndef EMBEDDED
 /*
 =================
 =
@@ -170,6 +215,7 @@ void VL_GetPalette(byte *palette)
 		palette[i*3+2] = surface->format->palette->colors[i].b >> 2;
 	}
 }
+#endif
 
 static myint XKeysymToScancode(unsigned myint keysym)
 {
@@ -332,9 +378,6 @@ static myint XKeysymToScancode(unsigned myint keysym)
 void INL_Update()
 {
 	SDL_Event event;
-	boolean DebouncedKeyboard[NumCodes];
-	
-	memcpy(DebouncedKeyboard, InternalKeyboard, sizeof(DebouncedKeyboard));
 		
 	if (SDL_PollEvent(&event)) {
 		do {
@@ -346,7 +389,7 @@ void INL_Update()
 					keyboard_handler(XKeysymToScancode(event.key.keysym.sym), 0);
 					break;
 				case SDL_QUIT:
-					/* TODO do something here */
+					Quit(NULL);
 					break;
 				default:
 					break;
@@ -354,6 +397,7 @@ void INL_Update()
 		} while (SDL_PollEvent(&event));
 	}
 	
+#ifndef EMBEDDED
 	if (InternalKeyboard[sc_Alt] && 
 	(!DebouncedKeyboard[sc_Return] && InternalKeyboard[sc_Return])) {
 		SDL_GrabMode gm;
@@ -380,6 +424,7 @@ void INL_Update()
 		else
 			SDL_ShowCursor(0);
 	}
+#endif
 	
 	/* ctrl-z for iconify window? */
 }
@@ -420,6 +465,7 @@ byte IN_MouseButtons()
 	return retr;
 }
 
+#ifndef EMBEDDED
 /*
 ===================
 =
@@ -432,6 +478,7 @@ byte IN_JoyButtons()
 {
 	return 0;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////
 //

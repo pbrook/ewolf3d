@@ -6,7 +6,7 @@
 #include "wl_menu.h"
 #include "foreign.h"
 
-#ifdef LUMINARY
+#ifdef EMBEDDED
 #define vwidth 128
 #define vpitch 64
 #define vheight 64

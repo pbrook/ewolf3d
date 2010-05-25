@@ -5,7 +5,7 @@ CC = arm-unknown-eabi-gcc
 CFLAGS = -g -Wall -fno-common -DLUMINARY -mthumb -march=armv7-m -Os -ffunction-sections -fdata-sections
 #-fno-strict-aliasing
 else
-CC = gcc -m32
+CC = gcc
 CFLAGS = -g -Wall
 endif
 

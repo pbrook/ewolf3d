@@ -23,8 +23,6 @@ myint viewsize;
 
 myint centerx;
 myint shootdelta;			/* pixels away from centerx a target can be */
-#endif
-#ifndef LUMINARY
 myint viewwidthwin, viewheightwin; /* for borders */
 myint vwidth, vheight, vpitch; /* size of screen */
 #endif

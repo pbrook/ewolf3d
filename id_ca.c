@@ -769,6 +769,8 @@ void CA_CacheMap(myint mapnum, myint plane)
 static byte MM_Pool[POOL_SIZE];
 unsigned int pool_offset;
 
+#define POOL_EXTRA (sizeof(void *) * 2)
+
 typedef struct
 {
   /* FIXME: This is broken on 64-bit hosts.  */
@@ -782,7 +784,7 @@ void MM_Startup()
   pool_header *p;
   p = (pool_header *)MM_Pool;
   p->owner = NULL;
-  p->size = POOL_SIZE - 8;
+  p->size = POOL_SIZE - POOL_EXTRA;
   pool_offset = 0;
 }
 
@@ -797,39 +799,39 @@ memptr MM_AllocPool(pool_id *id, unsigned long size)
     pool_header *h;
     pool_header *next;
     h = (pool_header *)(MM_Pool + pool_offset);
-    size = (size + 7) & ~7;
-    if (size > POOL_SIZE - 8)
+    size = (size + POOL_EXTRA - 1) & ~(POOL_EXTRA - 1);
+    if (size > POOL_SIZE - POOL_EXTRA)
 	Quit("Pool allocation too big\n");
     /* Reclaim entries until we have enough space.  */
     while (h->size < size)
       {
 	/* Wrap back to the start of the pool.  */
-	if (pool_offset + h->size + 8 == POOL_SIZE)
+	if (pool_offset + h->size + POOL_EXTRA == POOL_SIZE)
 	  {
 	    pool_offset = 0;
 	    h = (pool_header *)MM_Pool;
 	    continue;
 	  }
-	next = (pool_header *)(MM_Pool + pool_offset + h->size + 8);
+	next = (pool_header *)(MM_Pool + pool_offset + h->size + POOL_EXTRA);
 	if (next->owner)
 	  *next->owner = 0;
-	h->size += next->size + 8;
+	h->size += next->size + POOL_EXTRA;
       }
     /* Make sure this entry is free.  */
     if (h->owner)
       {
 	*h->owner = 0;
       }
-    if (size < h->size - 8) {
-	next = (pool_header *)(MM_Pool + pool_offset + size + 8);
+    if (size < h->size - POOL_EXTRA) {
+	next = (pool_header *)(MM_Pool + pool_offset + size + POOL_EXTRA);
 	next->owner = NULL;
-	next->size = h->size - (size + 8);
+	next->size = h->size - (size + POOL_EXTRA);
 	h->size = size;
     }
     h->owner = id;
     if (id)
-	*id = pool_offset + 8;
-    pool_offset += h->size + 8;
+	*id = pool_offset + POOL_EXTRA;
+    pool_offset += h->size + POOL_EXTRA;
     if (pool_offset == POOL_SIZE)
       pool_offset = 0;
     return (memptr)(h + 1);

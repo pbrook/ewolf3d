@@ -129,7 +129,7 @@ void oled_render()
     oled_write(buf, 2, 1);
 
 
-    ssi_data = gfxbuf;
+    ssi_data = framebuffer;
     ssi_tosend = ssi_left = 128 * 64 / 2;
     HWREG(GPIOC + 0x200) = 0x80;
     /* Enable SSI interrupts.  */

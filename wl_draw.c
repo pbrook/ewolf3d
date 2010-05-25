@@ -12,6 +12,10 @@
  /* #define DRAWCEIL */
 #endif
  
+#ifndef ENABLE_COLOR
+#define gfxbuf gfxbuf4
+#endif
+
 static umyshort wallheight[MAXVIEWWIDTH];
 
 /* refresh variables */
@@ -688,7 +692,7 @@ void ThreeDRefresh()
 static void ScaledDraw(byte *gfx, myint count, byte *vid, int x,
 		       unsigned myint frac, unsigned myint delta)
 {
-#ifdef LUMINARY
+#ifdef EMBEDDED
     vid += x >> 1;
     if (x & 1) {
 	while (count--) {
@@ -745,7 +749,6 @@ static void ScaledDraw4(const byte *gfx, myint count, byte *vid, int x,
 		        unsigned myint frac, unsigned myint delta)
 {
     byte c;
-#ifdef LUMINARY
     vid += x >> 1;
     if (x & 1) {
 	while (count--) {
@@ -770,20 +773,6 @@ static void ScaledDraw4(const byte *gfx, myint count, byte *vid, int x,
 		frac += delta;
 	}
     }
-#else
-    vid += x;
-    while (count--) {
-	    c = gfx[frac >> 17];
-	    if (frac & (1 << 16))
-	      c &= 0xf;
-	    else
-	      c >>= 4;
-	    c = 0x1f - c;
-	    *vid = c;
-	    vid += vpitch;
-	    frac += delta;
-    }
-#endif
 }
 #endif
 
