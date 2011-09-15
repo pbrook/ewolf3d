@@ -23,6 +23,8 @@ SECTIONS
     CREATE_OBJECT_SYMBOLS
     
     *(.isr)
+    *(.romchunk)
+
     *(.text .text.*)
     *(.plt)
     *(.gnu.warning)
@@ -87,11 +89,6 @@ SECTIONS
     __end = _end;
     PROVIDE(end = .);
   } >ram 
-
-  .romchunk 0xfc00 :
-  {
-    *(.romchunk)
-  } > rom
 
   .stab 0 (NOLOAD) :
   {
